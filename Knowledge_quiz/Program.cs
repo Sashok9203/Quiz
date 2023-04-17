@@ -1,10 +1,17 @@
-﻿namespace Knowledge_quiz
+﻿namespace KnowledgeQuiz
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            Console.CursorVisible = false;
+            Test test = new Test();
+            
+                test.Menu.Start();
+             
+          
         }
     }
+
+    
 }

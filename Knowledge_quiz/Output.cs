@@ -9,10 +9,17 @@ namespace KnowledgeQuiz
     
     internal static class Output
     {
-        public static void Write(string text, int x , int y, ConsoleColor fColor = default, ConsoleColor bColor = default)
+        public static ValueTuple<int,int> Write(string text, int x, int y)
+        {
+            Console.SetCursorPosition(x, y);
+            Console.Write(text);
+            return (Console.CursorLeft, Console.CursorTop);
+        }
+
+        public static ValueTuple<int, int> Write(string text, int x , int y, ConsoleColor fColor = default, ConsoleColor bColor = default)
         {
             ConsoleColor bdef = default, fdef = default;
-            Console.SetCursorPosition(x, y);
+           
             if (fColor != 0)
             {
                 fdef = Console.ForegroundColor;
@@ -24,33 +31,33 @@ namespace KnowledgeQuiz
                 Console.BackgroundColor = bColor;
             }
           
-            Console.Write(text);
+            Write(text,x,y);
             if (bColor != 0) Console.BackgroundColor = bdef;
             if (fColor != 0) Console.ForegroundColor = fdef;
+            return (Console.CursorLeft, Console.CursorTop);
         }
        
-        public static void Write(string text, ConsoleColor fColor = default)
+        public static ValueTuple<int, int> Write(string text, ConsoleColor fColor)
         {
-            ConsoleColor fdef  = default;
+            ConsoleColor fdef = Console.ForegroundColor;
             Console.ForegroundColor = fColor;
-            if (fColor != 0)
-            {
-                fdef = Console.ForegroundColor;
-                Console.ForegroundColor = fColor;
-            }
             Console.Write(text);
-            if (fColor != 0) Console.ForegroundColor = fdef;
+            Console.ForegroundColor = fdef;
+            return (Console.CursorLeft, Console.CursorTop);
         }
 
-        public static void WriteLine(string text, int x, int y, ConsoleColor fColor = default, ConsoleColor bColor = default)
+        public static ValueTuple<int, int> WriteLine(string text, int x, int y, ConsoleColor fColor = default, ConsoleColor bColor = default)
         {
-            Write(text + '\n', x, y, fColor, bColor);
+            return Write(text + '\n', x, y, fColor, bColor);
         }
-        public static void WriteLine(string text, ConsoleColor fColor = default)
+
+        public static ValueTuple<int, int> WriteLine(string text, ConsoleColor fColor = default)
         {
-            Write(text + '\n', fColor);
+            return Write(text + '\n', fColor);
+
         }
-        public static void ClearRegion(int Xpos, int YPos, int XCout, int yCount)
+
+        public static void  ClearRegion(int Xpos, int YPos, int XCout, int yCount)
         {
             string tmp = new string(' ', XCout);
             for (int i = 0; i != yCount; i++)

@@ -10,17 +10,21 @@ namespace KnowledgeQuiz
     {
        
         
-        public Menu<Test> Menu { get; }
+        public Menu Menu { get; }
         public Test() 
         {
-            Menu = new Menu<Test>("MenuName", 10, 1, ConsoleColor.Red, ConsoleColor.DarkGray, ConsoleColor.Gray
-                  , this,  (" Item1",  get ), (" Item2", setget) );
+            Menu = new Menu("MenuName", 10, 1, ConsoleColor.Red, ConsoleColor.DarkGray, ConsoleColor.Gray,
+                (" Item1", () =>  get(this) ), 
+                (" Item2", () =>  setget(this)) );
         }
 
         private void get(Test item)
         {
-            Console.Write("Item1");
-            Console.ReadKey();
+            Console.Clear();
+            Menu menu = new Menu("Menu2", 10, 1, ConsoleColor.Red, ConsoleColor.DarkGray, ConsoleColor.Gray,
+                (" Item1", () => { Console.WriteLine("Item1"); Console.ReadLine(); }),
+                (" Item2", () => setget(this)));
+            menu.Start();
 
         }
         private void setget(Test item)

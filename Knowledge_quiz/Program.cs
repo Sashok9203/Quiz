@@ -9,21 +9,25 @@ namespace KnowledgeQuiz
     {
         static void Main(string[] args)
         {
-            Process proc = new()
-            {
-                StartInfo = new()
-                {
-                    CreateNoWindow = false,
-                    UseShellExecute = false,
-                    FileName = "EditUtility.exe",
-                    WindowStyle = ProcessWindowStyle.Normal,
-                    Arguments = ""
+
+
+
+
+            //Process proc = new()
+            //{
+            //    StartInfo = new()
+            //    {
+            //        CreateNoWindow = false,
+            //        UseShellExecute = false,
+            //        FileName = "EditUtility.exe",
+            //        WindowStyle = ProcessWindowStyle.Normal,
+            //        Arguments = ""
                     
-                }
-            };
-            proc.Start();
-            proc.WaitForExit();
-            Console.WriteLine("Main");
+            //    }
+            //};
+            //proc.Start();
+            //proc.WaitForExit();
+            //Console.WriteLine("Main");
         }
     }
 

@@ -21,11 +21,13 @@ namespace EditUtility
             Console.OutputEncoding = Encoding.UTF8;
 
 
-            Quizzes test = new();
-            test.AddQuize("Біолоія",
-                new SAQuestion("Питання з біології 1","відповідь1", "відповідь2", "відповідь3", "відповідь4"),
-                new MAQuestion("Питання з біології 2", "відповідь5", "відповідь6", "відповідь7", "відповідь8"));
-            Serializer.Serialize("data.xml", test);
+            Quizzes test = Serializer.Deserialize<Quizzes>("data.xml"); ;
+
+           
+
+            
+
+           // Serializer.Serialize("data.xml", test);
             Quizzes test2 = Serializer.Deserialize<Quizzes>("data.xml");
 
 

@@ -29,6 +29,7 @@ namespace KnowledgeQuiz
         {
             quizzes = new();
         }
+
         public IEnumerable<KeyValuePair<string, List<Question>>>? Quezzes => quizzes;
 
         public IEnumerable<string>? QuezzesNames => quizzes?.Keys;
@@ -47,28 +48,7 @@ namespace KnowledgeQuiz
 
         public void AddQuestion(string? quizeName, Question? question) => quizzes?[quizeName ?? ""]?.Add(question);
         
-
-
-        public void show()
-        {
-            foreach (var item in quizzes)
-            {
-                Console.WriteLine(item.Key);
-                foreach (var i in item.Value)
-                {
-                    Console.WriteLine(i.QuestionText);
-                    foreach (var m in i.AnswerVariants)
-                    {
-                        Console.WriteLine(m);
-                    }
-                }
-            }
-            
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("Quiz", quizzes);
-        }
+        public void GetObjectData(SerializationInfo info, StreamingContext context) => info.AddValue("Quiz", quizzes);
+       
     }
 }

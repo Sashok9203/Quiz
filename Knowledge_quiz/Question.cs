@@ -33,6 +33,8 @@ namespace KnowledgeQuiz
             QuestionText = questionText ??= "InvalidName";
         }
 
+        public void ClearAnswerVariants() => answerVariants?.Clear();
+
         public string QuestionText
         {
             get => question ??= "";

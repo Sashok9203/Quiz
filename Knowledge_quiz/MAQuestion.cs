@@ -13,8 +13,6 @@ namespace KnowledgeQuiz
     [Serializable]
     public class MAQuestion : Question ,ISerializable
     {
-        
-
         [DataMember]
         private List<string> answers;
 

@@ -31,8 +31,8 @@ namespace KnowledgeQuiz
             Output.WriteLine(Title, (int)xPos, (int)yPos, nColor);
             for (int i = 0; i < mItems.Count; i++)
             {
-                if (i == selPos) Output.WriteLine(mItems[i].Item1, (int)xPos, (int)yPos + i + 1, sIColor);
-                else Output.WriteLine(mItems[i].Item1, (int)xPos, (int)yPos + i + 1, iColor);
+                if (i == selPos) Output.WriteLine(mItems[i].Item1, (int)xPos, (int)yPos + i + 2, sIColor);
+                else Output.WriteLine(mItems[i].Item1, (int)xPos, (int)yPos + i + 2, iColor);
             }
         }
 

@@ -1,4 +1,6 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using static KnowledgeQuiz.Menu;
 
 namespace KnowledgeQuiz
@@ -7,12 +9,21 @@ namespace KnowledgeQuiz
     {
         static void Main(string[] args)
         {
-            string[] strs = { "Item1", "item2" };
-            MenuEventHandler[] hendlers = { delegate () { }, delegate () { } };
-            Menu menu = new Menu(" Menu", 1, 1, ConsoleColor.Red, ConsoleColor.DarkGray, ConsoleColor.Gray,strs, hendlers);
-            menu.Start();
-            Input.Confirm
-         
+            Process proc = new()
+            {
+                StartInfo = new()
+                {
+                    CreateNoWindow = false,
+                    UseShellExecute = false,
+                    FileName = "EditUtility.exe",
+                    WindowStyle = ProcessWindowStyle.Normal,
+                    Arguments = ""
+                    
+                }
+            };
+            proc.Start();
+            proc.WaitForExit();
+            Console.WriteLine("Main");
         }
     }
 

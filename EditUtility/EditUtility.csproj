@@ -8,8 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="System.Runtime.Serialization.Formatters" Version="4.3.0" />
+    <ProjectReference Include="..\Knowledge_quiz\KnowledgeQuiz.csproj" />
   </ItemGroup>
 
 </Project>

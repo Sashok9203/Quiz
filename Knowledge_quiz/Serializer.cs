@@ -23,11 +23,15 @@ namespace KnowledgeQuiz
         {
           
             DataContractSerializer serializer = new DataContractSerializer(typeof(T));
-            using (XmlReader xr = XmlReader.Create(new FileStream(paths, FileMode.Open,FileAccess.Read)))
+            using (Stream st = new FileStream(paths, FileMode.Open, FileAccess.Read))
             {
-                T tmp = serializer.ReadObject(xr) as T;
-                xr.Close();
-                return tmp;
+                using (XmlReader xr = XmlReader.Create(st))
+                {
+                    T tmp = serializer.ReadObject(xr) as T;
+                    xr.Close();
+                    st.Close();
+                    return tmp;
+                }
             }
         }
     }

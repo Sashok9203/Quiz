@@ -99,17 +99,13 @@ namespace KnowledgeQuiz
             Y = Console.CursorTop;
             do
             {
-                do
-                {
-                    string cl = new(' ', str?.Length ?? 0);
-                    Console.SetCursorPosition(X, Y);
-                    Console.Write(cl);
-                    Console.SetCursorPosition(X, Y);
-                    str = Input.GetWord(null, X, Y, Console.ForegroundColor);
-                }
-                while (!int.TryParse(str, out value));
-               
-            } while (value < min || value > max);
+                string cl = new(' ', str?.Length ?? 0);
+                Console.SetCursorPosition(X, Y);
+                Console.Write(cl);
+                Console.SetCursorPosition(X, Y);
+                str = Input.GetWord(null, X, Y, Console.ForegroundColor);
+            }
+            while (!int.TryParse(str, out value) || value < min || value > max);
             return value;
         }
 

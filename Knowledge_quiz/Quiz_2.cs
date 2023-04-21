@@ -38,13 +38,13 @@ namespace KnowledgeQuiz
 
         private void Registration()
         {
-            int x = 14, y = 1;
+            int x = 14, y = 2;
 
             string? name,surname, login = null, password;
 
             Console.Clear();
 
-            Output.WriteLine("-= Реєстрація нового користувача =-", x - 4, y++,ConsoleColor.Magenta);
+            Output.WriteLine("-= Реєстрація нового користувача =-", x - 4, y - 2,ConsoleColor.Magenta);
 
             name =    Input.GetWord("Введіть ваше ім'я       : ", x, y++, ConsoleColor.Green);
 

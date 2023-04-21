@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -13,22 +14,12 @@ namespace KnowledgeQuiz
     [Serializable]
     public class User :ISerializable
     {
-        private Dictionary<string,UserQuizInfo> quizzesInfo;
+        private Dictionary<string,UserQuizInfo>? quizzesInfo;
 
         private DateTime date;
 
-        private string name;
-
-        public string Name
-        {
-            get => name;
-            set
-            {
-                if (string.IsNullOrEmpty(value)) throw new ApplicationException(" Не вірне ім'я користувача");
-                name = value;
-            }
-        }
-
+        public string? Name { get; }
+        
         public DateTime Date 
         {
             get => date;
@@ -39,22 +30,23 @@ namespace KnowledgeQuiz
             }
         }
 
-        public LPass LoginPass { get; }
+        public LPass? LoginPass { get; }
 
-        public IEnumerable<KeyValuePair<string, UserQuizInfo>> QuizzesInfoFull => quizzesInfo;
+        public IEnumerable<KeyValuePair<string, UserQuizInfo>>? QuizzesInfoFull => quizzesInfo;
 
-        public IEnumerable<string> QuizzesName => quizzesInfo.Keys;
+        public IEnumerable<string>? QuizzesName => quizzesInfo?.Keys;
 
-        public IEnumerable<UserQuizInfo> QuizzesInfo => quizzesInfo.Values;
+        public IEnumerable<UserQuizInfo>? QuizzesInfo => quizzesInfo?.Values;
 
         public void AddQuizInfo(string qName, UserQuizInfo quizInfo)
         {
-            if (quizzesInfo.ContainsKey(qName)) quizzesInfo[qName] = quizInfo;
-            else quizzesInfo.Add(qName, quizInfo);
+            if (quizzesInfo?.ContainsKey(qName) ?? false) quizzesInfo[qName] = quizInfo;
+            else quizzesInfo?.Add(qName, quizInfo);
         }
 
         public User(LPass lPass,string? name, DateTime date)
         {
+            if (string.IsNullOrEmpty(name)) throw new ApplicationException(" Не вірне ім'я користувача");
             LoginPass = lPass;
             Name = name;
             Date = date;
@@ -63,7 +55,7 @@ namespace KnowledgeQuiz
 
         public User(SerializationInfo info, StreamingContext context)
         {
-            LoginPass = info.GetValue("LogPass",typeof(LPass)) as LPass;
+            LoginPass = info.GetValue("LogPass", typeof(LPass)) as LPass;
             quizzesInfo = info.GetValue("QuizzesInfo", typeof(Dictionary<string, UserQuizInfo>)) as Dictionary<string, UserQuizInfo> ;
             Name = info.GetString("name");
             Date = info.GetDateTime("date");
@@ -75,6 +67,11 @@ namespace KnowledgeQuiz
             info .AddValue("name", Name);   
             info.AddValue ("date", Date);
             info.AddValue("QuizzesInfo", quizzesInfo);
+        }
+
+        public override string ToString()
+        {
+            return "\"" + LoginPass?.Login + "\"" + " " + Name + date.ToShortDateString();
         }
     }
 }

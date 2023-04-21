@@ -12,37 +12,28 @@ namespace KnowledgeQuiz
     [Serializable]
     public class Users : ISerializable
     {
-        private Dictionary<string, User> users;
+        private readonly Dictionary<string, User>? users;
 
         public void AddUser(User? user)
         {
-            if (user == null || users.ContainsKey(user.LoginPass.Login)) throw new ApplicationException(" Не можливо дотати користувача");
-            users.Add(user.LoginPass.Login, user);
+            if (user == null || ( users?.ContainsKey(user?.LoginPass?.Login ?? "") ?? false)) throw new ApplicationException(" Не можливо дотати користувача");
+            if (user != null) users?.Add(user.LoginPass?.Login ?? "", user);
         }
 
-        public void DellUser(string? userName)
+        public bool DellUser(string? userName) => users?.Remove(userName ?? "") ?? false;
+       
+        public User? GetUser(string? login)
         {
-            if (userName == null || users.ContainsKey(userName)) throw new ApplicationException($" Не існує користувача з каким логіном {userName ?? "null"}");
-            users.Remove(userName);
+            User? user = null;
+            users?.TryGetValue(login ?? "",out user);
+            return user ;
         }
 
-        public void UpdateUser(User? user)
-        {
-            DellUser(user?.LoginPass.Login);
-            AddUser(user);
-        }
+        public IEnumerable<KeyValuePair<string, User>>? AllUsers => users;
 
-        public User GetUser(string login)
-        {
-            users.TryGetValue(login,out User? user);
-            return user;
-        }
+        public IEnumerable<string>? Logins => users?.Keys;
 
-        public IEnumerable<KeyValuePair<string, User>> AllUsers => users;
-
-        public IEnumerable<string> Logins => users.Keys;
-
-        public IEnumerable<User> UsersInfo => users.Values;
+        public IEnumerable<User>? UsersInfo => users?.Values;
 
         public Users(){ users = new (); }
 

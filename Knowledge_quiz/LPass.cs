@@ -28,13 +28,13 @@ namespace KnowledgeQuiz
 
         public bool ChangeLogin(string? login, string? password)
         {
-            if (Utility.HashCompare(password ?? "", passHash ?? "")) Login = login;
+            if (ChackPassword(password)) Login = login;
             return login == Login;
         }
 
         public bool ChangePassword(string? newPassword, string? oldPassword)
         {
-            if (Utility.HashCompare(oldPassword ?? "", passHash ?? ""))
+            if (ChackPassword(oldPassword))
             {
                 passHash = Utility.GetHash(newPassword);
                 return true;

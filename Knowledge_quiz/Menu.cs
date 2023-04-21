@@ -80,7 +80,7 @@ namespace KnowledgeQuiz
                     show();
                 }
             }
-            while (ck != ConsoleKey.Escape);
+            while (ck != ConsoleKey.Escape || mItems.Count == 0);
         }
 
         public int AddMenuItem((string, MenuEventHandler) item,int index = -1)

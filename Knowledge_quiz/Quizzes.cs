@@ -25,10 +25,7 @@ namespace KnowledgeQuiz
             quizzes = info.GetValue("Quiz", typeof(Dictionary<string, List<Question>>)) as Dictionary<string, List<Question>>;
         }
 
-        public Quizzes()
-        {
-            quizzes = new();
-        }
+        public Quizzes() { quizzes = new();}
 
         public IEnumerable<KeyValuePair<string, List<Question>>>? Quezzes => quizzes;
 

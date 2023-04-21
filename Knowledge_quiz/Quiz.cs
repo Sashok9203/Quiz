@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 namespace KnowledgeQuiz
 {
-    internal class Quiz : IDisposable
+    internal partial class Quiz : IDisposable
     {
         private const string setingsPath = "setings.xml";
 
@@ -15,10 +15,12 @@ namespace KnowledgeQuiz
         private Users users;
 
         private Setting setting;
+
         private bool disposedValue;
 
         public Quiz()
         {
+            disposedValue = false;
             try   { setting = Serializer.Deserialize<Setting>(setingsPath); }
             catch { setting = new Setting(); }
             try   { quizzes = Serializer.Deserialize<Quizzes>(setting.QuizzesPath); }
@@ -26,11 +28,12 @@ namespace KnowledgeQuiz
             try   { users = Serializer.Deserialize<Users>(setting.UserPath); }
             catch { users = new Users(); }
         }
+
         public void Start()
         {
            
             Menu startMenu = new Menu("   -= Вікторина знань =-",10,1,ConsoleColor.Green,ConsoleColor.DarkGray,ConsoleColor.Gray,
-                ("          Увійти", delegate () {  } ),
+                ("          Увійти", delegate () { } ),
                 ("        Реєстрація", delegate () { }),
                 ("     Адмініструввання", delegate () { }));
             startMenu.Start();
@@ -52,13 +55,6 @@ namespace KnowledgeQuiz
                 disposedValue = true;
             }
         }
-
-        // // TODO: переопределить метод завершения, только если "Dispose(bool disposing)" содержит код для освобождения неуправляемых ресурсов
-        // ~Quiz()
-        // {
-        //     // Не изменяйте этот код. Разместите код очистки в методе "Dispose(bool disposing)".
-        //     Dispose(disposing: false);
-        // }
 
         public void Dispose()
         {

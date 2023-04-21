@@ -11,27 +11,14 @@ namespace KnowledgeQuiz
         static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
+            Console.CursorVisible = false;
             using (Quiz quiz = new())
             {
                 quiz.Start();
             }
 
 
-            //Process proc = new()
-            //{
-            //    StartInfo = new()
-            //    {
-            //        CreateNoWindow = false,
-            //        UseShellExecute = false,
-            //        FileName = "EditUtility.exe",
-            //        WindowStyle = ProcessWindowStyle.Normal,
-            //        Arguments = ""
-                    
-            //    }
-            //};
-            //proc.Start();
-            //proc.WaitForExit();
-            //Console.WriteLine("Main");
+           
         }
     }
 

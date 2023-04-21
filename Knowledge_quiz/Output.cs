@@ -9,17 +9,16 @@ namespace KnowledgeQuiz
     
     internal static class Output
     {
-        public static ValueTuple<int,int> Write(string text, int x, int y)
+        public static ValueTuple<int,int> Write(string? text, int x, int y)
         {
             Console.SetCursorPosition(x, y);
             Console.Write(text);
             return (Console.CursorLeft, Console.CursorTop);
         }
 
-        public static ValueTuple<int, int> Write(string text, int x , int y, ConsoleColor fColor = default, ConsoleColor bColor = default)
+        public static ValueTuple<int, int> Write(string? text, int x , int y, ConsoleColor fColor = default, ConsoleColor bColor = default)
         {
             ConsoleColor bdef = default, fdef = default;
-           
             if (fColor != 0)
             {
                 fdef = Console.ForegroundColor;
@@ -37,7 +36,7 @@ namespace KnowledgeQuiz
             return (Console.CursorLeft, Console.CursorTop);
         }
        
-        public static ValueTuple<int, int> Write(string text, ConsoleColor fColor)
+        public static ValueTuple<int, int> Write(string? text, ConsoleColor fColor)
         {
             ConsoleColor fdef = Console.ForegroundColor;
             Console.ForegroundColor = fColor;
@@ -46,14 +45,14 @@ namespace KnowledgeQuiz
             return (Console.CursorLeft, Console.CursorTop);
         }
 
-        public static ValueTuple<int, int> WriteLine(string text, int x, int y, ConsoleColor fColor = default, ConsoleColor bColor = default)
+        public static ValueTuple<int, int> WriteLine(string? text, int x, int y, ConsoleColor fColor = default, ConsoleColor bColor = default)
         {
-            return Write(text + '\n', x, y, fColor, bColor);
+            return Write(text ?? "" + '\n', x, y, fColor, bColor);
         }
 
-        public static ValueTuple<int, int> WriteLine(string text, ConsoleColor fColor = default)
+        public static ValueTuple<int, int> WriteLine(string? text, ConsoleColor fColor = default)
         {
-            return Write(text + '\n', fColor);
+            return Write(text ?? "" + '\n', fColor);
 
         }
 

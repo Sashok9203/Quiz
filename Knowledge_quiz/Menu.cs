@@ -76,7 +76,11 @@ namespace KnowledgeQuiz
                 {
                     ck = Console.ReadKey(true).Key;
                     if (ck == ConsoleKey.UpArrow || ck == ConsoleKey.DownArrow) selPos -= 39 - (int)ck;
-                    else if (ck == ConsoleKey.Enter) mItems[selPos].Item2.Invoke();
+                    else if (ck == ConsoleKey.Enter)
+                    {
+                        mItems[selPos].Item2.Invoke();
+                        Console.Clear();
+                    }
                     show();
                 }
             }

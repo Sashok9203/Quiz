@@ -8,10 +8,14 @@ using System.Threading.Tasks;
 namespace KnowledgeQuiz
 {
     [KnownType(typeof(UserQuizInfo))]
+    [KnownType(typeof(Dictionary<string, UserQuizInfo>))]
+    [KnownType(typeof(LPass))]
     [Serializable]
     public class User :ISerializable
     {
         private Dictionary<string,UserQuizInfo> quizzesInfo;
+
+        private DateTime date;
 
         private string name;
 
@@ -27,8 +31,12 @@ namespace KnowledgeQuiz
 
         public DateTime Date 
         {
-            get;
-            set;
+            get => date;
+            set
+            {
+                if (value > DateTime.Now) throw new ApplicationException($" Невірна дата народження {value}...");
+                date = value;
+            }
         }
 
         public LPass LoginPass { get; }

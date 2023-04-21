@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace KnowledgeQuiz
 {
@@ -12,17 +13,21 @@ namespace KnowledgeQuiz
         public static void Serialize<T>(string paths, T obj)
         {
             DataContractSerializer serializer = new DataContractSerializer(typeof(T));
-            using (Stream fs = new FileStream(paths, FileMode.Create))
+            using (var fs = XmlWriter.Create( paths, new XmlWriterSettings { Encoding = Encoding.UTF32 }))
             {
                 serializer.WriteObject(fs, obj);    
+                fs.Close();
             }
         }
         public static T Deserialize<T>(string paths) where T: class
         {
+          
             DataContractSerializer serializer = new DataContractSerializer(typeof(T));
-            using (Stream fs = new FileStream(paths, FileMode.Open))
+            using (XmlReader xr = XmlReader.Create(new FileStream(paths, FileMode.Open,FileAccess.Read)))
             {
-               return serializer.ReadObject(fs) as T ;
+                T tmp = serializer.ReadObject(xr) as T;
+                xr.Close();
+                return tmp;
             }
         }
     }

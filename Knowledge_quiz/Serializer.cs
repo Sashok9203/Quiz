@@ -13,7 +13,7 @@ namespace KnowledgeQuiz
         public static void Serialize<T>(string paths, T obj)
         {
             DataContractSerializer serializer = new DataContractSerializer(typeof(T));
-            using (var fs = XmlWriter.Create( paths, new XmlWriterSettings { Encoding = Encoding.UTF32 }))
+            using (var fs = XmlWriter.Create( paths, new XmlWriterSettings { Encoding = Encoding.UTF8 }))
             {
                 serializer.WriteObject(fs, obj);    
                 fs.Close();
@@ -21,17 +21,14 @@ namespace KnowledgeQuiz
         }
         public static T Deserialize<T>(string paths) where T: class
         {
-          
             DataContractSerializer serializer = new DataContractSerializer(typeof(T));
             using (Stream st = new FileStream(paths, FileMode.Open, FileAccess.Read))
             {
-                using (XmlReader xr = XmlReader.Create(st))
-                {
-                    T tmp = serializer.ReadObject(xr) as T;
-                    xr.Close();
-                    st.Close();
-                    return tmp;
-                }
+                XmlReader xr = XmlReader.Create(st);
+                T tmp = serializer.ReadObject(xr) as T;
+                xr.Close();
+                st.Close();
+                return tmp;
             }
         }
     }

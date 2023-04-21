@@ -32,6 +32,12 @@ namespace KnowledgeQuiz
             AddUser(user);
         }
 
+        public User GetUser(string login)
+        {
+            users.TryGetValue(login,out User? user);
+            return user;
+        }
+
         public IEnumerable<KeyValuePair<string, User>> AllUsers => users;
 
         public IEnumerable<string> Logins => users.Keys;

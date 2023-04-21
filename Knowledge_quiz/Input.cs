@@ -8,7 +8,17 @@ namespace KnowledgeQuiz
 {
     internal static class Input
     {
-       
+       /// <summary>
+       /// Meтод надає інтерфейс користувачу для підтвердження або відміни дії
+       /// </summary>
+       /// <param name="title"></param>
+       /// <param name="Ok"></param>
+       /// <param name="Cancel"></param>
+       /// <param name="X"></param>
+       /// <param name="Y"></param>
+       /// <param name="desColor"></param>
+       /// <param name="defColor"></param>
+       /// <returns></returns>
         public static bool Confirm(string title ,string Ok,string Cancel,uint X,uint Y, ConsoleColor desColor, ConsoleColor defColor)
         {
             bool comfirmed = false;
@@ -34,7 +44,14 @@ namespace KnowledgeQuiz
             while (ck != ConsoleKey.Enter);
             return comfirmed;
         }
-
+        /// <summary>
+        ///Метод зчитує строку до тих пір поки не буде введена строка яка не складається з пробілів або табуляцій
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="X"></param>
+        /// <param name="Y"></param>
+        /// <param name="titleColor"></param>
+        /// <returns></returns>
         public static string GetString(string? title, int X, int Y, ConsoleColor titleColor)
         {
             string tmp;
@@ -48,7 +65,14 @@ namespace KnowledgeQuiz
             Console.CursorVisible = cVisible;
             return tmp ;
         }
-
+        /// <summary>
+        /// Метод зчитує строку ігноруючи пробіли
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="X"></param>
+        /// <param name="Y"></param>
+        /// <param name="titleColor"></param>
+        /// <returns></returns>
         public static string GetWord(string? title, int X, int Y, ConsoleColor titleColor)
         {
             string tmp;
@@ -57,7 +81,15 @@ namespace KnowledgeQuiz
             int ind = tmp.IndexOf(' ');
             return ind < 0 ? tmp : tmp.Substring(0, ind);
         }
-
+        /// <summary>
+        /// Метод зчитує строку закриваючи ввід зірочками.Пробіли ігноруються
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="X"></param>
+        /// <param name="Y"></param>
+        /// <param name="titleColor"></param>
+        /// <param name="passColor"></param>
+        /// <returns></returns>
         public static string GetPassword(string title,int X, int Y, ConsoleColor titleColor,ConsoleColor passColor)
         {
             ConsoleKeyInfo ch = default;
@@ -90,7 +122,12 @@ namespace KnowledgeQuiz
             Console.CursorVisible = cVisible;
             return sb.ToString();
         }
-
+        /// <summary>
+        /// Метод зчитує значення int в межах від min до max
+        /// </summary>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <returns></returns>
         public static int GetInt(int min, int max)
         {
             int value ,X,Y;
@@ -108,7 +145,24 @@ namespace KnowledgeQuiz
             while (!int.TryParse(str, out value) || value < min || value > max);
             return value;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="xTitle"></param>
+        /// <param name="yTitle"></param>
+        /// <param name="X"></param>
+        /// <param name="Y"></param>
+        /// <param name="yearTitle"></param>
+        /// <param name="monthTitle"></param>
+        /// <param name="dayTitle"></param>
+        /// <param name="titleColor"></param>
+        /// <param name="titlesColor"></param>
+        /// <param name="hourTitle"></param>
+        /// <param name="minuteTitle"></param>
+        /// <param name="secTitle"></param>
+        /// <param name="time"></param>
+        /// <returns></returns>
         public static DateTime GetDateTime(string? title, int xTitle, int yTitle, int X, int Y, string? yearTitle,string? monthTitle,string? dayTitle, ConsoleColor titleColor, ConsoleColor titlesColor,
             string? hourTitle = null, string? minuteTitle = null, string? secTitle = null ,bool time = false)
         {

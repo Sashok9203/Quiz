@@ -35,6 +35,6 @@ namespace KnowledgeQuiz
             return sBuilder.ToString();
         }
 
-        public static bool HashCompare(string? str, string? hash) => str?.CompareTo(GetHash(hash ?? "")) == 0;
+        public static bool HashCompare(string? str, string? hash) => hash?.CompareTo(GetHash(str ?? "")) == 0;
     }
 }

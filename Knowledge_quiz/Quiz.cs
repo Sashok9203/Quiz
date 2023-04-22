@@ -8,6 +8,10 @@ namespace KnowledgeQuiz
 {
     internal partial class Quiz : IDisposable
     {
+        private const int maxQustionCountInQuiz = 20;
+
+        private const string mixedQuizName = "Змішана";
+
         private const string setingsPath = "setings.xml";
 
         private Quizzes quizzes;

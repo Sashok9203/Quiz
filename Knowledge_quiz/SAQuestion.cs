@@ -11,9 +11,8 @@ namespace KnowledgeQuiz
 {
    
     [Serializable]
-    public class SAQuestion : Question
+    public class SAQuestion : Question, ISerializable
     {
-        [DataMember]
         private string? answer;
 
         protected SAQuestion(SerializationInfo info, StreamingContext context):base(info,context)

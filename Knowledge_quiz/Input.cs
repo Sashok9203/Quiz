@@ -1,32 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace KnowledgeQuiz
 {
     internal static class Input
     {
-       /// <summary>
-       /// Meтод надає інтерфейс користувачу для підтвердження або відміни дії
-       /// </summary>
-       /// <param name="title"></param>
-       /// <param name="Ok"></param>
-       /// <param name="Cancel"></param>
-       /// <param name="X"></param>
-       /// <param name="Y"></param>
-       /// <param name="desColor"></param>
-       /// <param name="defColor"></param>
-       /// <returns></returns>
-        public static bool Confirm(string title ,string Ok,string Cancel,uint X,uint Y, ConsoleColor desColor, ConsoleColor defColor)
+        /// <summary>
+        /// Meтод надає інтерфейс користувачу для підтвердження або відміни дії
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="Ok"></param>
+        /// <param name="Cancel"></param>
+        /// <param name="X"></param>
+        /// <param name="Y"></param>
+        /// <param name="desColor"></param>
+        /// <param name="defColor"></param>
+        /// <returns></returns>
+        public static bool Confirm(string title, string Ok, string Cancel, uint X, uint Y, ConsoleColor desColor, ConsoleColor defColor)
         {
             bool comfirmed = false;
             ConsoleKey ck = default;
             Output.WriteLine(title, (int)X, (int)Y, defColor);
-            Output.Write(Ok , (int)X, (int)Y + 1, desColor);
-            Output.Write(" / ",defColor);
-            Output.WriteLine(Cancel,defColor);
+            Output.Write(Ok, (int)X, (int)Y + 1, desColor);
+            Output.Write(" / ", defColor);
+            Output.WriteLine(Cancel, defColor);
             do
             {
                 if (Console.KeyAvailable)
@@ -35,7 +31,7 @@ namespace KnowledgeQuiz
                     if (ck == ConsoleKey.LeftArrow && !comfirmed || ck == ConsoleKey.RightArrow && comfirmed)
                     {
                         comfirmed = !comfirmed;
-                        Output.Write(Ok , (int)X, (int)Y + 1, comfirmed ? defColor : desColor);
+                        Output.Write(Ok, (int)X, (int)Y + 1, comfirmed ? defColor : desColor);
                         Output.Write(" / ", defColor);
                         Output.WriteLine(Cancel, comfirmed ? desColor : defColor);
                     }
@@ -63,7 +59,7 @@ namespace KnowledgeQuiz
                 tmp = Console.ReadLine();
             } while (string.IsNullOrWhiteSpace(tmp));
             Console.CursorVisible = cVisible;
-            return tmp ;
+            return tmp;
         }
         /// <summary>
         /// Метод зчитує строку ігноруючи пробіли
@@ -90,7 +86,7 @@ namespace KnowledgeQuiz
         /// <param name="titleColor"></param>
         /// <param name="passColor"></param>
         /// <returns></returns>
-        public static string GetPassword(string title,int X, int Y, ConsoleColor titleColor,ConsoleColor passColor)
+        public static string GetPassword(string title, int X, int Y, ConsoleColor titleColor, ConsoleColor passColor)
         {
             ConsoleKeyInfo ch = default;
             bool cVisible = Console.CursorVisible;
@@ -112,13 +108,13 @@ namespace KnowledgeQuiz
                             Console.SetCursorPosition(Console.CursorLeft - 1, Y);
                         }
                     }
-                    else if(!Char.IsWhiteSpace(ch.KeyChar))
+                    else if (!Char.IsWhiteSpace(ch.KeyChar))
                     {
                         sb.Append(ch.KeyChar);
                         Output.Write("*", passColor);
                     }
                 }
-            } while (ch.Key != ConsoleKey.Enter || sb.Length == 0 );
+            } while (ch.Key != ConsoleKey.Enter || sb.Length == 0);
             Console.CursorVisible = cVisible;
             return sb.ToString();
         }
@@ -130,9 +126,9 @@ namespace KnowledgeQuiz
         /// <returns></returns>
         public static int GetInt(int min, int max)
         {
-            int value ,X,Y;
+            int value, X, Y;
             string? str = null;
-            X = Console.CursorLeft; 
+            X = Console.CursorLeft;
             Y = Console.CursorTop;
             do
             {
@@ -163,15 +159,15 @@ namespace KnowledgeQuiz
         /// <param name="secTitle"></param>
         /// <param name="time"></param>
         /// <returns></returns>
-        public static DateTime GetDateTime(string? title, int xTitle, int yTitle, int X, int Y, string? yearTitle,string? monthTitle,string? dayTitle, ConsoleColor titleColor, ConsoleColor titlesColor,
-            string? hourTitle = null, string? minuteTitle = null, string? secTitle = null ,bool time = false)
+        public static DateTime GetDateTime(string? title, int xTitle, int yTitle, int X, int Y, string? yearTitle, string? monthTitle, string? dayTitle, ConsoleColor titleColor, ConsoleColor titlesColor,
+            string? hourTitle = null, string? minuteTitle = null, string? secTitle = null, bool time = false)
         {
             DateTime date = default;
             int year, month, day,
                 hour = 0,
                 min = 0,
                 sec = 0,
-                y = Y; 
+                y = Y;
             Output.Write(title, xTitle, yTitle, titleColor);
             do
             {
@@ -194,15 +190,15 @@ namespace KnowledgeQuiz
                 {
                     try { date = new DateTime(year, month, day, hour, min, sec); }
                     catch { throw new ApplicationException(" Така дата не існує ! ! !"); }
-                    if(date > DateTime.Now) throw new ApplicationException(" Не вірна дата народження ! ! !");
+                    if (date > DateTime.Now) throw new ApplicationException(" Не вірна дата народження ! ! !");
 
                 }
-                catch(ApplicationException ax)
+                catch (ApplicationException ax)
                 {
                     Output.Write(ax.Message, X, y, ConsoleColor.Red);
                     Console.ReadKey();
-                    int maxLen = new int[]  { yearTitle?.Length ?? 0, monthTitle?.Length ?? 0, dayTitle?.Length ?? 0, hourTitle?.Length ?? 0, minuteTitle?.Length ?? 0, secTitle?.Length ?? 0 }.Max() + 4;
-                    Output.ClearRegion(X, Y,X+maxLen,y);
+                    int maxLen = new int[] { yearTitle?.Length ?? 0, monthTitle?.Length ?? 0, dayTitle?.Length ?? 0, hourTitle?.Length ?? 0, minuteTitle?.Length ?? 0, secTitle?.Length ?? 0 }.Max() + 4;
+                    Output.ClearRegion(X, Y, X + maxLen, y);
                     y = Y;
                 }
             } while (date == default || date > DateTime.Now);

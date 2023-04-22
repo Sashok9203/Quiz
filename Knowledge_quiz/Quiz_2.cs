@@ -10,9 +10,41 @@ namespace KnowledgeQuiz
 {
     internal partial class Quiz
     {
-        private const int maxQustionCountInQuiz = 20;
-       
-        
+
+        private void PrintUserQuizInfo(string quizInfoName, UserQuizInfo info, int X, int Y, ConsoleColor nameColor, ConsoleColor infoColor)
+        {
+
+        }
+        private bool answerQuestion(Question? question, string? quizName)
+        {
+            return true;
+        }
+
+        private void QuizProcess(User? user, string? quizName)
+        {
+            List<Question>? questions;
+            int quizPoint = 0;
+            Console.Clear();
+            if (quizName != mixedQuizName) questions = Utility.Shufflet(quizzes?.GetQuizeQuestions(quizName))?.ToList<Question>();
+            else 
+            {
+                questions = new List<Question>();
+                foreach (var item in quizzes?.QuezzesQuestions)
+                    foreach (var i in item)
+                        questions.Add(i);
+                Utility.Shufflet(questions);
+            }
+            int questionCount = (questions?.Count < maxQustionCountInQuiz) ? questions.Count : maxQustionCountInQuiz;
+            for (int i = 0; i < questionCount; i++)
+                if (answerQuestion(questions?[i], quizName)) quizPoint++;
+            user?.AddQuizInfo(quizName ?? "",new(questionCount, quizPoint));
+
+            Console.ReadKey();
+        }
+
+
+
+
         // startMenu methods
         /// <summary>
         ///   Метод запускає утіліту редагування Вікторини
@@ -116,16 +148,26 @@ namespace KnowledgeQuiz
         { 
         }
 
+        /// <summary>
+        /// Метод формує меню вибору вікторини та запускає процес тестування
+        /// </summary>
+        /// <param name="user"></param>
         private void QuizStart(User? user)
         {
+            int sel;
+            string quizName  = mixedQuizName;
             Console.Clear();
+            var qNames = new List<string>();
+            for (int i = 0; i < quizzes.QuizesCount; i++)
+                 qNames.Add("\t\t" + quizzes.QuezzesNames.ElementAt(i));
+            qNames.Add("\t\t" + quizName);
+
             Menu quizChooseMenu = new($"   -= Оберіть вікторину \"{user?.LoginPass?.Login}\" =-", 10, 2, ConsoleColor.Green, 
-            ConsoleColor.DarkGray, ConsoleColor.Gray,quizzes.QuezzesNames);
-            string quizName = quizzes?.QuezzesNames?.ElementAt(quizChooseMenu.Start()) ?? "";
-            Console.Clear();
-            Console.WriteLine(quizName);
-            Console.ReadLine();
+            ConsoleColor.DarkGray, ConsoleColor.Gray, qNames);
+            sel = quizChooseMenu.Start();
+            QuizProcess(user, qNames[sel].Trim());
         } 
+
         /// <summary>
         /// Meтод реалізує пункт меню "Налаштування"
         /// </summary>

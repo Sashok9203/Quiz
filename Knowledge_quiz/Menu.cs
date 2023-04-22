@@ -37,14 +37,16 @@ namespace KnowledgeQuiz
 
         private readonly ConsoleColor nColor, iColor, sIColor;
 
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
-        private  List<(string iName, MenuAction? iProc)>? mItems;
+        private  List<(string? iName, MenuAction? iProc)> mItems;
 
         public int ItemCount { get => mItems?.Count ?? 0; }
 
-        private Menu(string? title, int X, int Y, ConsoleColor titleColor, ConsoleColor iColor, ConsoleColor sIColor)
+        public Menu(string? title,int X,int Y, ConsoleColor titleColor,ConsoleColor iColor, ConsoleColor sIColor, params ValueTuple<string, MenuAction>[] items)
         {
+            if (items != null ) mItems = new List<(string?, MenuAction?)>(items);
+            else mItems = new List<(string?, MenuAction?)>();
             Title = title ?? "";
             xPos = X;
             yPos = Y;
@@ -54,14 +56,11 @@ namespace KnowledgeQuiz
             _selpos = 0;
         }
 
-        public Menu(string title,int X,int Y, ConsoleColor titleColor,ConsoleColor iColor, ConsoleColor sIColor, params ValueTuple<string, MenuAction> [] items)
-            :this( title,  X,  Y,  titleColor,  iColor,  sIColor) { mItems = new List<(string, MenuAction?)>(items);}
-
-        public Menu(string title, int X, int Y, ConsoleColor titleColor, ConsoleColor iColor, ConsoleColor sIColor, IEnumerable<string> itemNames, IEnumerable<MenuAction>? itemHandles = null) : this(title, X, Y, titleColor, iColor, sIColor)
+        public Menu(string? title, int X, int Y, ConsoleColor titleColor, ConsoleColor iColor, ConsoleColor sIColor, IEnumerable<string>? itemNames, IEnumerable<MenuAction>? itemHandles = null) 
+                   : this(title, X, Y, titleColor, iColor, sIColor)
         {
-            if (itemHandles != null && itemHandles.Count() != itemNames.Count() ) throw new ApplicationException(" Кількість пунктів меню не співпадає з кількістю функцій...");
-            mItems = new List<(string, MenuAction)>();
-            for (int i = 0; i < itemNames.Count(); i++)
+            if (itemHandles != null && itemHandles.Count() != itemNames?.Count() ) throw new ApplicationException(" Кількість пунктів меню не співпадає з кількістю функцій...");
+            for (int i = 0; i < itemNames?.Count(); i++)
                 mItems.Add((itemNames.ElementAt(i), itemHandles?.ElementAt(i)));
         }
 
@@ -77,17 +76,17 @@ namespace KnowledgeQuiz
                     if (ck == ConsoleKey.UpArrow || ck == ConsoleKey.DownArrow) selPos -= 39 - (int)ck;
                     else if (ck == ConsoleKey.Enter)
                     {
-                       if(mItems?[selPos].iProc?.Invoke() ?? true) break;
+                       if(mItems[selPos].iProc?.Invoke() ?? true) break;
                         Console.Clear();
                     }
                     show();
                 }
             }
-            while (ck != ConsoleKey.Escape || mItems?.Count == 0);
+            while (ck != ConsoleKey.Escape || mItems.Count == 0);
             return selPos;
         }
 
-        public int AddMenuItem((string, MenuAction) item,int index = -1)
+        public int AddMenuItem((string, MenuAction?) item,int index = -1)
         {
             if (index < 0) mItems?.Add(item);
             else if(index < mItems?.Count) mItems.Insert(index,item);

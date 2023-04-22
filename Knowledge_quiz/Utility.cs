@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -16,13 +17,22 @@ namespace KnowledgeQuiz
             (val2, val1) = (val1, val2);
         }
 
-        public static IEnumerable<T> Shufflet<T>(IEnumerable<T> array)
+        public static IEnumerable<T>? Shufflet<T>(IEnumerable<T>? array)
         {
-            var arr = array.ToArray();
+            var arr = array?.ToArray();
             Random rnd = new Random();
-            for (int i = 0; i < arr.Length; i++)
+            for (int i = 0; i < arr?.Length; i++)
                 Utility.Swap(ref arr[i], ref arr[rnd.Next(0, arr.Length)]);
             return arr;
+        }
+        public static void Shufflet<T>(List<T>? array)
+        {
+             Random rnd = new Random();
+            for (int i = 0; i < array?.Count; i++)
+            {
+                int next = rnd.Next(0, array.Count);
+                (array[i], array[next]) = (array[next], array[i]);
+            }
         }
 
         public static string GetHash(string? str)

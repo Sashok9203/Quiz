@@ -30,8 +30,8 @@ namespace KnowledgeQuiz
             Output.WriteLine(Title, (int)xPos, (int)yPos, nColor);
             for (int i = 0; i < mItems?.Count; i++)
             {
-                if (i == selPos) Output.WriteLine(mItems[i].Item1, (int)xPos, (int)yPos + i + 2, sIColor);
-                else Output.WriteLine(mItems[i].Item1, (int)xPos, (int)yPos + i + 2, iColor);
+                if (i == selPos) Output.WriteLine(mItems[i].Item1, (int)xPos, (int)yPos + i + 1, sIColor);
+                else Output.WriteLine(mItems[i].Item1, (int)xPos, (int)yPos + i + 1, iColor);
             }
         }
 
@@ -76,14 +76,14 @@ namespace KnowledgeQuiz
                     if (ck == ConsoleKey.UpArrow || ck == ConsoleKey.DownArrow) selPos -= 39 - (int)ck;
                     else if (ck == ConsoleKey.Enter)
                     {
-                       if(mItems[selPos].iProc?.Invoke() ?? true) break;
+                       if(mItems[selPos].iProc?.Invoke() ?? true) return selPos;
                         Console.Clear();
                     }
                     show();
                 }
             }
             while (ck != ConsoleKey.Escape || mItems.Count == 0);
-            return selPos;
+            return -1;
         }
 
         public int AddMenuItem((string, MenuAction?) item,int index = -1)

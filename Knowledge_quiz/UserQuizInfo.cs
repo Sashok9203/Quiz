@@ -30,7 +30,7 @@ namespace KnowledgeQuiz
             get => questionCount;
             set 
             {
-                if(questionCount <= 0) throw new ApplicationException(" Не вірне значення максимальної кількості питань в UserQuizInfo");
+                if(value <= 0) throw new ApplicationException(" Не вірне значення максимальної кількості питань в UserQuizInfo");
                 questionCount = value;
             }
         }

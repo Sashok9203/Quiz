@@ -14,8 +14,8 @@ namespace KnowledgeQuiz
         private const string defAdminLogin  = "admin";
         private const string defAdminPassHash  = "1c224b03cd9bc7b6a86d77f5dace40191766c485cd55dc48caf9ac873335d6f";
 
-        private const string defQuizzesPath = "data.xml";
-        private const string defUserPath    = "users.xml";
+        private const string defQuizzesPath = "data.dat";
+        private const string defUserPath    = "users.dat";
        
 
         private  string? curentQuizzesPath;

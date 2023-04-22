@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
@@ -10,20 +11,109 @@ namespace KnowledgeQuiz
 {
     internal partial class Quiz
     {
-
-        private void PrintUserQuizInfo(string quizInfoName, UserQuizInfo info, int X, int Y, ConsoleColor nameColor, ConsoleColor infoColor)
+        /// <summary>
+        /// Метод виводить клас UserQuizInfo в консоль
+        /// </summary>
+        /// <param name="quizInfoName"></param>
+        /// <param name="info"></param>
+        /// <param name="X"></param>
+        /// <param name="Y"></param>
+        /// <param name="nameColor"></param>
+        /// <param name="infoColor"></param>
+        private void printUserQuizInfo(string quizInfoName, UserQuizInfo info, int X, int Y, ConsoleColor nameColor, ConsoleColor infoColor)
         {
-
+            Output.Write($"-= {quizInfoName} =-",X,Y++,nameColor);
+            Output.Write($"Кількість питань     : ", X , Y++, infoColor);
+            Output.Write($"{info.QuestionCount}", X + 23, Y - 1, ConsoleColor.Gray);
+            Output.Write($"Кількість відповідей : ", X, Y++, infoColor);
+            Output.Write($"{info.RightAnswerCount}", X + 23, Y - 1, info.RightAnswerCount > info.QuestionCount/3*2? ConsoleColor.Green:
+                                                             info.RightAnswerCount > info.QuestionCount / 3 ? ConsoleColor.Yellow:ConsoleColor.Red);
         }
-        private bool answerQuestion(Question? question, string? quizName)
+
+        /// <summary>
+        /// Метод виводить текст в заданій координаті X
+        /// </summary>
+        /// <param name="question"></param>
+        /// <param name="X"></param>
+        /// <param name="Y"></param>
+        /// <param name="Color"></param>
+        private void printQuestion(string question, int X, int Y, ConsoleColor Color)
         {
-            return true;
+            int endIndex,startIndex = 0;
+            do
+            {
+                endIndex = question.IndexOf('\n', startIndex);
+                if(endIndex > 0) Output.Write(question[startIndex..endIndex], X, Y++, Color);
+                else Output.Write(question[startIndex..], X, Y++, Color);
+                startIndex = endIndex + 1;
+            }
+            while (startIndex != 0);
         }
 
+        /// <summary>
+        /// Метод надає користувачу інтерфейс для відповіді на запитання,обрати варіант відповіді і т.д.
+        /// </summary>
+        /// <param name="question"></param>
+        /// <param name="quizName"></param>
+        /// <param name="questionIndex"></param>
+        /// <param name="questinCount"></param>
+        /// <returns></returns>
+        private bool answerQuestion(Question? question, string? quizName , int questionIndex ,int questinCount)
+        {
+            int X = 25, Y = 1 ,maxAnswers = 0,sel;
+            string? title = null;
+            var aVariants = question.AnswerVariants;
+            List<string> answersVariants, answers;
+            switch (question)
+            {
+                case MAQuestion:
+                    title = "Оберіть варіанти відповіді :";
+                    maxAnswers = question.AnswerVariantsCount;
+                    break;
+                case SAQuestion:
+                    title = "Оберіть варіант відповіді :";
+                    maxAnswers = 1;
+                    break;
+            }
+            Console.Clear();
+            Output.Write( $"-= {quizName} =-",X , Y++, ConsoleColor.Red);
+            Output.Write($"Питання {questionIndex} / {questinCount}", X - 1, Y++, ConsoleColor.Gray);
+            printQuestion(question.QuestionText, X - 15, Y, ConsoleColor.Green);
+            answersVariants = new List<string>();
+            for (int i = 0;i < question.AnswerVariantsCount;i++)
+                 answersVariants.Add($"      {(char)(i + 97)}) {aVariants.ElementAt(i)}");
+            Menu menu = new($"   {title}", X - 18, Console.CursorTop + 2, ConsoleColor.Green, ConsoleColor.Green, ConsoleColor.Gray, answersVariants);
+            answers = new List<string>();
+            do
+            {
+               sel =  menu.Start();
+                if (Input.Confirm("Ви впевненні ?", "Так", "Ні", X - 12, Console.CursorTop + 2, ConsoleColor.DarkGray, ConsoleColor.Gray))
+                {
+                    if (sel >= 0 && !answers.Contains(aVariants.ElementAt(sel)))
+                    {
+                        int y = Console.CursorTop + 2;
+                        answers.Add(aVariants.ElementAt(sel));
+                        maxAnswers--;
+                        Output.Write($"Обрані варіанти :", X - 12, y++, ConsoleColor.Green);
+                        foreach (var item in answers)
+                            Output.Write($"{item}", X - 10, y++, ConsoleColor.Red);
+                    }
+                }
+                else if (sel < 0) sel = 0;
+            }
+            while (maxAnswers > 0 && sel >= 0 );
+            return question.AnswerQuestion(answers.ToArray());
+        }
+
+        /// <summary>
+        /// Метод формує масиви запитань та викликає метод відповіді на питання answerQuestion для кожного запитання 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="quizName"></param>
         private void QuizProcess(User? user, string? quizName)
         {
             List<Question>? questions;
-            int quizPoint = 0;
+            int questionCount,quizPoint = 0;
             Console.Clear();
             if (quizName != mixedQuizName) questions = Utility.Shufflet(quizzes?.GetQuizeQuestions(quizName))?.ToList<Question>();
             else 
@@ -34,11 +124,14 @@ namespace KnowledgeQuiz
                         questions.Add(i);
                 Utility.Shufflet(questions);
             }
-            int questionCount = (questions?.Count < maxQustionCountInQuiz) ? questions.Count : maxQustionCountInQuiz;
+            questionCount = (questions?.Count < maxQustionCountInQuiz) ? questions.Count : maxQustionCountInQuiz;
             for (int i = 0; i < questionCount; i++)
-                if (answerQuestion(questions?[i], quizName)) quizPoint++;
-            user?.AddQuizInfo(quizName ?? "",new(questionCount, quizPoint));
-
+                if (answerQuestion(questions?[i], quizName,i + 1, questionCount)) quizPoint++;
+            UserQuizInfo uqi = new(questionCount, quizPoint);
+            user?.AddQuizInfo(quizName ?? "", uqi);
+            Console.Clear();
+            Output.Write($"-= Ваш результат =-", 10, 1);
+            printUserQuizInfo(quizName, uqi,12,Console.CursorTop+1,ConsoleColor.Green,ConsoleColor.Gray);
             Console.ReadKey();
         }
 
@@ -141,7 +234,9 @@ namespace KnowledgeQuiz
         // userMenu methods
         private void Top20(User? user)
         {
-            
+            Console.Clear();
+            printQuestion("dsfgsdfgdsfgsdfgdsfgdsfgdsfgdsfgdsfgdfgdsf1\nsdfgsdfgsdfgdfgs2\nsdfgdsfgsdfgdsf3\n",10,1,ConsoleColor.Red);
+            Console.ReadKey();
         }
 
         private void MyResults(User? user)
@@ -161,11 +256,10 @@ namespace KnowledgeQuiz
             for (int i = 0; i < quizzes.QuizesCount; i++)
                  qNames.Add("\t\t" + quizzes.QuezzesNames.ElementAt(i));
             qNames.Add("\t\t" + quizName);
-
             Menu quizChooseMenu = new($"   -= Оберіть вікторину \"{user?.LoginPass?.Login}\" =-", 10, 2, ConsoleColor.Green, 
             ConsoleColor.DarkGray, ConsoleColor.Gray, qNames);
             sel = quizChooseMenu.Start();
-            QuizProcess(user, qNames[sel].Trim());
+            if(sel >= 0) QuizProcess(user, qNames[sel].Trim());
         } 
 
         /// <summary>

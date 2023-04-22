@@ -25,6 +25,9 @@ namespace KnowledgeQuiz
                 Utility.Swap(ref arr[i], ref arr[rnd.Next(0, arr.Length)]);
             return arr;
         }
+
+        public static T Max<T>(params T[] values) where T : struct => values.Max();
+        
         public static void Shufflet<T>(List<T>? array)
         {
              Random rnd = new Random();

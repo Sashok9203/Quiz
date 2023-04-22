@@ -15,12 +15,12 @@ namespace KnowledgeQuiz
         /// <param name="desColor"></param>
         /// <param name="defColor"></param>
         /// <returns></returns>
-        public static bool Confirm(string title, string Ok, string Cancel, uint X, uint Y, ConsoleColor desColor, ConsoleColor defColor)
+        public static bool Confirm(string title, string Ok, string Cancel, int X, int Y, ConsoleColor desColor, ConsoleColor defColor)
         {
             bool comfirmed = false;
             ConsoleKey ck = default;
-            Output.WriteLine(title, (int)X, (int)Y, defColor);
-            Output.Write(Ok, (int)X, (int)Y + 1, desColor);
+            Output.WriteLine(title, X, Y, defColor);
+            Output.Write(Ok, X, Y + 1, desColor);
             Output.Write(" / ", defColor);
             Output.WriteLine(Cancel, defColor);
             do
@@ -31,15 +31,17 @@ namespace KnowledgeQuiz
                     if (ck == ConsoleKey.LeftArrow && !comfirmed || ck == ConsoleKey.RightArrow && comfirmed)
                     {
                         comfirmed = !comfirmed;
-                        Output.Write(Ok, (int)X, (int)Y + 1, comfirmed ? defColor : desColor);
+                        Output.Write(Ok, X, Y + 1, comfirmed ? defColor : desColor);
                         Output.Write(" / ", defColor);
                         Output.WriteLine(Cancel, comfirmed ? desColor : defColor);
                     }
                 }
             }
             while (ck != ConsoleKey.Enter);
+            Output.ClearRegion(X, Y,Utility.Max(title.Length, Ok.Length, Cancel.Length),2);
             return comfirmed;
         }
+
         /// <summary>
         ///Метод зчитує строку до тих пір поки не буде введена строка яка не складається з пробілів або табуляцій
         /// </summary>
@@ -61,6 +63,7 @@ namespace KnowledgeQuiz
             Console.CursorVisible = cVisible;
             return tmp;
         }
+
         /// <summary>
         /// Метод зчитує строку ігноруючи пробіли
         /// </summary>
@@ -77,6 +80,7 @@ namespace KnowledgeQuiz
             int ind = tmp.IndexOf(' ');
             return ind < 0 ? tmp : tmp.Substring(0, ind);
         }
+
         /// <summary>
         /// Метод зчитує строку закриваючи ввід зірочками.Пробіли ігноруються
         /// </summary>
@@ -118,6 +122,7 @@ namespace KnowledgeQuiz
             Console.CursorVisible = cVisible;
             return sb.ToString();
         }
+
         /// <summary>
         /// Метод зчитує значення int в межах від min до max
         /// </summary>
@@ -141,6 +146,7 @@ namespace KnowledgeQuiz
             while (!int.TryParse(str, out value) || value < min || value > max);
             return value;
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -197,8 +203,7 @@ namespace KnowledgeQuiz
                 {
                     Output.Write(ax.Message, X, y, ConsoleColor.Red);
                     Console.ReadKey();
-                    int maxLen = new int[] { yearTitle?.Length ?? 0, monthTitle?.Length ?? 0, dayTitle?.Length ?? 0, hourTitle?.Length ?? 0, minuteTitle?.Length ?? 0, secTitle?.Length ?? 0 }.Max() + 4;
-                    Output.ClearRegion(X, Y, X + maxLen, y);
+                    Output.ClearRegion(X, Y, X + Utility.Max(yearTitle?.Length ?? 0, monthTitle?.Length ?? 0, dayTitle?.Length ?? 0, hourTitle?.Length ?? 0, minuteTitle?.Length ?? 0, secTitle?.Length ?? 0) + 4, 2);
                     y = Y;
                 }
             } while (date == default || date > DateTime.Now);

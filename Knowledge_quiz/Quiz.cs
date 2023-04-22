@@ -12,7 +12,7 @@ namespace KnowledgeQuiz
 
         private const string mixedQuizName = "Змішана";
 
-        private const string setingsPath = "setings.xml";
+        private const string setingsPath = "setings.dat";
 
         private Quizzes quizzes;
 

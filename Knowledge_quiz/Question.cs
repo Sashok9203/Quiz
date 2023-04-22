@@ -45,6 +45,8 @@ namespace KnowledgeQuiz
             }
         }
 
+        public int AnswerVariantsCount => answerVariants.Count;
+
         public void AddAnswerVariant(string AnswerVariant)
         {
             if (!string.IsNullOrWhiteSpace(AnswerVariant)) answerVariants.Add(AnswerVariant);

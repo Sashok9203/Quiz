@@ -10,6 +10,9 @@ namespace KnowledgeQuiz
 {
     internal partial class Quiz
     {
+        private const int maxQustionCountInQuiz = 20;
+       
+        
         // startMenu methods
         /// <summary>
         ///   Метод запускає утіліту редагування Вікторини
@@ -32,6 +35,7 @@ namespace KnowledgeQuiz
             proc.Start();
             proc.WaitForExit();
         }
+
         /// <summary>
         ///  Метод входу за логіном на паролем
         /// </summary>
@@ -55,12 +59,13 @@ namespace KnowledgeQuiz
             Console.ReadKey(true);
             Console.Clear();
             Menu userMenu = new ($"   -= Меню користувача \"{curentUser?.LoginPass?.Login}\" =-", 10, 2, ConsoleColor.Green, ConsoleColor.DarkGray, ConsoleColor.Gray,
-                ("       Топ 20", delegate () { Top20(curentUser); } ),
-                ("       Мої результати ", delegate () { MyResults(curentUser); }),
-                ("       Стартувати вікторину", delegate () { QuizStart(curentUser); } ),
-                ("       Налаштування", delegate () { Setting(curentUser); } ));
+                ("       Топ 20", delegate () { Top20(curentUser); return false; } ),
+                ("       Мої результати ", delegate () { MyResults(curentUser); return false; } ),
+                ("       Стартувати вікторину", delegate () { QuizStart(curentUser); return false; } ),
+                ("       Налаштування", delegate () { Setting(curentUser); return false; } ));
             userMenu.Start();
         }
+
         /// <summary>
         ///   Метод реєстрації нового користувача
         /// </summary>
@@ -112,18 +117,27 @@ namespace KnowledgeQuiz
         }
 
         private void QuizStart(User? user)
-        { 
-
-        }
-
+        {
+            Console.Clear();
+            Menu quizChooseMenu = new($"   -= Оберіть вікторину \"{user?.LoginPass?.Login}\" =-", 10, 2, ConsoleColor.Green, 
+            ConsoleColor.DarkGray, ConsoleColor.Gray,quizzes.QuezzesNames);
+            string quizName = quizzes?.QuezzesNames?.ElementAt(quizChooseMenu.Start()) ?? "";
+            Console.Clear();
+            Console.WriteLine(quizName);
+            Console.ReadLine();
+        } 
+        /// <summary>
+        /// Meтод реалізує пункт меню "Налаштування"
+        /// </summary>
+        /// <param name="user"></param>
         private void Setting(User? user)
         {
-            Menu userSettingMenu = null;
+            Menu? userSettingMenu = null;
             Console.Clear();
              userSettingMenu = new($"   -= Налаштування \"{user?.LoginPass?.Login}\" =-", 10, 2, ConsoleColor.Green, ConsoleColor.DarkGray, ConsoleColor.Gray,
-                ("       Змінити логін",  delegate () { ChangeLogin(user);    } ),
-                ("       Змінити пароль", delegate () { ChangePassword(user); } ),
-                ("       Змінити дату",   delegate () { ChangeDate(user);     } ));
+                ("       Змінити логін",  delegate () { ChangeLogin(user); return true; } ),
+                ("       Змінити пароль", delegate () { ChangePassword(user); return true; } ),
+                ("       Змінити дату",   delegate () { ChangeDate(user); return true; } ));
             userSettingMenu.Start();
         }
 
@@ -158,6 +172,7 @@ namespace KnowledgeQuiz
             else Output.Write("Невірний пароль ... Логін не змінено....", x, ++y, ConsoleColor.Red);
             Console.ReadKey(true);
         }
+
         /// <summary>
         /// Метод заміняє пароль користувача
         /// </summary>
@@ -179,6 +194,10 @@ namespace KnowledgeQuiz
             Console.ReadKey();
         }
 
+        /// <summary>
+        /// Метод заміняє дату народження користувача
+        /// </summary>
+        /// <param name="user"></param>
         private void ChangeDate(User? user)
         {
             int x = 14, y = 2;

@@ -9,6 +9,7 @@ namespace KnowledgeQuiz
 
     public class Menu
     {
+        public delegate bool MenuAction(); 
         private int xPos, yPos, _selpos ;
 
         private int selPos
@@ -38,7 +39,7 @@ namespace KnowledgeQuiz
 
         public string Title { get; set; }
 
-        private  List<(string iName, Action iProc)>? mItems;
+        private  List<(string iName, MenuAction? iProc)>? mItems;
 
         public int ItemCount { get => mItems?.Count ?? 0; }
 
@@ -53,18 +54,18 @@ namespace KnowledgeQuiz
             _selpos = 0;
         }
 
-        public Menu(string title,int X,int Y, ConsoleColor titleColor,ConsoleColor iColor, ConsoleColor sIColor, params ValueTuple<string,Action> [] items)
-            :this( title,  X,  Y,  titleColor,  iColor,  sIColor) { mItems = new List<(string, Action)>(items);}
+        public Menu(string title,int X,int Y, ConsoleColor titleColor,ConsoleColor iColor, ConsoleColor sIColor, params ValueTuple<string, MenuAction> [] items)
+            :this( title,  X,  Y,  titleColor,  iColor,  sIColor) { mItems = new List<(string, MenuAction?)>(items);}
 
-        public Menu(string title, int X, int Y, ConsoleColor titleColor, ConsoleColor iColor, ConsoleColor sIColor, string[] itemNames, Action[] itemHandles) : this(title, X, Y, titleColor, iColor, sIColor)
+        public Menu(string title, int X, int Y, ConsoleColor titleColor, ConsoleColor iColor, ConsoleColor sIColor, IEnumerable<string> itemNames, IEnumerable<MenuAction>? itemHandles = null) : this(title, X, Y, titleColor, iColor, sIColor)
         {
-            if (itemNames.Length != itemHandles.Length) throw new ApplicationException(" Кількість пунктів меню не співпадає з кількістю функцій...");
-            mItems = new List<(string, Action)>();
-            for (int i = 0; i < itemNames.Length; i++)
-                mItems.Add((itemNames[i], itemHandles[i]));
+            if (itemHandles != null && itemHandles.Count() != itemNames.Count() ) throw new ApplicationException(" Кількість пунктів меню не співпадає з кількістю функцій...");
+            mItems = new List<(string, MenuAction)>();
+            for (int i = 0; i < itemNames.Count(); i++)
+                mItems.Add((itemNames.ElementAt(i), itemHandles?.ElementAt(i)));
         }
 
-        public void  Start()
+        public int Start()
         {
             ConsoleKey ck = default;
             show();
@@ -76,16 +77,17 @@ namespace KnowledgeQuiz
                     if (ck == ConsoleKey.UpArrow || ck == ConsoleKey.DownArrow) selPos -= 39 - (int)ck;
                     else if (ck == ConsoleKey.Enter)
                     {
-                        mItems?[selPos].iProc.Invoke();
+                       if(mItems?[selPos].iProc?.Invoke() ?? true) break;
                         Console.Clear();
                     }
                     show();
                 }
             }
             while (ck != ConsoleKey.Escape || mItems?.Count == 0);
+            return selPos;
         }
 
-        public int AddMenuItem((string, Action) item,int index = -1)
+        public int AddMenuItem((string, MenuAction) item,int index = -1)
         {
             if (index < 0) mItems?.Add(item);
             else if(index < mItems?.Count) mItems.Insert(index,item);

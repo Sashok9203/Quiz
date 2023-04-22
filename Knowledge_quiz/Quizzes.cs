@@ -37,6 +37,8 @@ namespace KnowledgeQuiz
 
         public Question? GetQuestion(string? quizeName, int questionIndex) => quizzes?.GetValueOrDefault(quizeName ?? "")?[questionIndex];
 
+        public int QuizesCount => quizzes?.Count ?? 0;
+
         public void AddQuize(string? quizeName, params Question[]? questions)
         {
             List<Question> tmp = questions == null ? new List<Question>() : new List<Question>(questions);

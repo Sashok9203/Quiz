@@ -33,9 +33,9 @@ namespace KnowledgeQuiz
         {
            
             Menu startMenu = new Menu("   -= Вікторина знань =-",10,1,ConsoleColor.Green,ConsoleColor.DarkGray,ConsoleColor.Gray,
-                ("          Увійти", delegate () { Enter(); } ),
-                ("        Реєстрація", delegate () { Registration(); }),
-                ("     Адмініструввання", delegate () { StartUtility("EditUtility.exe"); }));
+                ("          Увійти", delegate () { Enter(); return false; } ),
+                ("        Реєстрація", delegate () { Registration(); return false; } ),
+                ("     Адмініструввання", delegate () { StartUtility("EditUtility.exe"); return false; }));
             startMenu.Start();
         }
 

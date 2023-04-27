@@ -10,6 +10,9 @@ using System.Text;
 using System.Threading.Tasks;
 namespace KnowledgeQuiz 
 {
+  
+    [KnownType(typeof(SAQuestion))]
+    [KnownType(typeof(MAQuestion))]
     [KnownType(typeof(List<string>))]
     [Serializable]
     public abstract class Question :ISerializable

@@ -30,7 +30,7 @@ namespace KnowledgeQuiz
             if (!string.IsNullOrWhiteSpace(Answer)) answer = Answer;
         }
 
-        public override bool AnswerQuestion(params string[] Answer) => answer == Answer[0];
+        public override bool AnswerQuestion(params string[] Answer) => (Answer?.Length) != 0 && answer == Answer?[0];
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {

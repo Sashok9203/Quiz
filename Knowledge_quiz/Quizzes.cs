@@ -11,42 +11,54 @@ using System.Xml.Serialization;
 
 namespace KnowledgeQuiz
 {
-    [KnownType(typeof(SAQuestion))]
-    [KnownType(typeof(MAQuestion))]
-    [KnownType(typeof(Dictionary<string, List<Question>>))]
+    
+    [KnownType(typeof(Dictionary<string, string>))]
     [Serializable]
     public class Quizzes : ISerializable
     {
 
-        private Dictionary<string, List<Question>>? quizzes;
+        private readonly Dictionary<string, string> quizzes;
 
         public Quizzes(SerializationInfo info, StreamingContext context)
         {
-            quizzes = info.GetValue("Quiz", typeof(Dictionary<string, List<Question>>)) as Dictionary<string, List<Question>>;
+            quizzes = info.GetValue("Quiz", typeof(Dictionary<string, string>)) as Dictionary<string, string> ?? new ();
         }
 
-        public Quizzes() { quizzes = new();}
+        public Quizzes()
+        {
+            quizzes = new()
+            {
+                //{ "Математика", @"Questions\math.xml" },
+                //{ "Біологія", @"Questions\biology.xml" }
+            };
+        }
 
-        public IEnumerable<KeyValuePair<string, List<Question>>>? Quezzes => quizzes;
+        public IEnumerable<string> QuezzesNames => quizzes?.Keys.ToArray() ?? Array.Empty<string>();
 
-        public IEnumerable<string>? QuezzesNames => quizzes?.Keys;
+        public IEnumerable<string> QuezzesPathes => quizzes?.Values.ToArray() ?? Array.Empty<string>();
 
-        public IEnumerable<List<Question>>? QuezzesQuestions => quizzes?.Values;
+        public IEnumerable<Question>? AllQuestions
+        {
+            get 
+            {
+                List<Question> list =  new();
+                foreach (var item in quizzes)
+                {
+                    Question[]? des = Serializer.Deserialize<Question[]>(Path.Combine(Environment.CurrentDirectory, item.Value));
+                    if(des != null) list.AddRange(des);
+                }
+                return list;
+            }
+        }
 
-        public IEnumerable<Question>? GetQuizeQuestions(string? quizeName) => quizzes?.GetValueOrDefault(quizeName ?? "");
-
-        public Question? GetQuestion(string? quizeName, int questionIndex) => quizzes?.GetValueOrDefault(quizeName ?? "")?[questionIndex];
+        public IEnumerable<Question> GetQuizeQuestions(string? quizeName) => Serializer.Deserialize<Question[]>(Path.Combine(Environment.CurrentDirectory, quizzes[quizeName])) ?? Array.Empty<Question>();
 
         public int QuizesCount => quizzes?.Count ?? 0;
 
-        public void AddQuize(string? quizeName, params Question[]? questions)
-        {
-            List<Question> tmp = questions == null ? new List<Question>() : new List<Question>(questions);
-            quizzes?.Add(quizeName ?? "InvalidName", tmp);
-        }
+        public void DellQuiz(string? quizeName) => quizzes.Remove(quizeName ?? "");
 
-        public void AddQuestion(string? quizeName, Question? question) => quizzes?[quizeName ?? ""]?.Add(question);
-        
+        public void ADDQuiz(string? quizeName, string? path) => quizzes.Remove(quizeName ?? "");
+
         public void GetObjectData(SerializationInfo info, StreamingContext context) => info.AddValue("Quiz", quizzes);
        
     }

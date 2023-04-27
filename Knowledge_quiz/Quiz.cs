@@ -4,33 +4,75 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
+using System.Runtime.Serialization;
+using System.IO;
+
 namespace KnowledgeQuiz
 {
+
+
+    [KnownType(typeof(List<Question>))]
     internal partial class Quiz : IDisposable
     {
         private const int maxQustionCountInQuiz = 20;
 
         private const string mixedQuizName = "Змішана";
 
-        private const string setingsPath = "setings.dat";
+        private const string setingsPath = @"Settings/setings.xml";
 
-        private Quizzes quizzes;
+        private const string passwordRegex = @"[^ \p{IsCyrillic}]";
 
-        private Users users;
+        private const string loginRegex = @"[0-9a-zA-Z_]";
 
-        private Setting setting;
+        private readonly Quizzes? quizzes = null;
+
+        private readonly Users? users = null;
+
+        private readonly Setting? setting = null;
 
         private bool disposedValue;
 
         public Quiz()
         {
             disposedValue = false;
-            try   { setting = Serializer.Deserialize<Setting>(setingsPath); }
-            catch { setting = new Setting(); }
-            try   { quizzes = Serializer.Deserialize<Quizzes>(setting.QuizzesPath); }
-            catch { quizzes = new Quizzes(); }
-            try   { users = Serializer.Deserialize<Users>(setting.UserPath); }
-            catch { users = new Users(); }
+            StringBuilder sb = new ();
+
+            try   { if(File.Exists(setingsPath)) setting = Serializer.Deserialize<Setting>(Path.Combine(Environment.CurrentDirectory, setingsPath)); }
+            catch (System.Runtime.Serialization.SerializationException)
+            { sb.AppendLine($"Помилка файлу налаштувань \"{setingsPath}\""); }
+            setting ??= new Setting();
+
+            try   { if (File.Exists(setting.QuizzesPath)) quizzes = Serializer.Deserialize<Quizzes>(setting.QuizzesPath); }
+            catch (System.Runtime.Serialization.SerializationException)
+            { sb.AppendLine($"Помилка файлу з питаннями \"{setting.QuizzesPath}\""); }
+            quizzes ??= new Quizzes();
+            foreach (var item in quizzes.QuezzesPathes)
+            {
+                string path = Path.Combine(Environment.CurrentDirectory, item);
+                if (!File.Exists(path))
+                {
+                    sb.AppendLine($"Файл з питаннями вікторини \"{path}\" відсутній...");
+                    quizzes?.DellQuiz(item);
+                }
+                else
+                {
+                    try { Serializer.Deserialize<Question[]>(path); }
+                    catch (System.Runtime.Serialization.SerializationException)
+                    { sb.AppendLine($"Помилка завантаження файлу з питаннями вікторини\"{path}\" "); }
+                }
+            }
+
+            try   { if (File.Exists(setting.UserPath)) users = Serializer.Deserialize<Users>(setting.UserPath); }
+            catch (System.Runtime.Serialization.SerializationException)
+            { sb.AppendLine($"Помилка файлу з данними про користувачів \"{setting.UserPath}\"");}
+            users ??= new Users();
+           
+            if (sb.Length != 0)
+            {
+                Console.WriteLine(sb);
+                Console.ReadKey();
+                Console.Clear();
+            }
         }
 
         public void Start()
@@ -49,9 +91,10 @@ namespace KnowledgeQuiz
             {
                 if (disposing)
                 {
+                   
                     Serializer.Serialize(setingsPath, setting);
-                    Serializer.Serialize(setting.QuizzesPath, quizzes);
-                    Serializer.Serialize(setting.UserPath, users);
+                    Serializer.Serialize(setting?.QuizzesPath, quizzes);
+                    Serializer.Serialize(setting?.UserPath, users);
                 }
 
                 // TODO: освободить неуправляемые ресурсы (неуправляемые объекты) и переопределить метод завершения

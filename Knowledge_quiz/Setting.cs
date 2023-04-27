@@ -11,11 +11,12 @@ namespace KnowledgeQuiz
     [Serializable]
     public class Setting : ISerializable
     {
+        
         private const string defAdminLogin  = "admin";
-        private const string defAdminPassHash  = "1c224b03cd9bc7b6a86d77f5dace40191766c485cd55dc48caf9ac873335d6f";
+        private const string defAdminPass   = "admin";
 
-        private const string defQuizzesPath = "data.dat";
-        private const string defUserPath    = "users.dat";
+        private const string defQuizzesPath = @"Settings/data.xml";
+        private const string defUserPath    = @"Settings/users.xml";
        
 
         private  string? curentQuizzesPath;
@@ -23,13 +24,13 @@ namespace KnowledgeQuiz
         
         public string QuizzesPath
         {
-            get => curentQuizzesPath ?? defQuizzesPath;
+            get => Path.Combine(Environment.CurrentDirectory, curentQuizzesPath ?? defQuizzesPath);
             set => curentQuizzesPath = value;
         }
 
         public string UserPath
         {
-            get => curentUserPath ?? defUserPath;
+            get => Path.Combine(Environment.CurrentDirectory, curentUserPath ?? defUserPath);
             set => curentUserPath = value;
         }
 
@@ -39,7 +40,7 @@ namespace KnowledgeQuiz
 
         public Setting()
         {
-            AdminLogPass = new(defAdminLogin, defAdminPassHash);
+            AdminLogPass = new(defAdminLogin, defAdminPass);
             curentQuizzesPath = null;
             curentUserPath = null;
         }

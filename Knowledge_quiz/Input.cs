@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace KnowledgeQuiz
 {
@@ -82,7 +84,7 @@ namespace KnowledgeQuiz
         }
 
         /// <summary>
-        /// Метод зчитує строку закриваючи ввід зірочками.Пробіли ігноруються
+        /// Метод зчитує строку закриваючи ввід зірочкамипри потребі.Вводити можна лише символи які відповідають регулярному виразу regex
         /// </summary>
         /// <param name="title"></param>
         /// <param name="X"></param>
@@ -90,39 +92,35 @@ namespace KnowledgeQuiz
         /// <param name="titleColor"></param>
         /// <param name="passColor"></param>
         /// <returns></returns>
-        public static string GetPassword(string title, int X, int Y, ConsoleColor titleColor, ConsoleColor passColor)
+        public static string GetStringRegex(string title,string regex, int X, int Y, ConsoleColor titleColor, ConsoleColor passColor,char hideChar =(char)0)
         {
             ConsoleKeyInfo ch = default;
-            bool cVisible = Console.CursorVisible;
+            bool cVisible = Console.CursorVisible,hide = hideChar != 0;
             if (!cVisible) Console.CursorVisible = true;
             Output.Write(title, X, Y, titleColor);
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new ();
             do
             {
                 if (Console.KeyAvailable)
                 {
                     ch = Console.ReadKey(true);
-                    if (ch.Key == ConsoleKey.Backspace)
+                    if (ch.Key == ConsoleKey.Backspace && sb.Length != 0)
                     {
-                        if (sb.Length != 0)
-                        {
-                            sb.Remove(sb.Length - 1, 1);
-                            Console.SetCursorPosition(Console.CursorLeft - 1, Y);
-                            Console.Write(" ");
-                            Console.SetCursorPosition(Console.CursorLeft - 1, Y);
-                        }
+                        Console.SetCursorPosition(Console.CursorLeft - 1, Y);
+                        Console.Write(" ");
+                        Console.SetCursorPosition(Console.CursorLeft - 1, Y);
+                        sb.Remove(sb.Length - 1, 1);
                     }
-                    else if (!Char.IsWhiteSpace(ch.KeyChar))
+                    else if (!Char.IsControl(ch.KeyChar) && Regex.IsMatch($"{ch.KeyChar}", regex))
                     {
                         sb.Append(ch.KeyChar);
-                        Output.Write("*", passColor);
+                        Output.Write($"{(hide ? hideChar : ch.KeyChar)}", passColor);
                     }
                 }
             } while (ch.Key != ConsoleKey.Enter || sb.Length == 0);
             Console.CursorVisible = cVisible;
             return sb.ToString();
         }
-
         /// <summary>
         /// Метод зчитує значення int в межах від min до max
         /// </summary>

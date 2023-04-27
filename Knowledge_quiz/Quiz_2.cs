@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace KnowledgeQuiz
 {
@@ -31,108 +32,22 @@ namespace KnowledgeQuiz
         }
 
         /// <summary>
-        /// Метод виводить текст в заданій координаті X
+        /// Метод повертає клас Test який містить питання в залежності від назви вікторини 
         /// </summary>
-        /// <param name="question"></param>
-        /// <param name="X"></param>
-        /// <param name="Y"></param>
-        /// <param name="Color"></param>
-        private void printQuestion(string question, int X, int Y, ConsoleColor Color)
-        {
-            int endIndex,startIndex = 0;
-            do
-            {
-                endIndex = question.IndexOf('\n', startIndex);
-                if(endIndex > 0) Output.Write(question[startIndex..endIndex], X, Y++, Color);
-                else Output.Write(question[startIndex..], X, Y++, Color);
-                startIndex = endIndex + 1;
-            }
-            while (startIndex != 0);
-        }
-
-        /// <summary>
-        /// Метод надає користувачу інтерфейс для відповіді на запитання,обрати варіант відповіді і т.д.
-        /// </summary>
-        /// <param name="question"></param>
-        /// <param name="quizName"></param>
-        /// <param name="questionIndex"></param>
-        /// <param name="questinCount"></param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        private bool answerQuestion(Question? question, string? quizName , int questionIndex ,int questinCount)
+        private Test? TestCreator(string? name)
         {
-            int X = 25, Y = 1 ,maxAnswers = 0,sel;
-            string? title = null;
-            var aVariants = question.AnswerVariants;
-            List<string> answersVariants, answers;
-            switch (question)
+            IEnumerable<Question> questions;
+            if (name != mixedQuizName) questions = Utility.Shufflet(quizzes?.GetQuizeQuestions(name));
+            else questions = Utility.Shufflet(quizzes?.AllQuestions);
+            if (questions.Count() == 0)
             {
-                case MAQuestion:
-                    title = "Оберіть варіанти відповіді :";
-                    maxAnswers = question.AnswerVariantsCount;
-                    break;
-                case SAQuestion:
-                    title = "Оберіть варіант відповіді :";
-                    maxAnswers = 1;
-                    break;
+                Output.Write($"Вісторина \"{name}\" не містить питань", 10, 1);
+                Console.ReadKey();
+                return null;
             }
-            Console.Clear();
-            Output.Write( $"-= {quizName} =-",X , Y++, ConsoleColor.Red);
-            Output.Write($"Питання {questionIndex} / {questinCount}", X - 1, Y++, ConsoleColor.Gray);
-            printQuestion(question.QuestionText, X - 15, Y, ConsoleColor.Green);
-            answersVariants = new List<string>();
-            for (int i = 0;i < question.AnswerVariantsCount;i++)
-                 answersVariants.Add($"      {(char)(i + 97)}) {aVariants.ElementAt(i)}");
-            Menu menu = new($"   {title}", X - 18, Console.CursorTop + 2, ConsoleColor.Green, ConsoleColor.Green, ConsoleColor.Gray, answersVariants);
-            answers = new List<string>();
-            do
-            {
-               sel =  menu.Start();
-                if (Input.Confirm("Ви впевненні ?", "Так", "Ні", X - 12, Console.CursorTop + 2, ConsoleColor.DarkGray, ConsoleColor.Gray))
-                {
-                    if (sel >= 0 && !answers.Contains(aVariants.ElementAt(sel)))
-                    {
-                        int y = Console.CursorTop + 2;
-                        answers.Add(aVariants.ElementAt(sel));
-                        maxAnswers--;
-                        Output.Write($"Обрані варіанти :", X - 12, y++, ConsoleColor.Green);
-                        foreach (var item in answers)
-                            Output.Write($"{item}", X - 10, y++, ConsoleColor.Red);
-                    }
-                }
-                else if (sel < 0) sel = 0;
-            }
-            while (maxAnswers > 0 && sel >= 0 );
-            return question.AnswerQuestion(answers.ToArray());
-        }
-
-        /// <summary>
-        /// Метод формує масиви запитань та викликає метод відповіді на питання answerQuestion для кожного запитання 
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="quizName"></param>
-        private void QuizProcess(User? user, string? quizName)
-        {
-            List<Question>? questions;
-            int questionCount,quizPoint = 0;
-            Console.Clear();
-            if (quizName != mixedQuizName) questions = Utility.Shufflet(quizzes?.GetQuizeQuestions(quizName))?.ToList<Question>();
-            else 
-            {
-                questions = new List<Question>();
-                foreach (var item in quizzes?.QuezzesQuestions)
-                    foreach (var i in item)
-                        questions.Add(i);
-                Utility.Shufflet(questions);
-            }
-            questionCount = (questions?.Count < maxQustionCountInQuiz) ? questions.Count : maxQustionCountInQuiz;
-            for (int i = 0; i < questionCount; i++)
-                if (answerQuestion(questions?[i], quizName,i + 1, questionCount)) quizPoint++;
-            UserQuizInfo uqi = new(questionCount, quizPoint);
-            user?.AddQuizInfo(quizName ?? "", uqi);
-            Console.Clear();
-            Output.Write($"-= Ваш результат =-", 10, 1);
-            printUserQuizInfo(quizName, uqi,12,Console.CursorTop+1,ConsoleColor.Green,ConsoleColor.Gray);
-            Console.ReadKey();
+            return new Test(name,questions);
         }
 
 
@@ -171,8 +86,8 @@ namespace KnowledgeQuiz
             string? login , password;
             Console.Clear();
             Output.WriteLine("-= Вхід в систему =-", x, y++ , ConsoleColor.Magenta);
-            login = Input.GetWord("Логін  : ", x, y++, ConsoleColor.Green);
-            password = Input.GetPassword("Пароль : ", x, y++, ConsoleColor.Green, ConsoleColor.Green);
+            login = Input.GetStringRegex("Логін  : ", loginRegex, x, y++, ConsoleColor.Green, ConsoleColor.Green);
+            password = Input.GetStringRegex("Пароль : ", passwordRegex, x, y++, ConsoleColor.Green, ConsoleColor.Green,'*');
             curentUser = users?.GetUser(login);
             if (curentUser == null || (!curentUser?.LoginPass?.ChackPassword(password) ?? false))
             {
@@ -216,31 +131,33 @@ namespace KnowledgeQuiz
                     Console.ReadKey();
                     Output.Write(new string(' ', login.Length + 32), x + 26, y, ConsoleColor.Red);
                 }
-                login = Input.GetWord("Введіть ваш логін       : ", x, y, ConsoleColor.Green);
+                login = Input.GetStringRegex("Введіть ваш логін       : ", loginRegex, x, y, ConsoleColor.Green, ConsoleColor.Green);
             } while (users?.Logins?.Contains(login) ?? false);
 
-            password = Input.GetPassword("Введіть пароль          : ", x, ++y, ConsoleColor.Green, ConsoleColor.Green);
+            password = Input.GetStringRegex("Введіть пароль          : ",passwordRegex, x, ++y, ConsoleColor.Green, ConsoleColor.Green,'*');
 
             DateTime date = Input.GetDateTime(null,x,y,x,++y,"Веедіть рік народження : ", 
                 "Веедіть місяць народження : ","Веедіть день народження : ",ConsoleColor.Green, ConsoleColor.Green);
 
-            users?.AddUser(new User(new LPass(login,Utility.GetHash(password)),name,date));
+            users?.AddUser(new User(new LPass(login,password),name,date));
 
             Output.Write(" Ви усппішно зареєстровані в системі....", x,Console.CursorTop + 1,  ConsoleColor.Blue);
 
             Console.ReadKey(true);
         }
 
+
         // userMenu methods
         private void Top20(User? user)
         {
             Console.Clear();
-            printQuestion("dsfgsdfgdsfgsdfgdsfgdsfgdsfgdsfgdsfgdfgdsf1\nsdfgsdfgsdfgdfgs2\nsdfgdsfgsdfgdsf3\n",10,1,ConsoleColor.Red);
+          
             Console.ReadKey();
         }
 
         private void MyResults(User? user)
         { 
+
         }
 
         /// <summary>
@@ -249,17 +166,42 @@ namespace KnowledgeQuiz
         /// <param name="user"></param>
         private void QuizStart(User? user)
         {
-            int sel;
             string quizName  = mixedQuizName;
+
             Console.Clear();
+
             var qNames = new List<string>();
+
             for (int i = 0; i < quizzes.QuizesCount; i++)
                  qNames.Add("\t\t" + quizzes.QuezzesNames.ElementAt(i));
+
             qNames.Add("\t\t" + quizName);
+
             Menu quizChooseMenu = new($"   -= Оберіть вікторину \"{user?.LoginPass?.Login}\" =-", 10, 2, ConsoleColor.Green, 
+
             ConsoleColor.DarkGray, ConsoleColor.Gray, qNames);
-            sel = quizChooseMenu.Start();
-            if(sel >= 0) QuizProcess(user, qNames[sel].Trim());
+
+            int sel = quizChooseMenu.Start();
+
+            if (sel < 0) return;
+
+            quizName = qNames[sel].Trim();
+
+            Test? test = TestCreator(quizName);
+
+            if (test == null) return;
+
+            UserQuizInfo uqi = test.Start();
+
+            user?.AddQuizInfo(quizName ?? "", uqi);
+
+            Console.Clear();
+
+            Output.Write($"-= Ваш результат =-", 10, 1);
+
+            printUserQuizInfo(quizName, uqi, 12, Console.CursorTop + 1, ConsoleColor.Green, ConsoleColor.Gray);
+
+            Console.ReadKey();
         } 
 
         /// <summary>
@@ -276,6 +218,7 @@ namespace KnowledgeQuiz
                 ("       Змінити дату",   delegate () { ChangeDate(user); return true; } ));
             userSettingMenu.Start();
         }
+
 
         // userSettingMenu methods
         /// <summary>
@@ -297,9 +240,9 @@ namespace KnowledgeQuiz
                     Console.ReadKey();
                     Output.Write(new string(' ', login.Length + 32), x + 17, y, ConsoleColor.Red);
                 }
-                login = Input.GetWord(   "Введіть новий логін  : ", x, y, ConsoleColor.Green);
+                login = Input.GetStringRegex("Введіть новий логін  : ", loginRegex, x, y, ConsoleColor.Green,ConsoleColor.Green);
             } while (users?.Logins?.Contains(login) ?? false);
-            password = Input.GetPassword("Введіть пароль       : ", x, ++y, ConsoleColor.Green, ConsoleColor.Green);
+            password = Input.GetStringRegex("Введіть пароль          : ", passwordRegex, x, ++y, ConsoleColor.Green, ConsoleColor.Green, '*');
             if (user?.LoginPass?.ChangeLogin(login, password) ?? false)
             {
                 if( users?.DellUser(oldLogin) ?? false)  users.AddUser(user);
@@ -319,10 +262,10 @@ namespace KnowledgeQuiz
             string  password, oldPass;
             Console.Clear();
             Output.Write("-= Заміна пароля =-", x, y++, ConsoleColor.Red);
-            oldPass = Input.GetPassword(     "Введіть пароль       : ", x, y++, ConsoleColor.Green, ConsoleColor.DarkGreen);
+            oldPass = Input.GetStringRegex(     "Введіть пароль       : ", passwordRegex, x, y++, ConsoleColor.Green, ConsoleColor.DarkGreen);
             if (user?.LoginPass?.ChackPassword(oldPass) ?? false)
             {
-                password = Input.GetPassword("Введіть новий пароль : ", x, y++, ConsoleColor.Green, ConsoleColor.DarkGreen);
+                password = Input.GetStringRegex("Введіть новий пароль : ", passwordRegex, x, y++, ConsoleColor.Green, ConsoleColor.DarkGreen);
                 user.LoginPass.ChangePassword(password, oldPass);
                 Output.Write("Пароль  змінено...", x, y++, ConsoleColor.Red);
             }

@@ -14,9 +14,9 @@ namespace KnowledgeQuiz
 
         private string? passHash;
 
-        public LPass(string? login,string? passwordHash)
+        public LPass(string? login,string? password)
         {
-            passHash = passwordHash;
+            passHash = Utility.GetHash(password);
             Login = login;
         }
 

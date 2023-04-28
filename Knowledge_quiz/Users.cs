@@ -29,11 +29,9 @@ namespace KnowledgeQuiz
             return user ;
         }
 
-        public IEnumerable<KeyValuePair<string, User>>? AllUsers => users;
-
         public IEnumerable<string>? Logins => users?.Keys;
 
-        public IEnumerable<User>? UsersInfo => users?.Values;
+        public IEnumerable<User>? AllUsers => users?.Values;
 
         public Users(){ users = new (); }
 

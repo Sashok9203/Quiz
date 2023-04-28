@@ -17,11 +17,13 @@ namespace KnowledgeQuiz
 
         private const string defQuizzesPath = @"Settings/data.xml";
         private const string defUserPath    = @"Settings/users.xml";
-       
+        private const string defRatingPath  = @"Settings/rating.xml";
+
 
         private  string? curentQuizzesPath;
         private  string? curentUserPath;
-        
+        private  string? curentRatingPath;
+
         public string QuizzesPath
         {
             get => Path.Combine(Environment.CurrentDirectory, curentQuizzesPath ?? defQuizzesPath);
@@ -34,7 +36,13 @@ namespace KnowledgeQuiz
             set => curentUserPath = value;
         }
 
-        
+        public string RatingPath
+        {
+            get => Path.Combine(Environment.CurrentDirectory, curentRatingPath ?? defRatingPath);
+            set => curentRatingPath = value;
+        }
+
+
 
         public LPass AdminLogPass { get; private set; }
 
@@ -43,6 +51,7 @@ namespace KnowledgeQuiz
             AdminLogPass = new(defAdminLogin, defAdminPass);
             curentQuizzesPath = null;
             curentUserPath = null;
+            curentRatingPath = null;
         }
 
         public Setting(SerializationInfo info, StreamingContext context)
@@ -50,6 +59,7 @@ namespace KnowledgeQuiz
             AdminLogPass = info.GetValue("AdminPassLog", typeof(LPass)) as LPass;
             curentQuizzesPath = info.GetString("CurentQuizzesPath");
             curentUserPath = info.GetString("CurentUserPath");
+            curentRatingPath = info.GetString("CurentRatingPath");
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -57,6 +67,7 @@ namespace KnowledgeQuiz
             info.AddValue("AdminPassLog", AdminLogPass);
             info.AddValue("CurentQuizzesPath", curentQuizzesPath);
             info.AddValue("CurentUserPath", curentUserPath);
+            info.AddValue("CurentRatingPath", curentRatingPath);
         }
     }
 }

@@ -16,6 +16,7 @@ namespace KnowledgeQuiz
     [Serializable]
     public class Quizzes : ISerializable
     {
+        public const string MixedQuizName = "Змішана";
 
         private readonly Dictionary<string, string> quizzes;
 
@@ -54,6 +55,22 @@ namespace KnowledgeQuiz
         public IEnumerable<Question> GetQuizeQuestions(string? quizeName) => Serializer.Deserialize<Question[]>(Path.Combine(Environment.CurrentDirectory, quizzes[quizeName])) ?? Array.Empty<Question>();
 
         public int QuizesCount => quizzes?.Count ?? 0;
+
+        /// <summary>
+        /// Метод повертає клас Test який містить питання в залежності від назви вікторини 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public  Test GetTest(string? userName,string? quizeName)
+        {
+            const int maxQustionCountInQuiz = 20;
+            IEnumerable<Question> questions;
+            if (quizeName != MixedQuizName) questions = Utility.Shufflet(GetQuizeQuestions(quizeName));
+            else questions = Utility.Shufflet(AllQuestions);
+            if (questions.Count() == 0) throw new ApplicationException($"Вісторина \"{quizeName}\" не містить питань");
+            int questionCount = questions.Count() < maxQustionCountInQuiz ? questions.Count() : maxQustionCountInQuiz;
+            return new Test(userName,quizeName, questions.Take(questionCount));
+        }
 
         public void DellQuiz(string? quizeName) => quizzes.Remove(quizeName ?? "");
 

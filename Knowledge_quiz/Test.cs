@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace KnowledgeQuiz
 {
-    internal class Test 
+    public class Test 
     {
         private IEnumerable<Question> questions;
-        private string name;
-        private const int maxQustionCountInQuiz = 20;
+        private readonly string? quizName;
+        private readonly string? userName;
+
 
         /// <summary>
         /// Метод виводить текст в заданій координаті X
@@ -34,10 +36,11 @@ namespace KnowledgeQuiz
         }
 
 
-        public Test(string name, IEnumerable<Question> questions)
+        public Test(string? userName, string? quizName, IEnumerable<Question> questions)
         {
-            this.questions = questions.Take(questions.Count() < maxQustionCountInQuiz ? questions.Count() : maxQustionCountInQuiz);
-            this.name = name;
+            this.questions = questions;
+            this.quizName = quizName;
+            this.userName = userName;
         }
 
         /// <summary>
@@ -47,10 +50,13 @@ namespace KnowledgeQuiz
         public UserQuizInfo Start()
         {
             int testPoint = 0, count = 1;
-            int X = 25, Y = 1, maxAnswers = 0, sel;
+            int  maxAnswers = 0, sel;
             string? title = null;
+            var sw = new Stopwatch();
+            sw.Start();
             foreach (var question in questions) 
             {
+                int X = 25, Y = 1;
                 var aVariants = Utility.Shufflet(question.AnswerVariants);
                 List<string> answersVariants, answers;
                 switch (question)
@@ -65,7 +71,7 @@ namespace KnowledgeQuiz
                         break;
                 }
                 Console.Clear();
-                Output.Write($"-= {name} =-", X, Y++, ConsoleColor.Red);
+                Output.Write($"-= {quizName} =-", X, Y++, ConsoleColor.Red);
                 Output.Write($"Питання {count++} / {questions.Count()}", X - 1, Y++, ConsoleColor.Gray);
                 printQuestion(question.QuestionText, X - 15, Y, ConsoleColor.Green);
                 answersVariants = new List<string>();
@@ -93,7 +99,8 @@ namespace KnowledgeQuiz
                 while (maxAnswers > 0 && sel >= 0);
                 if (question.AnswerQuestion(answers.ToArray())) testPoint++;
             }
-            return new UserQuizInfo(questions.Count(), testPoint);
+            sw.Stop();
+            return new UserQuizInfo(userName,quizName, questions.Count(), testPoint,sw.ElapsedTicks);
         }
     }
 }

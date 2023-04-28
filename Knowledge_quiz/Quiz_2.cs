@@ -21,36 +21,25 @@ namespace KnowledgeQuiz
         /// <param name="Y"></param>
         /// <param name="nameColor"></param>
         /// <param name="infoColor"></param>
-        private void printUserQuizInfo(string quizInfoName, UserQuizInfo info, int X, int Y, ConsoleColor nameColor, ConsoleColor infoColor)
+        private void printUserQuizInfo(UserQuizInfo info, int X, int Y, ConsoleColor nameColor, ConsoleColor infoColor)
         {
-            Output.Write($"-= {quizInfoName} =-",X,Y++,nameColor);
+            Output.Write($"Вікторина \"{info.QuizName}\"",X + 2,Y++,nameColor);
             Output.Write($"Кількість питань     : ", X , Y++, infoColor);
             Output.Write($"{info.QuestionCount}", X + 23, Y - 1, ConsoleColor.Gray);
             Output.Write($"Кількість відповідей : ", X, Y++, infoColor);
             Output.Write($"{info.RightAnswerCount}", X + 23, Y - 1, info.RightAnswerCount > info.QuestionCount/3*2? ConsoleColor.Green:
                                                              info.RightAnswerCount > info.QuestionCount / 3 ? ConsoleColor.Yellow:ConsoleColor.Red);
+            Output.Write($"Час проходженя       : ", X, Y++, infoColor);
+            Output.Write($"{info.Time.ToLongTimeString()}", X + 23, Y - 1, ConsoleColor.Gray);
+            Output.Write($"Дата проходження     : ", X , Y++, infoColor);
+            Output.Write($"{info.Date}", X + 23, Y - 1, ConsoleColor.Gray);
+            Output.Write($"Місце в рейтингу     : ", X, Y++, infoColor);
+            Output.Write($"{rating.GetUserPlace(info.QuizName,info.UserName)}", X + 23, Y - 1, ConsoleColor.Gray);
         }
 
-        /// <summary>
-        /// Метод повертає клас Test який містить питання в залежності від назви вікторини 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        private Test? TestCreator(string? name)
-        {
-            IEnumerable<Question> questions;
-            if (name != mixedQuizName) questions = Utility.Shufflet(quizzes?.GetQuizeQuestions(name));
-            else questions = Utility.Shufflet(quizzes?.AllQuestions);
-            if (questions.Count() == 0)
-            {
-                Output.Write($"Вісторина \"{name}\" не містить питань", 10, 1);
-                Console.ReadKey();
-                return null;
-            }
-            return new Test(name,questions);
-        }
+       
 
-
+       
 
 
         // startMenu methods
@@ -151,13 +140,19 @@ namespace KnowledgeQuiz
         private void Top20(User? user)
         {
             Console.Clear();
-          
+            int index = 1;
+            foreach (var item in rating.GetQuizInfos("Математика"))
+            {
+                Console.WriteLine($"{index++} {item}");
+            }
             Console.ReadKey();
         }
 
         private void MyResults(User? user)
-        { 
-
+        {
+            Console.Clear();
+            printUserQuizInfo(rating.GetUserQuizInfo("Математика",user.Name), 1, 1, ConsoleColor.White, ConsoleColor.Yellow);
+            Console.ReadKey();
         }
 
         /// <summary>
@@ -166,8 +161,8 @@ namespace KnowledgeQuiz
         /// <param name="user"></param>
         private void QuizStart(User? user)
         {
-            string quizName  = mixedQuizName;
-
+            string quizName = Quizzes.MixedQuizName;
+            Test test;
             Console.Clear();
 
             var qNames = new List<string>();
@@ -187,19 +182,25 @@ namespace KnowledgeQuiz
 
             quizName = qNames[sel].Trim();
 
-            Test? test = TestCreator(quizName);
+            try { test = quizzes.GetTest(user.Name,quizName); }
+            catch (Exception ex)
+            {
+                Output.Write(ex.Message, 10, 1);
+                Console.ReadKey();
+                return;
+            }
+            
+           
 
-            if (test == null) return;
-
-            UserQuizInfo uqi = test.Start();
-
-            user?.AddQuizInfo(quizName ?? "", uqi);
+            UserQuizInfo qi = test.Start();
+            rating.AddQuizInfo(qi);
+           // user?.AddQuizInfo(quizName ?? "", uqi);
 
             Console.Clear();
 
-            Output.Write($"-= Ваш результат =-", 10, 1);
+            Output.Write($"-= Ваш результат =-", 15, 1);
 
-            printUserQuizInfo(quizName, uqi, 12, Console.CursorTop + 1, ConsoleColor.Green, ConsoleColor.Gray);
+            printUserQuizInfo(qi, 12, Console.CursorTop + 1, ConsoleColor.Green, ConsoleColor.Gray);
 
             Console.ReadKey();
         } 

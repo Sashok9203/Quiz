@@ -12,33 +12,17 @@ namespace KnowledgeQuiz
         private const string defAdminLogin  = "admin";
         private const string defAdminPass   = "admin";
 
-        private const string defQuizzesPath = @"Settings/data.xml";
-        private const string defUserPath    = @"Settings/users.xml";
-        private const string defRatingPath  = @"Settings/rating.xml";
 
 
-        private  string? curentQuizzesPath;
-        private  string? curentUserPath;
-        private  string? curentRatingPath;
+        public  string? curentDataDir;
+        public  string? curentQuestionDir;
+        public  string? curentQuizzesFileName;
+        public  string? curentUserFileName;
+        public  string? curentRatingFileName;
 
-        public string QuizzesPath
-        {
-            get => Path.Combine(Environment.CurrentDirectory, curentQuizzesPath ?? defQuizzesPath);
-            set => curentQuizzesPath = value;
-        }
 
-        public string UserPath
-        {
-            get => Path.Combine(Environment.CurrentDirectory, curentUserPath ?? defUserPath);
-            set => curentUserPath = value;
-        }
-
-        public string RatingPath
-        {
-            get => Path.Combine(Environment.CurrentDirectory, curentRatingPath ?? defRatingPath);
-            set => curentRatingPath = value;
-        }
-
+        
+        
 
 
         public LPass AdminLogPass { get; private set; }
@@ -46,25 +30,31 @@ namespace KnowledgeQuiz
         public Setting()
         {
             AdminLogPass = new(defAdminLogin, defAdminPass);
-            curentQuizzesPath = null;
-            curentUserPath = null;
-            curentRatingPath = null;
-        }
+            curentQuizzesFileName = null;
+            curentUserFileName = null;
+            curentRatingFileName = null;
+            curentDataDir = null;
+            curentQuestionDir = null;
+    }
 
         public Setting(SerializationInfo info, StreamingContext context)
         {
-            AdminLogPass = info.GetValue("AdminPassLog", typeof(LPass)) as LPass ?? new(defAdminLogin, defAdminPass); 
-            curentQuizzesPath = info.GetString("CurentQuizzesPath");
-            curentUserPath = info.GetString("CurentUserPath");
-            curentRatingPath = info.GetString("CurentRatingPath");
+            AdminLogPass = info.GetValue("AdminPassLog", typeof(LPass)) as LPass ?? new(defAdminLogin, defAdminPass);
+            curentQuizzesFileName = info.GetString("CurentQuizzesFileName");
+            curentUserFileName = info.GetString("CurentUserFileName");
+            curentRatingFileName = info.GetString("CurentRatingFileName");
+            curentDataDir = info.GetString("CurentDataDir"); ;
+            curentQuestionDir = info.GetString("CurentQuestionDir"); ;
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("AdminPassLog", AdminLogPass);
-            info.AddValue("CurentQuizzesPath", curentQuizzesPath);
-            info.AddValue("CurentUserPath", curentUserPath);
-            info.AddValue("CurentRatingPath", curentRatingPath);
+            info.AddValue("CurentQuizzesFileName", curentQuizzesFileName);
+            info.AddValue("CurentUserFileName", curentUserFileName);
+            info.AddValue("CurentRatingFileName", curentRatingFileName);
+            info.AddValue("CurentDataDir", curentDataDir);
+            info.AddValue("CurentQuestionDir", curentQuestionDir);
         }
     }
 }

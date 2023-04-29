@@ -124,7 +124,7 @@ namespace KnowledgeQuiz
 
             users?.AddUser(new User(new LPass(login,password),name,date));
 
-            Serializer.Serialize(setting?.UserPath, users);
+            SLSystem.SaveUsers();
 
             Output.Write(" Ви усппішно зареєстровані в системі....", x,Console.CursorTop + 1,  ConsoleColor.Blue);
 
@@ -143,7 +143,7 @@ namespace KnowledgeQuiz
             string quizName = Quizzes.MixedQuizName;
             var qNames = new List<string>();
 
-            for (int i = 0; i < quizzes?.QuizesCount; i++)
+            for (int i = 0; i < quizzes?.Count; i++)
                 qNames.Add("\t\t" + quizzes.QuezzesNames.ElementAt(i));
 
             qNames.Add("\t\t" + quizName);
@@ -179,7 +179,7 @@ namespace KnowledgeQuiz
         {
             int X = 3, Y = 1;
             Console.Clear();
-            IEnumerable<UserQuizInfo>? infos = rating?.GetUserQuizInfos(user?.Name ?? "");
+            IEnumerable<UserQuizInfo>? infos = rating.GetUserQuizInfos(user?.Name ?? "");
             if (infos != null)
             {
                 foreach (var item in infos)
@@ -203,7 +203,7 @@ namespace KnowledgeQuiz
 
             var qNames = new List<string>();
 
-            for (int i = 0; i < quizzes?.QuizesCount; i++)
+            for (int i = 0; i < quizzes?.Count; i++)
                  qNames.Add("\t\t" + quizzes.QuezzesNames.ElementAt(i));
 
             qNames.Add("\t\t" + quizName);
@@ -231,7 +231,7 @@ namespace KnowledgeQuiz
 
             rating?.AddQuizInfo(qi);
 
-            Serializer.Serialize(setting?.RatingPath, rating);
+            SLSystem.SaveRating();
 
 
             Console.Clear();
@@ -287,7 +287,7 @@ namespace KnowledgeQuiz
                 if (users?.DellUser(oldLogin) ?? false)
                 {
                     users.AddUser(user);
-                    Serializer.Serialize(setting?.UserPath, users);
+                   SLSystem.SaveUsers();
                 }
                 Output.Write("Логін змінено....", x , ++y, ConsoleColor.Green);
             }
@@ -311,7 +311,7 @@ namespace KnowledgeQuiz
                 password = Input.GetStringRegex("Введіть новий пароль : ", passwordRegex, x, y++, ConsoleColor.Green, ConsoleColor.DarkGreen);
                 user.LoginPass.ChangePassword(password, oldPass);
                 Output.Write("Пароль  змінено...", x, y++, ConsoleColor.Red);
-                Serializer.Serialize(setting?.UserPath, users);
+                SLSystem.SaveUsers();
             }
             else Output.Write("Не вірний пароль ... Пароль не змінено...", x, y++, ConsoleColor.Red);
             Console.ReadKey();
@@ -329,7 +329,7 @@ namespace KnowledgeQuiz
             if (user != null) user.Date = Input.GetDateTime(null, x, y, x, ++y, "Веедіть рік народження : ",
                 "Веедіть місяць народження : ", "Веедіть день народження : ", ConsoleColor.Green, ConsoleColor.DarkGreen);
             Output.Write("Дату  змінено...", x, Console.CursorTop + 1, ConsoleColor.Red);
-            Serializer.Serialize(setting?.UserPath, users);
+            SLSystem.SaveUsers();
             Console.ReadKey();
         }
 

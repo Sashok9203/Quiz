@@ -46,14 +46,16 @@ namespace KnowledgeQuiz
 
         public IEnumerable<Question> GetQuizeQuestions(string quizeName) => Serializer.Deserialize<Question[]>(Path.Combine(Environment.CurrentDirectory, quizzes[quizeName])) ?? Array.Empty<Question>();
 
-        public int QuizesCount => quizzes?.Count ?? 0;
+        public int Count => quizzes?.Count ?? 0;
+
+        public void Clear() => quizzes?.Clear();
 
         /// <summary>
         /// Метод повертає клас Test який містить питання в залежності від назви вікторини 
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public  Test GetTest(string? userName,string? quizeName)
+        public  Test GetTest(string userName,string quizeName)
         {
             const int maxQustionCountInQuiz = 20;
             IEnumerable<Question> questions;

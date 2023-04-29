@@ -18,7 +18,7 @@ namespace KnowledgeQuiz
 
         private  Quizzes quizzes => SLSystem.Quizzes;
 
-        private  Users users => SLSystem.Users;
+        private  Users users  => SLSystem.Users;
 
         private  Rating rating => SLSystem.Rating;
 

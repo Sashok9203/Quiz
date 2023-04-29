@@ -71,7 +71,7 @@ namespace KnowledgeQuiz
             Output.Write("-= Вхід в систему =-", x, y++ , ConsoleColor.Magenta);
             login = Input.GetStringRegex("Логін  : ", loginRegex, x, y++, ConsoleColor.Green, ConsoleColor.Green);
             password = Input.GetStringRegex("Пароль : ", passwordRegex, x, y++, ConsoleColor.Green, ConsoleColor.Green,'*');
-            curentUser = users?.GetUser(login);
+            curentUser = users.GetUser(login);
             if (curentUser == null || (!curentUser?.LoginPass?.ChackPassword(password) ?? false))
             {
                 Output.Write("Невірний логін або пароль...", x, y++, ConsoleColor.Magenta);
@@ -115,14 +115,14 @@ namespace KnowledgeQuiz
                     Output.Write(new string(' ', login.Length + 32), x + 26, y, ConsoleColor.Red);
                 }
                 login = Input.GetStringRegex("Введіть ваш логін       : ", loginRegex, x, y, ConsoleColor.Green, ConsoleColor.Green);
-            } while (users?.Logins?.Contains(login) ?? false);
+            } while (users.Logins?.Contains(login) ?? false);
 
             password = Input.GetStringRegex("Введіть пароль          : ",passwordRegex, x, ++y, ConsoleColor.Green, ConsoleColor.Green,'*');
 
             DateTime date = Input.GetDateTime(null,x,y,x,++y,"Веедіть рік народження : ", 
                 "Веедіть місяць народження : ","Веедіть день народження : ",ConsoleColor.Green, ConsoleColor.Green);
 
-            users?.AddUser(new User(new LPass(login,password),name,date));
+            users.AddUser(new User(new LPass(login,password),name,date));
 
             SLSystem.SaveUsers();
 
@@ -280,11 +280,11 @@ namespace KnowledgeQuiz
                     Output.Write(new string(' ', login.Length + 32), x + 17, y, ConsoleColor.Red);
                 }
                 login = Input.GetStringRegex("Введіть новий логін  : ", loginRegex, x, y, ConsoleColor.Green,ConsoleColor.Green);
-            } while (users?.Logins?.Contains(login) ?? false);
+            } while (users.Logins?.Contains(login) ?? false);
             password = Input.GetStringRegex("Введіть пароль          : ", passwordRegex, x, ++y, ConsoleColor.Green, ConsoleColor.Green, '*');
             if (user?.LoginPass?.ChangeLogin(login, password) ?? false)
             {
-                if (users?.DellUser(oldLogin) ?? false)
+                if (users.DellUser(oldLogin)І)
                 {
                     users.AddUser(user);
                    SLSystem.SaveUsers();

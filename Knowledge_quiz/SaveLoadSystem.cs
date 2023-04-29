@@ -39,9 +39,9 @@ namespace KnowledgeQuiz
 
         private  Quizzes? quizzes = null;
 
-        private  Users? users = null;
+        private  Users?   users   = null;
 
-        private  Rating? rating = null;
+        private  Rating?  rating = null;
 
         public  Quizzes Quizzes  => quizzes ??= LoadQuizzes();
 
@@ -154,7 +154,6 @@ namespace KnowledgeQuiz
             SaveQuizzes();
             SaveUsers();
             SaveRating();
-            SaveSettings();
         }
 
     }

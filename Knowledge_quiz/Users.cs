@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace KnowledgeQuiz
 {
@@ -20,7 +17,7 @@ namespace KnowledgeQuiz
             if (user != null) users?.Add(user.LoginPass?.Login ?? "", user);
         }
 
-        public bool DellUser(string? userName) => users?.Remove(userName ?? "") ?? false;
+        public bool DellUser(string userName) => users?.Remove(userName) ?? false;
        
         public User? GetUser(string? login)
         {

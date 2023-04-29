@@ -1,13 +1,5 @@
-﻿using KnowledgeQuiz;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
+﻿
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
 
 namespace KnowledgeQuiz
 {
@@ -52,7 +44,7 @@ namespace KnowledgeQuiz
             }
         }
 
-        public IEnumerable<Question> GetQuizeQuestions(string? quizeName) => Serializer.Deserialize<Question[]>(Path.Combine(Environment.CurrentDirectory, quizzes[quizeName])) ?? Array.Empty<Question>();
+        public IEnumerable<Question> GetQuizeQuestions(string quizeName) => Serializer.Deserialize<Question[]>(Path.Combine(Environment.CurrentDirectory, quizzes[quizeName])) ?? Array.Empty<Question>();
 
         public int QuizesCount => quizzes?.Count ?? 0;
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
 
 namespace KnowledgeQuiz
@@ -21,10 +20,10 @@ namespace KnowledgeQuiz
         {
             bool comfirmed = false;
             ConsoleKey ck = default;
-            Output.WriteLine(title, X, Y, defColor);
+            Output.Write(title, X, Y, defColor);
             Output.Write(Ok, X, Y + 1, desColor);
             Output.Write(" / ", defColor);
-            Output.WriteLine(Cancel, defColor);
+            Output.Write(Cancel, defColor);
             do
             {
                 if (Console.KeyAvailable)
@@ -35,7 +34,7 @@ namespace KnowledgeQuiz
                         comfirmed = !comfirmed;
                         Output.Write(Ok, X, Y + 1, comfirmed ? defColor : desColor);
                         Output.Write(" / ", defColor);
-                        Output.WriteLine(Cancel, comfirmed ? desColor : defColor);
+                        Output.Write(Cancel, comfirmed ? desColor : defColor);
                     }
                 }
             }

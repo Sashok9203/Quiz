@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace KnowledgeQuiz
 {
@@ -13,27 +9,6 @@ namespace KnowledgeQuiz
         private IEnumerable<Question> questions;
         private readonly string? quizName;
         private readonly string? userName;
-
-
-        /// <summary>
-        /// Метод виводить текст в заданій координаті X
-        /// </summary>
-        /// <param name="question"></param>
-        /// <param name="X"></param>
-        /// <param name="Y"></param>
-        /// <param name="Color"></param>
-        private void printQuestion(string question, int X, int Y, ConsoleColor Color)
-        {
-            int endIndex, startIndex = 0;
-            do
-            {
-                endIndex = question.IndexOf('\n', startIndex);
-                if (endIndex > 0) Output.Write(question[startIndex..endIndex], X, Y++, Color);
-                else Output.Write(question[startIndex..], X, Y++, Color);
-                startIndex = endIndex + 1;
-            }
-            while (startIndex != 0);
-        }
 
 
         public Test(string? userName, string? quizName, IEnumerable<Question> questions)
@@ -73,7 +48,7 @@ namespace KnowledgeQuiz
                 Console.Clear();
                 Output.Write($"-= {quizName} =-", X, Y++, ConsoleColor.Red);
                 Output.Write($"Питання {count++} / {questions.Count()}", X - 1, Y++, ConsoleColor.Gray);
-                printQuestion(question.QuestionText, X - 15, Y, ConsoleColor.Green);
+                Output.WriteText(question.QuestionText, X - 15, Y, ConsoleColor.Green);
                 answersVariants = new List<string>();
                 for (int i = 0; i < question.AnswerVariantsCount; i++)
                     answersVariants.Add($"      {(char)(i + 97)}) {aVariants.ElementAt(i)}");

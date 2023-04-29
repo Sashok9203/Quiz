@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 
 namespace KnowledgeQuiz
 {
    
     [Serializable]
-    public class SAQuestion : Question, ISerializable
+    public class SAQuestion : Question
     {
         private string? answer;
 

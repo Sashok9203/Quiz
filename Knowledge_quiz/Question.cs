@@ -1,13 +1,5 @@
-﻿using Microsoft.VisualBasic;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.Serialization;
+
 namespace KnowledgeQuiz 
 {
   
@@ -17,16 +9,14 @@ namespace KnowledgeQuiz
     [Serializable]
     public abstract class Question :ISerializable
     {
-        [DataMember]
         protected string? question;
-
-        [DataMember]
-        private List<string>? answerVariants;
+       
+        private readonly List<string> answerVariants;
 
         protected Question(SerializationInfo info, StreamingContext context)
         {
             question = info.GetString("question");
-            answerVariants = info.GetValue("answerVariants", typeof(List<string>)) as List<string>;
+            answerVariants = info.GetValue("answerVariants", typeof(List<string>)) as List<string> ?? new();
         }
 
         protected Question(string? questionText, params string[]? AnswerVariants)
@@ -48,7 +38,7 @@ namespace KnowledgeQuiz
             }
         }
 
-        public int AnswerVariantsCount => answerVariants.Count;
+        public int AnswerVariantsCount => answerVariants?.Count ?? 0;
 
         public void AddAnswerVariant(string AnswerVariant)
         {

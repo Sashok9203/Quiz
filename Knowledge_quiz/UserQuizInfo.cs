@@ -1,11 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace KnowledgeQuiz
 {
@@ -17,7 +12,8 @@ namespace KnowledgeQuiz
 
         private int rACount;
 
-        private long time;
+        private readonly long time;
+
 
         public int RightAnswerCount
         {
@@ -77,20 +73,15 @@ namespace KnowledgeQuiz
             info.AddValue("UserName", UserName);
         }
 
-        
-
-       
-
-
         public override string ToString()
         {
-            return $" {UserName}  {QuestionCount}/{RightAnswerCount}  {Time.ToLongTimeString()} ";
+            return $"{UserName}     {QuestionCount}/{RightAnswerCount}     {Time.ToLongTimeString()} ";
         }
 
         public int CompareTo(UserQuizInfo? other)
         {
             if (rACount > other?.rACount) return -1;
-            else if (rACount == other?.rACount && time > other?.time) return -1;
+            else if (rACount == other?.rACount && time < other?.time) return -1;
             else if (rACount == other?.rACount && time == other?.time) return 0;
             else return 1;
         }

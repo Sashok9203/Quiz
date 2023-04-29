@@ -1,22 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KnowledgeQuiz
+﻿namespace KnowledgeQuiz
 {
-    
+
     internal static class Output
     {
-        public static ValueTuple<int,int> Write(string? text, int x, int y)
+        public static void Write(string? text, int x, int y)
         {
             Console.SetCursorPosition(x, y);
             Console.Write(text);
-            return (Console.CursorLeft, Console.CursorTop);
         }
 
-        public static ValueTuple<int, int> Write(string? text, int x , int y, ConsoleColor fColor = default, ConsoleColor bColor = default)
+        public static void Write(string? text, int x , int y, ConsoleColor fColor = default, ConsoleColor bColor = default)
         {
             ConsoleColor bdef = default, fdef = default;
             if (fColor != 0)
@@ -33,28 +26,30 @@ namespace KnowledgeQuiz
             Write(text,x,y);
             if (bColor != 0) Console.BackgroundColor = bdef;
             if (fColor != 0) Console.ForegroundColor = fdef;
-            return (Console.CursorLeft, Console.CursorTop);
         }
        
-        public static ValueTuple<int, int> Write(string? text, ConsoleColor fColor)
+        public static void Write(string? text, ConsoleColor fColor)
         {
             ConsoleColor fdef = Console.ForegroundColor;
             Console.ForegroundColor = fColor;
             Console.Write(text);
             Console.ForegroundColor = fdef;
-            return (Console.CursorLeft, Console.CursorTop);
         }
 
-        public static ValueTuple<int, int> WriteLine(string? text, int x, int y, ConsoleColor fColor = default, ConsoleColor bColor = default)
+
+        public static void WriteText(string text, int X, int Y, ConsoleColor Color)
         {
-            return Write(text ?? "" + '\n', x, y, fColor, bColor);
+            int endIndex, startIndex = 0;
+            do
+            {
+                endIndex = text.IndexOf('\n', startIndex);
+                if (endIndex > 0) Output.Write(text[startIndex..endIndex], X, Y++, Color);
+                else Output.Write(text[startIndex..], X, Y++, Color);
+                startIndex = endIndex + 1;
+            }
+            while (startIndex != 0);
         }
 
-        public static ValueTuple<int, int> WriteLine(string? text, ConsoleColor fColor = default)
-        {
-            return Write(text ?? "" + '\n', fColor);
-
-        }
 
         public static void  ClearRegion(int Xpos, int YPos, int XCout, int yCount)
         {

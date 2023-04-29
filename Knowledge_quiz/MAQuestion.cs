@@ -1,24 +1,18 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Intrinsics;
+﻿
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace KnowledgeQuiz
 {
     [Serializable]
-    public class MAQuestion : Question ,ISerializable
+    public class MAQuestion : Question 
     {
-        [DataMember]
+        
         private List<string> answers;
 
         protected MAQuestion(SerializationInfo info, StreamingContext context) : base(info, context)
         {
-            answers = info.GetValue("answers",typeof(List<string>)) as List<string>;
+            answers = info.GetValue("answers",typeof(List<string>)) as List<string> ?? new();
         }
         public MAQuestion(string questionText,params string[] answerVariants) : base(questionText,answerVariants)
         {

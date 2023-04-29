@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿
 using System.Text;
-using System.Threading.Tasks;
-using System.Security.Cryptography;
 using System.Runtime.Serialization;
-using System.IO;
+
 
 namespace KnowledgeQuiz
 {
@@ -14,11 +10,9 @@ namespace KnowledgeQuiz
     [KnownType(typeof(List<Question>))]
     internal partial class Quiz : IDisposable
     {
-       
-
-      
-
         private const string setingsPath = @"Settings/setings.xml";
+
+        private const string logPath = @"Settings/log.txt";
 
         private const string passwordRegex = @"[^ \p{IsCyrillic}]";
 
@@ -38,6 +32,9 @@ namespace KnowledgeQuiz
         {
             disposedValue = false;
             StringBuilder sb = new ();
+            sb.AppendLine("Start");
+            sb.AppendLine(DateTime.Now.ToLongTimeString());
+            sb.AppendLine(DateTime.Now.ToLongDateString());
 
             try   { if(File.Exists(setingsPath)) setting = Serializer.Deserialize<Setting>(Path.Combine(Environment.CurrentDirectory, setingsPath)); }
             catch (SerializationException)
@@ -48,20 +45,26 @@ namespace KnowledgeQuiz
             catch (SerializationException)
             { sb.AppendLine($"Помилка файлу з питаннями \"{setting.QuizzesPath}\""); }
             quizzes ??= new ();
+
             foreach (var item in quizzes.QuezzesPathes)
             {
+                bool check = true;
                 string path = Path.Combine(Environment.CurrentDirectory, item);
                 if (!File.Exists(path))
                 {
                     sb.AppendLine($"Файл з питаннями вікторини \"{path}\" відсутній...");
-                    quizzes?.DellQuiz(item);
+                    check = false;
                 }
                 else
                 {
                     try { Serializer.Deserialize<Question[]>(path); }
                     catch (SerializationException)
-                    { sb.AppendLine($"Помилка завантаження файлу з питаннями вікторини\"{path}\" "); }
+                    { 
+                        sb.AppendLine($"Помилка завантаження файлу з питаннями вікторини\"{path}\" ");
+                        check = false;
+                    }
                 }
+                if(!check) quizzes?.DellQuiz(item);
             }
 
             try   { if (File.Exists(setting.UserPath)) users = Serializer.Deserialize<Users>(setting.UserPath); }
@@ -75,13 +78,14 @@ namespace KnowledgeQuiz
             rating ??= new ();
 
 
-
-            if (sb.Length != 0)
+            using (StreamWriter sw = new(new FileStream(Path.Combine(Environment.CurrentDirectory, logPath), FileMode.Append, FileAccess.Write)))
             {
-                Console.WriteLine(sb);
-                Console.ReadKey();
-                Console.Clear();
+                sw.WriteLine(sb);
             }
+
+
+
+
         }
 
         public void Start()
@@ -105,6 +109,15 @@ namespace KnowledgeQuiz
                     Serializer.Serialize(setting?.QuizzesPath, quizzes);
                     Serializer.Serialize(setting?.UserPath, users);
                     Serializer.Serialize(setting?.RatingPath, rating);
+
+                    StringBuilder sb = new();
+                    sb.AppendLine("Stop");
+                    sb.AppendLine(DateTime.Now.ToLongTimeString());
+                    sb.AppendLine(DateTime.Now.ToLongDateString());
+                    using (StreamWriter sw = new(new FileStream(Path.Combine(Environment.CurrentDirectory, logPath), FileMode.Append, FileAccess.Write)))
+                    {
+                        sw.WriteLine(sb);
+                    }
                 }
 
                 // TODO: освободить неуправляемые ресурсы (неуправляемые объекты) и переопределить метод завершения

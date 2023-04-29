@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
+﻿
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace KnowledgeQuiz
 {
@@ -28,12 +24,12 @@ namespace KnowledgeQuiz
 
         public static T Max<T>(params T[] values) where T : struct => values.Max();
         
-        public static void Shufflet<T>(List<T>? array)
+        public static void Shuffle<T>(List<T>? array)
         {
              Random rnd = new Random();
-            for (int i = 0; i < array?.Count; i++)
+            for (int i = array.Count - 1; i > 0; i--)
             {
-                int next = rnd.Next(0, array.Count);
+                int next = rnd.Next(0, i + 1);
                 (array[i], array[next]) = (array[next], array[i]);
             }
         }

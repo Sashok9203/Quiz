@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace KnowledgeQuiz
 {
 
     public class Menu
     {
-        public delegate bool MenuAction(); 
+       
         private int xPos, yPos, _selpos ;
 
         private int selPos
@@ -20,18 +15,18 @@ namespace KnowledgeQuiz
 
         private void clear()
         {
-            Output.WriteLine(new string(' ',Title.Length), (int)xPos, (int)yPos);
+            Output.Write(new string(' ',Title?.Length ?? 0), (int)xPos, (int)yPos);
             for (int i = 0; i < mItems?.Count; i++)
-                 Output.WriteLine(new string(' ', mItems[i].iName.Length), (int)xPos, (int)yPos + i + 1);
+                 Output.Write(new string(' ', mItems?[i].iName?.Length ?? 0), (int)xPos, (int)yPos + i + 1);
         }
 
         private void show()
         {
-            Output.WriteLine(Title, (int)xPos, (int)yPos, nColor);
+            Output.Write(Title, (int)xPos, (int)yPos, nColor);
             for (int i = 0; i < mItems?.Count; i++)
             {
-                if (i == selPos) Output.WriteLine(mItems[i].Item1, (int)xPos, (int)yPos + i + 1, sIColor);
-                else Output.WriteLine(mItems[i].Item1, (int)xPos, (int)yPos + i + 1, iColor);
+                if (i == selPos) Output.Write(mItems[i].iName, (int)xPos, (int)yPos + i + 1, sIColor);
+                else Output.Write(mItems[i].Item1, (int)xPos, (int)yPos + i + 1, iColor);
             }
         }
 
@@ -39,14 +34,14 @@ namespace KnowledgeQuiz
 
         public string? Title { get; set; }
 
-        private  List<(string? iName, MenuAction? iProc)> mItems;
+        private  List<(string? iName, Func<bool>? iProc)> mItems;
 
         public int ItemCount { get => mItems?.Count ?? 0; }
 
-        public Menu(string? title,int X,int Y, ConsoleColor titleColor,ConsoleColor iColor, ConsoleColor sIColor, params ValueTuple<string, MenuAction>[] items)
+        public Menu(string? title,int X,int Y, ConsoleColor titleColor,ConsoleColor iColor, ConsoleColor sIColor, params ValueTuple<string, Func<bool>>[] items)
         {
-            if (items != null ) mItems = new List<(string?, MenuAction?)>(items);
-            else mItems = new List<(string?, MenuAction?)>();
+            if (items != null ) mItems = new List<(string?, Func<bool>?)>(items);
+            else mItems = new List<(string?, Func<bool>?)>();
             Title = title ?? "";
             xPos = X;
             yPos = Y;
@@ -56,7 +51,7 @@ namespace KnowledgeQuiz
             _selpos = 0;
         }
 
-        public Menu(string? title, int X, int Y, ConsoleColor titleColor, ConsoleColor iColor, ConsoleColor sIColor, IEnumerable<string>? itemNames, IEnumerable<MenuAction>? itemHandles = null) 
+        public Menu(string? title, int X, int Y, ConsoleColor titleColor, ConsoleColor iColor, ConsoleColor sIColor, IEnumerable<string>? itemNames, IEnumerable<Func<bool>>? itemHandles = null) 
                    : this(title, X, Y, titleColor, iColor, sIColor)
         {
             if (itemHandles != null && itemHandles.Count() != itemNames?.Count() ) throw new ApplicationException(" Кількість пунктів меню не співпадає з кількістю функцій...");
@@ -86,7 +81,7 @@ namespace KnowledgeQuiz
             return -1;
         }
 
-        public int AddMenuItem((string, MenuAction?) item,int index = -1)
+        public int AddMenuItem((string, Func<bool>?) item,int index = -1)
         {
             if (index < 0) mItems?.Add(item);
             else if(index < mItems?.Count) mItems.Insert(index,item);
@@ -99,6 +94,7 @@ namespace KnowledgeQuiz
             if (index < 0 || index >= mItems?.Count) return -1;
             clear();
             mItems?.RemoveAt(index);
+            selPos = 0;
             show();
             return mItems?.Count ?? 0;
         }

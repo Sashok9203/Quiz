@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KnowledgeQuiz
 {
@@ -14,7 +10,7 @@ namespace KnowledgeQuiz
 
         private string? passHash;
 
-        public LPass(string? login,string? password)
+        public LPass(string login,string password)
         {
             passHash = Utility.GetHash(password);
             Login = login;
@@ -26,13 +22,13 @@ namespace KnowledgeQuiz
             Login = info.GetString("login");
         }
 
-        public bool ChangeLogin(string? login, string? password)
+        public bool ChangeLogin(string login, string password)
         {
             if (ChackPassword(password)) Login = login;
             return login == Login;
         }
 
-        public bool ChangePassword(string? newPassword, string? oldPassword)
+        public bool ChangePassword(string newPassword, string oldPassword)
         {
             if (ChackPassword(oldPassword))
             {
@@ -42,7 +38,7 @@ namespace KnowledgeQuiz
             return false;
         }
 
-        public bool ChackPassword(string? password) => Utility.HashCompare(password ?? "", passHash ?? "");
+        public bool ChackPassword(string password) => Utility.HashCompare(password, passHash);
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {

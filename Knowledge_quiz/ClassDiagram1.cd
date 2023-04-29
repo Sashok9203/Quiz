@@ -3,7 +3,7 @@
   <Class Name="KnowledgeQuiz.Input">
     <Position X="25.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAQAAgAAAAAFAAAAAAEAAAAAAAAAACAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAQAAAAAAAAFABAAAAEAAAAAAAAAACAAAA=</HashCode>
       <FileName>Input.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -28,13 +28,6 @@
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
-    <NestedTypes>
-      <Delegate Name="KnowledgeQuiz.Menu.MenuAction" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Menu.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Delegate>
-    </NestedTypes>
     <TypeIdentifier>
       <HashCode>AEAAAAmAACAAAEAAACgAgAAAEACAAIAABAAAAQBAAAA=</HashCode>
       <FileName>Menu.cs</FileName>
@@ -43,7 +36,7 @@
   <Class Name="KnowledgeQuiz.Output">
     <Position X="20.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAIAAAAAAAAAAIAAAAAAAAAAAEAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAgAAAEAAAA=</HashCode>
       <FileName>Output.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -57,7 +50,7 @@
   <Class Name="KnowledgeQuiz.Question">
     <Position X="11.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AACgAAAAAAAAAAAAgAAAAAAgACQQAIAAAAQAIAAAAAA=</HashCode>
+      <HashCode>AACgAAAAAAAAAAAAgAAAAAAgACQQAIAAAAwAIAAAAAA=</HashCode>
       <FileName>Question.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -65,7 +58,7 @@
   <Class Name="KnowledgeQuiz.Quiz">
     <Position X="6.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>IEAAEAAAACEAgAIAAAAAAFBAAAAFIAAAAAAAAhBEAgA=</HashCode>
+      <HashCode>IEAAEQAAACEAgBIAAAAAAkAABQAFAAAAAAAAAhBEAgA=</HashCode>
       <FileName>Quiz.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -73,7 +66,7 @@
   <Class Name="KnowledgeQuiz.Quizzes">
     <Position X="8.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAIAggQAAIAAAACAAAgAABAAAAAAAIAAAAAAgA=</HashCode>
+      <HashCode>AAAAAAAYAAAAIAIIgAAIACAgAAAAAAAAAAIAAAAAAgA=</HashCode>
       <FileName>Quizzes.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -96,7 +89,7 @@
   <Class Name="KnowledgeQuiz.Setting">
     <Position X="17" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AQBAAAAAAAABAIAAAAAAAAAiABAAAAAQCAAAAAAAAAI=</HashCode>
+      <HashCode>AABAAAgBAAABAIAAAAAAAAAiARAAAAAQKAAAAAAAAAI=</HashCode>
       <FileName>Setting.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -104,7 +97,7 @@
   <Class Name="KnowledgeQuiz.User">
     <Position X="18.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAIAAAAKAAAAAAAEAEAAIARgEAAAAAABAAAAAQAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAQgEAAAAAABAAAAAQAAAAA=</HashCode>
       <FileName>User.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -112,7 +105,7 @@
   <Class Name="KnowledgeQuiz.UserQuizInfo">
     <Position X="13.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAIAAAAAAAAgAAAAAgAAAAAAQBAAAEAAAAAAA=</HashCode>
+      <HashCode>AABBAAAAIAAAAAQEAgAAAAAgAAAAAAQBAQAEAAAAAQA=</HashCode>
       <FileName>UserQuizInfo.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -120,7 +113,7 @@
   <Class Name="KnowledgeQuiz.Users">
     <Position X="15.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>IAAAAAAAAQgAAAAAAAAAAAAgIAAAAAAgEAAQAAAAAAA=</HashCode>
+      <HashCode>IAAAAAAAAQAAAAAAAAAAAAAgIAAAAAAgEAAQAAAAAAA=</HashCode>
       <FileName>Users.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -128,9 +121,17 @@
   <Class Name="KnowledgeQuiz.Utility">
     <Position X="22.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAABAAAAAAAAEAAAAAAAAAAAAAABAAACAAAAAAAAAAA=</HashCode>
+      <HashCode>AAABAAAAABAAEAAAAAAAAAAAAAABAAACAAAAAAAAEAA=</HashCode>
       <FileName>Utility.cs</FileName>
     </TypeIdentifier>
+  </Class>
+  <Class Name="KnowledgeQuiz.Rating">
+    <Position X="3" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAEAEAIABgIAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rating.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

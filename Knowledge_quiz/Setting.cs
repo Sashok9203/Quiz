@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace KnowledgeQuiz
 {
@@ -56,7 +53,7 @@ namespace KnowledgeQuiz
 
         public Setting(SerializationInfo info, StreamingContext context)
         {
-            AdminLogPass = info.GetValue("AdminPassLog", typeof(LPass)) as LPass;
+            AdminLogPass = info.GetValue("AdminPassLog", typeof(LPass)) as LPass ?? new(defAdminLogin, defAdminPass); 
             curentQuizzesPath = info.GetString("CurentQuizzesPath");
             curentUserPath = info.GetString("CurentUserPath");
             curentRatingPath = info.GetString("CurentRatingPath");

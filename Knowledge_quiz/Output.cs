@@ -1,7 +1,7 @@
 ﻿namespace KnowledgeQuiz
 {
 
-    internal static class Output
+    public static class Output
     {
         public static void Write(string? text, int x, int y)
         {

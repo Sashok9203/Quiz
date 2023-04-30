@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace KnowledgeQuiz
 {
-    internal class SaveLoadSystem
+    public class SaveLoadSystem
     {
         private const string setingsPath = @"setings.xml";
         private const string logPath = @"log.txt";
@@ -37,6 +38,8 @@ namespace KnowledgeQuiz
 
         public string DataPath => Path.Combine(Environment.CurrentDirectory, setting.curentDataDir ?? defDataDir);
 
+        public string SettingPath => Path.Combine(Environment.CurrentDirectory, setingsPath);
+
         private readonly Setting setting;
 
         private  Quizzes? quizzes = null;
@@ -62,10 +65,19 @@ namespace KnowledgeQuiz
 
         public  SaveLoadSystem()
         {
-            try { if (File.Exists(setingsPath)) setting = Serializer.Deserialize<Setting>(Path.Combine(Environment.CurrentDirectory, setingsPath)) ?? new(); }
+            try
+            {
+                if (File.Exists(SettingPath))
+                {
+                    setting = Serializer.Deserialize<Setting> (SettingPath) ?? new();
+                    
+                }
+            }
             catch (SerializationException)
-            { saveLog($" {DateTime.Now} : Помилка файлу налаштувань \"{setingsPath}\""); }
+            { saveLog($" {DateTime.Now} : Помилка файлу налаштувань \"{SettingPath}\""); }
             setting ??= new();
+            if(!Directory.Exists(DataPath)) Directory.CreateDirectory(DataPath);
+            if (!Directory.Exists(QuestionsPath)) Directory.CreateDirectory(QuestionsPath);
         }
 
         private Quizzes LoadQuizzes()

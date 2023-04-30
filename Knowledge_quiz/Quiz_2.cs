@@ -31,12 +31,7 @@ namespace KnowledgeQuiz
             Output.Write($"{rating?.GetUserPlace(info.QuizName,info.UserName)}", X + 23, Y - 1, ConsoleColor.Gray);
         }
 
-       
-
-       
-
-
-        // startMenu methods
+        /// startMenu methods
         /// <summary>
         ///   Метод запускає утіліту редагування Вікторини
         /// </summary>
@@ -249,7 +244,6 @@ namespace KnowledgeQuiz
             Menu? userSettingMenu = null;
             Console.Clear();
              userSettingMenu = new($"   -= Налаштування \"{user?.LoginPass?.Login}\" =-", ConsoleColor.Green, ConsoleColor.DarkGray, ConsoleColor.Gray,
-                ("       Змінити логін",  delegate () { ChangeLogin(user); return true; } ),
                 ("       Змінити пароль", delegate () { ChangePassword(user); return true; } ),
                 ("       Змінити дату",   delegate () { ChangeDate(user); return true; } ));
             userSettingMenu.XPos = 10;
@@ -257,43 +251,7 @@ namespace KnowledgeQuiz
             userSettingMenu.Start();
         }
 
-
-        // userSettingMenu methods
-        /// <summary>
-        /// Метод заміняє логін користувача
-        /// </summary>
-        /// <param name="user"></param>
-        private void ChangeLogin(User? user)
-        {
-            int x = 14, y = 2;
-            string? login = null,password,oldLogin;
-            oldLogin = user?.LoginPass?.Login ;
-            Console.Clear();
-            Output.Write("-= Заміна логіна =-", x , y++, ConsoleColor.Green);
-            do
-            {
-                if (login != null)
-                {
-                    Output.Write("       Такий логін вже існує....", x + 17 + login.Length, y, ConsoleColor.Red);
-                    Console.ReadKey();
-                    Output.Write(new string(' ', login.Length + 32), x + 17, y, ConsoleColor.Red);
-                }
-                login = Input.GetStringRegex("Введіть новий логін  : ", loginRegex, x, y, ConsoleColor.Green,ConsoleColor.Green);
-            } while (users.Logins?.Contains(login) ?? false);
-            password = Input.GetStringRegex("Введіть пароль          : ", passwordRegex, x, ++y, ConsoleColor.Green, ConsoleColor.Green, '*');
-            if (user?.LoginPass?.ChangeLogin(login, password) ?? false)
-            {
-                if (users.DellUser(oldLogin))
-                {
-                    users.AddUser(user);
-                   SLSystem.SaveUsers();
-                }
-                Output.Write("Логін змінено....", x , ++y, ConsoleColor.Green);
-            }
-            else Output.Write("Невірний пароль ... Логін не змінено....", x, ++y, ConsoleColor.Red);
-            Console.ReadKey(true);
-        }
-
+     
         /// <summary>
         /// Метод заміняє пароль користувача
         /// </summary>

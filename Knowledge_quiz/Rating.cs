@@ -8,7 +8,7 @@ namespace KnowledgeQuiz
     [KnownType(typeof(SortedList<UserQuizInfo, string>))]
     [KnownType(typeof(Dictionary<string, SortedList<UserQuizInfo, string>>))]
     [Serializable]
-    internal class Rating :ISerializable
+    public class Rating :ISerializable
     {
         private readonly Dictionary<string,SortedList<UserQuizInfo,string>> ratingList;
 

@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace KnowledgeQuiz
 {
-    internal static class Input
+    public static class Input
     {
         /// <summary>
         /// Meтод надає інтерфейс користувачу для підтвердження або відміни дії

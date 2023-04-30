@@ -24,16 +24,19 @@ namespace KnowledgeQuiz
        
         public UserQuizInfo Start()
         {
-            int testPoint = 0, count = 1;
-            int  maxAnswers = 0, sel;
+            int testPoint = 0,
+                questionNumber = 1,
+                maxAnswers = 0,
+                sel = 0;
             string? title = null;
             var sw = new Stopwatch();
+            List<string>  answers = new();
+            Menu menu = new($"   {title}", ConsoleColor.Green, ConsoleColor.Green, ConsoleColor.Gray);
             sw.Start();
             foreach (var question in questions) 
             {
                 int X = 25, Y = 1;
                 var aVariants = Utility.Shufflet(question.AnswerVariants);
-                List<string> answersVariants, answers;
                 switch (question)
                 {
                     case MAQuestion:
@@ -47,31 +50,48 @@ namespace KnowledgeQuiz
                 }
                 Console.Clear();
                 Output.Write($"-= {quizName} =-", X, Y++, ConsoleColor.Red);
-                Output.Write($"Питання {count++} / {questions.Count()}", X - 1, Y++, ConsoleColor.Gray);
+                Output.Write($"Питання {questionNumber++} / {questions.Count()}", X - 1, Y++, ConsoleColor.Gray);
                 Output.WriteText(question.QuestionText, X - 15, Y, ConsoleColor.Green);
-                answersVariants = new List<string>();
-                for (int i = 0; i < question.AnswerVariantsCount; i++)
-                    answersVariants.Add($"      {(char)(i + 97)}) {aVariants.ElementAt(i)}");
-                Menu menu = new($"   {title}", X - 18, Console.CursorTop + 2, ConsoleColor.Green, ConsoleColor.Green, ConsoleColor.Gray, answersVariants);
-                answers = new List<string>();
+                menu.Clear();
+                answers.Clear();
+                sel = 0;
+                foreach (var item in aVariants)
+                    menu.AddMenuItem(($"  {(char)(sel++ + 97)}) {item}", null));
+                menu.XPos = X - 18;
+                menu.YPos = Console.CursorTop + 2;
                 do
                 {
                     sel = menu.Start();
-                    if (Input.Confirm("Ви впевненні ?", "Так", "Ні", X - 12, Console.CursorTop + 2, ConsoleColor.DarkGray, ConsoleColor.Gray))
+                    if (sel >= 0 )
                     {
-                        if (sel >= 0 && !answers.Contains(aVariants.ElementAt(sel)))
+                        if (!answers.Contains(aVariants.ElementAt(sel)))
                         {
-                            int y = Console.CursorTop + 2;
-                            answers.Add(aVariants.ElementAt(sel));
                             maxAnswers--;
-                            Output.Write($"Обрані варіанти :", X - 12, y++, ConsoleColor.Green);
-                            foreach (var item in answers)
-                                Output.Write($"{item}", X - 10, y++, ConsoleColor.Red);
+                            if (maxAnswers == 0)
+                            {
+                                if (Input.Confirm("Ви впевненні ?", "Так", "Ні", X - 12, Console.CursorTop + 2, ConsoleColor.DarkGray, ConsoleColor.Gray))
+                                {
+                                    answers.Add(aVariants.ElementAt(sel));
+                                    sel = -1;
+                                }
+                                else maxAnswers++;
+                            }
+                            else
+                            {
+                                answers.Add(aVariants.ElementAt(sel));
+                                menu.SetItemString(sel, "*" + menu.GetItemString(sel)[1..]);
+                            }
+                        }
+                        else
+                        {
+                            answers.Remove(aVariants.ElementAt(sel));
+                            maxAnswers++;
+                            menu.SetItemString(sel, " " + menu.GetItemString(sel)[1..]);
                         }
                     }
-                    else if (sel < 0) sel = 0;
+                    else if (!Input.Confirm("Ви впевненні ?", "Так", "Ні", X - 12, Console.CursorTop + 2, ConsoleColor.DarkGray, ConsoleColor.Gray)) sel = 0;
                 }
-                while (maxAnswers > 0 && sel >= 0);
+                while (sel >= 0);
                 if (question.AnswerQuestion(answers.ToArray())) testPoint++;
             }
             sw.Stop();

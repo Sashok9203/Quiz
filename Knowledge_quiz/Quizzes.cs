@@ -1,4 +1,5 @@
 ﻿
+using System.Collections;
 using System.Runtime.Serialization;
 
 namespace KnowledgeQuiz
@@ -6,7 +7,7 @@ namespace KnowledgeQuiz
     
     [KnownType(typeof(Dictionary<string, string>))]
     [Serializable]
-    public class Quizzes : ISerializable
+    public class Quizzes : ISerializable,IEnumerable<KeyValuePair<string,string>>
     {
         public const string MixedQuizName = "Змішана";
 
@@ -25,12 +26,11 @@ namespace KnowledgeQuiz
                 //{ "Біологія", @"Questions\biology.xml" }
             };
         }
+       
 
-        public IEnumerable<string> QuezzesNames => quizzes?.Keys.ToArray() ?? Array.Empty<string>();
+        public IEnumerable<string> QuezzesNames => quizzes.Keys ;
 
-        public IEnumerable<string> QuezzesPathes => quizzes?.Values.ToArray() ?? Array.Empty<string>();
-
-        public IEnumerable<Question>? AllQuestions
+        public IEnumerable<Question> AllQuestions
         {
             get 
             {
@@ -71,6 +71,10 @@ namespace KnowledgeQuiz
         public void ADDQuiz(string? quizeName, string? path) => quizzes.Remove(quizeName ?? "");
 
         public void GetObjectData(SerializationInfo info, StreamingContext context) => info.AddValue("Quiz", quizzes);
-       
+
+        public IEnumerator<KeyValuePair<string, string>> GetEnumerator() => quizzes.GetEnumerator();
+        
+        IEnumerator IEnumerable.GetEnumerator() => quizzes.GetEnumerator();
+        
     }
 }

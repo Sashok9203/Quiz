@@ -21,7 +21,6 @@
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgAABQAAAAAAAAIAAAAAA=</HashCode>
       <FileName>MAQuestion.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" />
   </Class>
   <Class Name="KnowledgeQuiz.Menu">
     <Position X="4.75" Y="0.5" Width="1.5" />
@@ -58,7 +57,7 @@
   <Class Name="KnowledgeQuiz.Quiz">
     <Position X="6.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>IEAAEQAAACEAgBIAAAAAAkAABQAFAAAAAAAAAhBEAgA=</HashCode>
+      <HashCode>IAAAAAAAACAAABIAAAAAAgAAASAAAAAAAAAAAgAAAAA=</HashCode>
       <FileName>Quiz.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -66,7 +65,7 @@
   <Class Name="KnowledgeQuiz.Quizzes">
     <Position X="8.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAYAAAAIAIIgAAIACAgAAAAAAAAAAIAAAAAAgA=</HashCode>
+      <HashCode>AAAAAAAYAAAAIAIIgAAIACQgAAAAAAAAAAAAAABAAgA=</HashCode>
       <FileName>Quizzes.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -77,7 +76,6 @@
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgAAAQAAAAAAAAIAAAAAI=</HashCode>
       <FileName>SAQuestion.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" />
   </Class>
   <Class Name="KnowledgeQuiz.Serializer">
     <Position X="24" Y="0.5" Width="1.5" />
@@ -89,7 +87,7 @@
   <Class Name="KnowledgeQuiz.Setting">
     <Position X="17" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AABAAAgBAAABAIAAAAAAAAAiARAAAAAQKAAAAAAAAAI=</HashCode>
+      <HashCode>IABCAAAAAAAAAIAAAABAAAAgIAAAAAAAIAAAAQAAAAA=</HashCode>
       <FileName>Setting.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -132,6 +130,13 @@
       <FileName>Rating.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="KnowledgeQuiz.SaveLoadSystem">
+    <Position X="20.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IEgACSgBIhgAgQoxsAAAAEEAAQAAAAECCAoAAgBAQAA=</HashCode>
+      <FileName>SaveLoadSystem.cs</FileName>
+    </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

@@ -31,16 +31,17 @@ namespace KnowledgeQuiz
             SLSystem = new();
 
             disposedValue = false;
-          
         }
 
         public void Start()
         {
            
-            Menu startMenu = new Menu("   -= Вікторина знань =-",10,1,ConsoleColor.Green,ConsoleColor.DarkGray,ConsoleColor.Gray,
-                ("          Увійти", delegate () { Enter(); return false; } ),
-                ("        Реєстрація", delegate () { Registration(); return false; } ),
-                ("     Адмініструввання", delegate () { StartUtility("EditUtility.exe"); return false; }));
+            Menu startMenu = new Menu("   -= Вікторина знань =-",ConsoleColor.Green,ConsoleColor.DarkGray,ConsoleColor.Gray,
+                ("       Увійти", delegate () { Enter(); return false; } ),
+                ("     Реєстрація", delegate () { Registration(); return false; } ),
+                ("  Адмініструввання", delegate () { StartUtility("EditUtility.exe"); return false; }));
+            startMenu.XPos = 10;
+            startMenu.YPos = 1;
             startMenu.Start();
         }
 
@@ -51,9 +52,6 @@ namespace KnowledgeQuiz
                 if (disposing)
                 {
                     SLSystem.SaveAll();
-
-
-
                 }
 
                 // TODO: освободить неуправляемые ресурсы (неуправляемые объекты) и переопределить метод завершения

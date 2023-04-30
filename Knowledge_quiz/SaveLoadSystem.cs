@@ -17,6 +17,8 @@ namespace KnowledgeQuiz
         private const string defDataDir = @"ProgramData";
         private const string defQuestionDir = @"Questions";
 
+
+
         public string DataDir { set { setting.curentDataDir = value; } }
         public string QuestionDir { set { setting.curentQuestionDir = value; } }
         public string QuizzesFileName { set { setting.curentQuizzesFileName = value; } }
@@ -41,7 +43,7 @@ namespace KnowledgeQuiz
 
         private  Users?   users   = null;
 
-        private  Rating?  rating = null;
+        private  Rating?  rating  = null;
 
         public  Quizzes Quizzes  => quizzes ??= LoadQuizzes();
 
@@ -58,7 +60,7 @@ namespace KnowledgeQuiz
             }
         }
 
-        public SaveLoadSystem()
+        public  SaveLoadSystem()
         {
             try { if (File.Exists(setingsPath)) setting = Serializer.Deserialize<Setting>(Path.Combine(Environment.CurrentDirectory, setingsPath)) ?? new(); }
             catch (SerializationException)
@@ -77,18 +79,18 @@ namespace KnowledgeQuiz
                 Directory.CreateDirectory(QuestionsPath);
                 if (quizzes.Count != 0)
                 {
-                    sb.Append(" {DateTime.Now} : Файли з питаннями не знайдені : ");
-                    foreach (var item in quizzes.QuezzesPathes)
-                        sb.Append($" {item} ");
+                    sb.Append($" {DateTime.Now} : Файли з питаннями не знайдені : ");
+                    foreach (var item in quizzes)
+                        sb.Append($" {item.Value} ");
                     quizzes.Clear();
                 }
             }
             else
             {
-                foreach (var item in quizzes.QuezzesPathes)
+                foreach (var item in quizzes)
                 {
                     bool check = true;
-                    string path = Path.Combine(Environment.CurrentDirectory, item);
+                    string path = Path.Combine(Environment.CurrentDirectory, item.Value);
                     if (!File.Exists(path))
                     {
                         sb.AppendLine($" {DateTime.Now} : Файл з питаннями вікторини \"{path}\" відсутній...");
@@ -103,10 +105,10 @@ namespace KnowledgeQuiz
                             check = false;
                         }
                     }
-                    if (!check) quizzes?.DellQuiz(item);
+                    if (!check) quizzes?.DellQuiz(item.Key);
                 }
             }
-            saveLog(sb.ToString());
+            if(sb.Length != 0) saveLog(sb.ToString());
             return quizzes;
         }
 

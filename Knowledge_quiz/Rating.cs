@@ -38,18 +38,11 @@ namespace KnowledgeQuiz
 
         public IEnumerable<UserQuizInfo>? GetUserQuizInfos(string userName)
         {
-            List<UserQuizInfo>? infos = null;
-
             foreach (var item in ratingList)
             {
                 UserQuizInfo? info = GetUserQuizInfo(item.Key, userName);
-                if (info != null)
-                {
-                    infos ??= new();
-                    infos.Add(info);
-                }
+                if (info != null)  yield return info;
             }
-            return infos;
         }
 
         public UserQuizInfo? GetUserQuizInfo(string quizName,string userName)

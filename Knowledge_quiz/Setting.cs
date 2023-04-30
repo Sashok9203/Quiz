@@ -12,30 +12,19 @@ namespace KnowledgeQuiz
         private const string defAdminLogin  = "admin";
         private const string defAdminPass   = "admin";
 
-
-
-        public  string? curentDataDir;
-        public  string? curentQuestionDir;
-        public  string? curentQuizzesFileName;
-        public  string? curentUserFileName;
-        public  string? curentRatingFileName;
-
-
-        
-        
-
+        public  string? curentQuizzesFileName = null;
+        public  string? curentUserFileName = null;
+        public  string? curentRatingFileName = null;
+        public  string? curentDataDir = null;
+        public  string? curentQuestionDir = null;
 
         public LPass AdminLogPass { get; private set; }
 
         public Setting()
         {
             AdminLogPass = new(defAdminLogin, defAdminPass);
-            curentQuizzesFileName = null;
-            curentUserFileName = null;
-            curentRatingFileName = null;
-            curentDataDir = null;
-            curentQuestionDir = null;
-    }
+           
+        }
 
         public Setting(SerializationInfo info, StreamingContext context)
         {

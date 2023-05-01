@@ -138,7 +138,7 @@ namespace EditUtility
                 {
                     IEnumerable<User> allUsers = users.AllUsers;
                     foreach (var item in allUsers)
-                        menu.AddMenuItem(($"   {item}", null));
+                        menu.AddMenuItem(($"     {item}", null));
                     sel = menu.Start();
                     if (sel >= 0)
                     {

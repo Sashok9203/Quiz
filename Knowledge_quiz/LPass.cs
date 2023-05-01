@@ -6,9 +6,9 @@ namespace KnowledgeQuiz
     [Serializable]
     public class LPass : ISerializable
     {
-        public string? Login { get; private set; }
+        public string Login { get; private set; }
 
-        private string? passHash;
+        private string passHash;
 
         public LPass(string login,string password)
         {
@@ -18,8 +18,8 @@ namespace KnowledgeQuiz
 
         public LPass(SerializationInfo info, StreamingContext context)
         {
-            passHash = info.GetString("PassHash");
-            Login = info.GetString("login");
+            passHash = info.GetString("PassHash") ?? string.Empty;
+            Login = info.GetString("login") ?? string.Empty;
         }
 
         public bool ChangeLogin(string login, string password)

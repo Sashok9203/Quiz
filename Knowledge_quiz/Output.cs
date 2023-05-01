@@ -59,6 +59,7 @@
                 Console.SetCursorPosition(Xpos, YPos + i);
                 Console.Write(tmp);
             }
+            Console.SetCursorPosition(Xpos, YPos);
         }
     }
 }

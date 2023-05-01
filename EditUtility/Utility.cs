@@ -31,33 +31,32 @@ namespace EditUtility
         }
         public void Start()
         {
-            int x = 14, y = 2;
+            int  X = 10, Y = 1,y = Y;
             string? login, password;
             Console.Clear();
-            Output.Write("-= Вхід в систему =-", x, y++, ConsoleColor.Magenta);
-            login = Input.GetStringRegex("Логін  : ", loginRegex, x, y++, ConsoleColor.Green, ConsoleColor.Green);
-            password = Input.GetStringRegex("Пароль : ", passwordRegex, x, y++, ConsoleColor.Green, ConsoleColor.Green, '*');
+            Output.Write("-= Вхід в систему =-", X, y++, ConsoleColor.Magenta);
+            login = Input.GetStringRegex("   Логін  : ", loginRegex, X, y++, ConsoleColor.Green, ConsoleColor.Green);
+            password = Input.GetStringRegex("   Пароль : ", passwordRegex, X, y++, ConsoleColor.Green, ConsoleColor.Green, '*');
             if (users.AdminLogPass.Login != login || (!users.AdminLogPass.ChackPassword(password)))
             {
-                Output.Write("Невірний логін або пароль...", x, y++, ConsoleColor.Magenta);
+                Output.Write("Невірний логін або пароль...", X, y++, ConsoleColor.Magenta);
                 Console.ReadKey(true);
                 return;
             }
-            Output.Write($"Вітаємо в системі ...", x, ++y, ConsoleColor.Green);
+            Output.Write($"Вітаємо в системі ...", X, ++y, ConsoleColor.Green);
             Console.ReadKey(true);
             Console.Clear();
-            Menu userMenu = new($"   -= Меню адміністратора  =-", ConsoleColor.Green, ConsoleColor.DarkGray, ConsoleColor.Gray,
-              ("    Топ 20", delegate () { return false; }
-            ),
-              ("    Мої результати ", delegate () {  return false; }
-            ),
-              ("    Стартувати вікторину", delegate () {  return false; }
-            ),
-              ("    Налаштування", delegate () {  return false; }
-            ));
-            userMenu.XPos = 10;
-            userMenu.YPos = 1;
-            userMenu.Start();
+            Menu adminMenu = new($"   -= Меню адміністратора  =-", ConsoleColor.Green, ConsoleColor.DarkGray, ConsoleColor.Gray,
+              ("    Користувачі", Users),
+              ("    Рейтинги", () => { return false; } ),
+              ("    Вікторини", () => { return false; } ),
+              ("    Налаштування", Setting))
+                {
+                    XPos = X,
+                    YPos = Y
+                };
+            adminMenu.Start();
+            adminMenu.Hide();
         }
 
         protected virtual void Dispose(bool disposing)

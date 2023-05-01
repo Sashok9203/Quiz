@@ -43,6 +43,7 @@ namespace KnowledgeQuiz
             startMenu.XPos = 10;
             startMenu.YPos = 1;
             startMenu.Start();
+            startMenu.Hide();
         }
 
         protected virtual void Dispose(bool disposing)

@@ -62,7 +62,6 @@ namespace KnowledgeQuiz
             int x = 14, y = 2;
             User? curentUser;
             string? login , password;
-            Console.Clear();
             Output.Write("-= Вхід в систему =-", x, y++ , ConsoleColor.Magenta);
             login = Input.GetStringRegex("Логін  : ", loginRegex, x, y++, ConsoleColor.Green, ConsoleColor.Green);
             password = Input.GetStringRegex("Пароль : ", passwordRegex, x, y++, ConsoleColor.Green, ConsoleColor.Green,'*');
@@ -71,6 +70,7 @@ namespace KnowledgeQuiz
             {
                 Output.Write("Невірний логін або пароль...", x, y++, ConsoleColor.Magenta);
                 Console.ReadKey(true);
+                Console.Clear();
                 return;
             }
             Output.Write($"Вітаємо в системі {curentUser?.Name} ...", x, ++y, ConsoleColor.Green);
@@ -84,6 +84,7 @@ namespace KnowledgeQuiz
             userMenu.XPos = 10;
             userMenu.YPos = 1;
             userMenu.Start();
+            userMenu.Hide();
         }
 
         /// <summary>
@@ -94,8 +95,6 @@ namespace KnowledgeQuiz
             int x = 14, y = 2;
 
             string? name, login = null, password;
-
-            Console.Clear();
 
             Output.Write("-= Реєстрація нового користувача =-", x - 4, y - 2,ConsoleColor.Magenta);
 
@@ -126,6 +125,7 @@ namespace KnowledgeQuiz
             Output.Write(" Ви усппішно зареєстровані в системі....", x,Console.CursorTop + 1,  ConsoleColor.Blue);
 
             Console.ReadKey(true);
+            Console.Clear();
         }
 
 

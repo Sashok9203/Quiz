@@ -5,14 +5,7 @@ namespace KnowledgeQuiz
     public class Menu
     {
         private int _selpos;
-       
-        private void clear()
-        {
-            Output.Write(new string(' ',Title?.Length ?? 0), (int)XPos, (int)YPos);
-            for (int i = 0; i < mItems?.Count; i++)
-                 Output.Write(new string(' ', mItems?[i].iName?.Length ?? 0), (int)XPos, (int)YPos + i + 1);
-        }
-
+        
         private void show()
         {
             Output.Write(Title,XPos, YPos, tColor);
@@ -69,16 +62,26 @@ namespace KnowledgeQuiz
                 if (Console.KeyAvailable)
                 {
                     ck = Console.ReadKey(true).Key;
-                    if (ck == ConsoleKey.UpArrow || ck == ConsoleKey.DownArrow) SelectPos -= 39 - (int)ck;
+                    if (ck == ConsoleKey.UpArrow || ck == ConsoleKey.DownArrow)
+                    {
+                        SelectPos -= 39 - (int)ck;
+                        show();
+
+                    }
                     else if (ck == ConsoleKey.Enter)
                     {
-                       if(mItems[SelectPos].iProc?.Invoke() ?? true) return SelectPos;
-                        Console.Clear();
+                        if (mItems[SelectPos].iProc == null) return SelectPos;
+                        else
+                        {
+                            Hide();
+                            mItems[SelectPos].iProc?.Invoke();
+                            show();
+                        }
                     }
-                    show();
                 }
             }
             while (ck != ConsoleKey.Escape || mItems.Count == 0);
+            //Hide();
             return -1;
         }
 
@@ -101,7 +104,7 @@ namespace KnowledgeQuiz
         public int  DelMenuItem(int index)
         {
             if (index < 0 || index >= mItems?.Count) return -1;
-            clear();
+            Hide();
             mItems?.RemoveAt(index);
             SelectPos = 0;
             show();
@@ -109,6 +112,13 @@ namespace KnowledgeQuiz
         }
 
         public void Clear() => mItems.Clear();
+
+        public void Hide()
+        {
+            Output.Write(new string(' ', Title?.Length ?? 0), XPos, YPos);
+            for (int i = 0; i < mItems?.Count; i++)
+                Output.Write(new string(' ', mItems?[i].iName?.Length ?? 0),XPos, YPos + i + 1);
+        }
 
         public string? Title { get; set; }
 

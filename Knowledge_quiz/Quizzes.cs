@@ -1,5 +1,6 @@
 ﻿
 using System.Collections;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 
 namespace KnowledgeQuiz
@@ -20,6 +21,7 @@ namespace KnowledgeQuiz
 
         public Quizzes()
         {
+           
             quizzes = new()
             {
                 //{ "Математика", @"Questions\math.xml" },
@@ -30,43 +32,29 @@ namespace KnowledgeQuiz
 
         public IEnumerable<string> QuezzesNames => quizzes.Keys ;
 
-        public IEnumerable<Question> AllQuestions
-        {
-            get 
-            {
-                List<Question> list =  new();
-                foreach (var item in quizzes)
-                {
-                    Question[]? des = Serializer.Deserialize<Question[]>(Path.Combine(Environment.CurrentDirectory, item.Value));
-                    if(des != null) list.AddRange(des);
-                }
-                return list;
-            }
-        }
 
-        public IEnumerable<Question> GetQuizeQuestions(string quizeName) => Serializer.Deserialize<Question[]>(Path.Combine(Environment.CurrentDirectory, quizzes[quizeName])) ?? Array.Empty<Question>();
+
+        public string? GetQuizeQuestionsPath(string quizeName)
+        {
+            quizzes.TryGetValue(quizeName, out string? path);
+            return path;
+        }
 
         public int Count => quizzes?.Count ?? 0;
 
         public void Clear() => quizzes?.Clear();
 
-        /// <summary>
-        /// Метод повертає клас Test який містить питання в залежності від назви вікторини 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public  Test GetTest(string userName,string quizeName)
+        public bool SetQuizesQuestions(string quizeName,string path)
         {
-            const int maxQustionCountInQuiz = 20;
-            IEnumerable<Question> questions;
-            if (quizeName != MixedQuizName) questions = Utility.Shufflet(GetQuizeQuestions(quizeName));
-            else questions = Utility.Shufflet(AllQuestions);
-            if (questions.Count() == 0) throw new ApplicationException($"Вісторина \"{quizeName}\" не містить питань");
-            int questionCount = questions.Count() < maxQustionCountInQuiz ? questions.Count() : maxQustionCountInQuiz;
-            return new Test(userName,quizeName, questions.Take(questionCount));
+            if(quizzes.ContainsKey(quizeName))
+            {
+                quizzes[quizeName] = path;
+                return true;
+            }
+            return false;
         }
 
-        public void DellQuiz(string? quizeName) => quizzes.Remove(quizeName ?? "");
+        public bool DellQuiz(string? quizeName) => quizzes.Remove(quizeName ?? "");
 
         public void ADDQuiz(string? quizeName, string? path) => quizzes.Remove(quizeName ?? "");
 

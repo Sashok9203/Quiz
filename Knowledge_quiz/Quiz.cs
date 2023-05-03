@@ -16,6 +16,10 @@ namespace KnowledgeQuiz
 
         private const string loginRegex = @"[0-9a-zA-Z_]";
 
+        private const int passwordMaxLenght = 12;
+
+        public const int loginMaxLenght = 12;
+
         private  Quizzes quizzes => SLSystem.Quizzes;
 
         private  Users users  => SLSystem.Users;
@@ -35,11 +39,11 @@ namespace KnowledgeQuiz
 
         public void Start()
         {
-           
-            Menu startMenu = new Menu("   -= Вікторина знань =-",ConsoleColor.Green,ConsoleColor.DarkGray,ConsoleColor.Gray,
-                ("       Увійти", delegate () { Enter(); return false; } ),
-                ("     Реєстрація", delegate () { Registration(); return false; } ),
-                ("  Адмініструввання", delegate () { StartUtility("EditUtility.exe"); return false; }));
+
+            Menu startMenu = new Menu("   -= Вікторина знань =-", ConsoleColor.Green, ConsoleColor.DarkGray, ConsoleColor.Gray,
+                ("       Увійти",  () =>  Enter()),
+                ("     Реєстрація",  () => Registration()),
+                ("  Адмініструввання",  () => { StartUtility("EditUtility.exe") ; }));
             startMenu.XPos = 10;
             startMenu.YPos = 1;
             startMenu.Start();

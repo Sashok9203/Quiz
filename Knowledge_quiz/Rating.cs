@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 
@@ -16,10 +17,49 @@ namespace KnowledgeQuiz
 
         public void AddQuizInfo(UserQuizInfo info)
         {
-            if (!ratingList.ContainsKey(info.QuizName)) ratingList.Add(info.QuizName, new());
+            if (!ratingList.ContainsKey(info.QuizName)) 
+                ratingList.Add(info.QuizName, new());
             else if (ratingList[info.QuizName].ContainsValue(info.UserName))
                 ratingList[info.QuizName].RemoveAt(ratingList[info.QuizName].IndexOfValue(info.UserName));
             ratingList[info.QuizName].Add(info,info.UserName);
+        }
+
+        public int  DelUserRating(string userName)
+        {
+            int count = 0;
+            foreach (var item in ratingList)
+                if(DelUserQuizRating(item.Key, userName)) count++;
+            return count;
+        }
+
+        public bool DelUserQuizRating(string quizName, string userName)
+        {
+            if (ratingList.TryGetValue(quizName, out SortedList<UserQuizInfo, string>? value) && value.ContainsValue(userName))
+            {
+                value.RemoveAt(ratingList[quizName].IndexOfValue(userName));
+                return true;
+            }
+            return false;
+        }
+
+        public bool DelQuizRating(string quizName) => ratingList.Remove(quizName);
+
+        public IEnumerable<string> GetRatingNames()
+        {
+            List<string> names = new();
+            foreach (var item in ratingList)
+              foreach (var list in item.Value)
+                  if (!names.Contains(list.Value)) names.Add(list.Value);
+            return names;
+        }
+
+        public void Clear() => ratingList.Clear();
+
+        public int GetUserPlace(string quizName, string userName)
+        {
+            if (ratingList.ContainsKey(quizName) && ratingList[quizName].ContainsValue(userName))
+                return ratingList[quizName].IndexOfValue(userName) + 1;
+            return 0;
         }
 
         public IEnumerable<UserQuizInfo>? GetQuizInfos(string quizName)
@@ -28,14 +68,7 @@ namespace KnowledgeQuiz
             if (ratingList.TryGetValue(quizName, out SortedList<UserQuizInfo, string>? value)) info = value.Keys;
             return info;
         }
-
-        public int GetUserPlace(string quizName, string userName)
-        {
-            if (ratingList.ContainsKey(quizName) && ratingList[quizName].ContainsValue(userName))
-               return ratingList[quizName].IndexOfValue(userName) + 1;
-            return 0;
-        }
-
+       
         public IEnumerable<UserQuizInfo>? GetUserQuizInfos(string userName)
         {
             foreach (var item in ratingList)

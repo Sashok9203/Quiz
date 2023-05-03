@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace KnowledgeQuiz
 {
 
@@ -18,24 +20,25 @@ namespace KnowledgeQuiz
 
         private readonly ConsoleColor tColor, iColor, sIColor;
 
-        private readonly List<(string iName, Func<bool>? iProc)> mItems;
+        private readonly List<(string iName, Action? iProc)> mItems;
 
         public int ItemCount { get => mItems?.Count ?? 0; }
 
-        public Menu(string? title, ConsoleColor titleColor,ConsoleColor iColor, ConsoleColor sIColor, params ValueTuple<string, Func<bool>?>[] items)
+        public Menu(string? title, ConsoleColor titleColor,ConsoleColor iColor, ConsoleColor sIColor, params ValueTuple<string, Action?>[] items)
         {
-            if (items != null ) mItems = new List<(string, Func<bool>?)>(items);
-            else mItems = new List<(string, Func<bool>?)>();
+            if (items != null ) mItems = new List<(string, Action?)>(items);
+            else mItems = new List<(string, Action?)>();
             Title = title ?? "";
             XPos = 0;
             YPos = 0;
             this.tColor = titleColor;
             this.iColor = iColor;
             this.sIColor = sIColor;
+            SelectPos = 0;
             _selpos = 0;
         }
 
-        public Menu(string? title, ConsoleColor titleColor, ConsoleColor iColor, ConsoleColor sIColor, IEnumerable<string>? itemNames , IEnumerable<Func<bool>>? itemHandles = null) 
+        public Menu(string? title, ConsoleColor titleColor, ConsoleColor iColor, ConsoleColor sIColor, IEnumerable<string>? itemNames , IEnumerable<Action>? itemHandles = null) 
                    : this(title, titleColor, iColor, sIColor)
         {
             if (itemHandles != null && itemHandles.Count() != itemNames?.Count() ) throw new ApplicationException(" Кількість пунктів меню не співпадає з кількістю функцій...");
@@ -46,7 +49,7 @@ namespace KnowledgeQuiz
         public int SelectPos
         {
             get => _selpos;
-            set => _selpos = value < 0 ? 0 : value > (mItems?.Count - 1 ?? 0) ? mItems?.Count - 1 ?? 0 : value;
+            private set => _selpos = value <= 0 ? 0 : value > (mItems?.Count - 1 ?? 0) ? mItems?.Count - 1 ?? 0 : value;
         }
 
         public int XPos { get; set; }
@@ -85,7 +88,7 @@ namespace KnowledgeQuiz
             return -1;
         }
 
-        public int AddMenuItem((string, Func<bool>?) item,int index = -1)
+        public int AddMenuItem((string, Action?) item,int index = -1)
         {
             if (index < 0) mItems?.Add(item);
             else if(index < mItems?.Count) mItems.Insert(index,item);
@@ -106,12 +109,16 @@ namespace KnowledgeQuiz
             if (index < 0 || index >= mItems?.Count) return -1;
             Hide();
             mItems?.RemoveAt(index);
-            SelectPos = 0;
+            SelectPos = index;
             show();
             return mItems?.Count ?? 0;
         }
 
-        public void Clear() => mItems.Clear();
+        public void Clear()
+        { 
+            mItems.Clear();
+            SelectPos = 0;
+        }
 
         public void Hide()
         {

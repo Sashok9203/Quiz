@@ -12,7 +12,8 @@ namespace KnowledgeQuiz
 
         public string Name { get; }
         
-        public DateTime Date 
+        public DateTime Date
+            
         {
             get => date;
             set
@@ -22,6 +23,8 @@ namespace KnowledgeQuiz
             }
         }
 
+        public DateTime RegistrationDate { get; }
+
         public LPass LoginPass { get; }
 
         public User(LPass lPass,string name, DateTime date)
@@ -30,6 +33,7 @@ namespace KnowledgeQuiz
             LoginPass = lPass;
             Name = name;
             Date = date;
+            RegistrationDate = DateTime.Now;
         }
 
         public User(SerializationInfo info, StreamingContext context)
@@ -37,19 +41,21 @@ namespace KnowledgeQuiz
             LoginPass = info.GetValue("LogPass", typeof(LPass)) as LPass ?? new(string.Empty, string.Empty);
             Name = info.GetString("name") ?? string.Empty;
             Date = info.GetDateTime("date") ;
+            RegistrationDate = info.GetDateTime("RegistrationDate");
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("LogPass", LoginPass);
-            info .AddValue("name", Name);   
+            info.AddValue("name", Name);   
             info.AddValue ("date", Date);
-            
+            info.AddValue("RegistrationDate", RegistrationDate);
+
         }
 
         public override string ToString()
         {
-            return $"\"{LoginPass?.Login}\"  {Name}";
+           return $"{("\""+LoginPass?.Login+ "\""),-Quiz.loginMaxLenght}  {Name}";
         }
     }
 }

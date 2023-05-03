@@ -63,8 +63,8 @@ namespace KnowledgeQuiz
             User? curentUser;
             string? login , password;
             Output.Write("-= Вхід в систему =-", x, y++ , ConsoleColor.Magenta);
-            login = Input.GetStringRegex("Логін  : ", loginRegex, x, y++, ConsoleColor.Green, ConsoleColor.Green);
-            password = Input.GetStringRegex("Пароль : ", passwordRegex, x, y++, ConsoleColor.Green, ConsoleColor.Green,'*');
+            login = Input.GetStringRegex("Логін  : ", loginRegex, x, y++,loginMaxLenght, ConsoleColor.Green, ConsoleColor.Green);
+            password = Input.GetStringRegex("Пароль : ", passwordRegex, x, y++,passwordMaxLenght, ConsoleColor.Green, ConsoleColor.Green,'*');
             curentUser = users.GetUser(login);
             if (curentUser == null || (!curentUser?.LoginPass?.ChackPassword(password) ?? false))
             {
@@ -77,10 +77,10 @@ namespace KnowledgeQuiz
             Console.ReadKey(true);
             Console.Clear();
             Menu userMenu = new ($"   -= Меню користувача \"{curentUser?.LoginPass?.Login}\" =-", ConsoleColor.Green, ConsoleColor.DarkGray, ConsoleColor.Gray,
-                ("    Топ 20", delegate () { Top20(curentUser); return false; } ),
-                ("    Мої результати ", delegate () { MyResults(curentUser); return false; } ),
-                ("    Стартувати вікторину", delegate () { QuizStart(curentUser); return false; } ),
-                ("    Налаштування", delegate () { Setting(curentUser); return false; } ));
+                ("    Топ 20",  () =>  Top20(curentUser)  ),
+                ("    Мої результати ",  () =>  MyResults(curentUser)  ),
+                ("    Стартувати вікторину",  () =>  QuizStart(curentUser) ),
+                ("    Налаштування",  () =>  Setting(curentUser) ));
             userMenu.XPos = 10;
             userMenu.YPos = 1;
             userMenu.Start();
@@ -110,10 +110,10 @@ namespace KnowledgeQuiz
                     Console.ReadKey();
                     Output.Write(new string(' ', login.Length + 32), x + 26, y, ConsoleColor.Red);
                 }
-                login = Input.GetStringRegex("Введіть ваш логін       : ", loginRegex, x, y, ConsoleColor.Green, ConsoleColor.Green);
+                login = Input.GetStringRegex("Введіть ваш логін       : ", loginRegex, x, y,loginMaxLenght, ConsoleColor.Green, ConsoleColor.Green);
             } while (users.Logins?.Contains(login) ?? false);
 
-            password = Input.GetStringRegex("Введіть пароль          : ",passwordRegex, x, ++y, ConsoleColor.Green, ConsoleColor.Green,'*');
+            password = Input.GetStringRegex("Введіть пароль          : ",passwordRegex, x, ++y,passwordMaxLenght, ConsoleColor.Green, ConsoleColor.Green,'*');
 
             DateTime date = Input.GetDateTime(null,x,y,x,++y,"Веедіть рік народження : ", 
                 "Веедіть місяць народження : ","Веедіть день народження : ",ConsoleColor.Green, ConsoleColor.Green);
@@ -168,6 +168,7 @@ namespace KnowledgeQuiz
             }
             else Output.Write("Інформація відсутня", X, Y++, ConsoleColor.Green);
             Console.ReadKey();
+            Console.Clear();
         }
 
         private void MyResults(User? user)
@@ -178,12 +179,11 @@ namespace KnowledgeQuiz
             if (infos != null)
             {
                 foreach (var item in infos)
-                {
                     printUserQuizInfo(item, X, Y + Console.CursorTop + 1 , ConsoleColor.Red, ConsoleColor.Green);
-                }
             }
             else Output.Write("Результати відсутні", X, Y, ConsoleColor.Red);
             Console.ReadKey();
+            Console.Clear();
         }
 
         /// <summary>
@@ -209,15 +209,14 @@ namespace KnowledgeQuiz
             if (sel != quizChooseMenu.ItemCount - 1)
                 quizName = quizzes.QuezzesNames.ElementAt(sel);
 
-            try { test = quizzes?.GetTest(user?.Name,quizName); }
+            try { test = new (user?.Name,quizName,quizzes.GetQuizeQuestionsPath(quizName),SLSystem); }
             catch (Exception ex)
             {
                 Output.Write(ex.Message, 10, 1);
                 Console.ReadKey();
                 return;
             }
-            
-           
+     
 
             UserQuizInfo? qi = test?.Start();
 
@@ -233,6 +232,7 @@ namespace KnowledgeQuiz
             printUserQuizInfo(qi, 12, Console.CursorTop + 1, ConsoleColor.Green, ConsoleColor.Gray);
 
             Console.ReadKey();
+            Console.Clear();
         } 
 
         /// <summary>
@@ -244,11 +244,12 @@ namespace KnowledgeQuiz
             Menu? userSettingMenu = null;
             Console.Clear();
              userSettingMenu = new($"   -= Налаштування \"{user?.LoginPass?.Login}\" =-", ConsoleColor.Green, ConsoleColor.DarkGray, ConsoleColor.Gray,
-                ("       Змінити пароль", delegate () { ChangePassword(user); return true; } ),
-                ("       Змінити дату",   delegate () { ChangeDate(user); return true; } ));
+                ("       Змінити пароль",  () => { ChangePassword(user); } ),
+                ("       Змінити дату",    () => { ChangeDate(user); } ));
             userSettingMenu.XPos = 10;
             userSettingMenu.YPos = 1;
             userSettingMenu.Start();
+            userSettingMenu.Hide();
         }
 
      
@@ -262,16 +263,17 @@ namespace KnowledgeQuiz
             string  password, oldPass;
             Console.Clear();
             Output.Write("-= Заміна пароля =-", x, y++, ConsoleColor.Red);
-            oldPass = Input.GetStringRegex(     "Введіть пароль       : ", passwordRegex, x, y++, ConsoleColor.Green, ConsoleColor.DarkGreen);
+            oldPass = Input.GetStringRegex(     "Введіть пароль       : ", passwordRegex, x, y++,passwordMaxLenght ,ConsoleColor.Green, ConsoleColor.DarkGreen);
             if (user?.LoginPass?.ChackPassword(oldPass) ?? false)
             {
-                password = Input.GetStringRegex("Введіть новий пароль : ", passwordRegex, x, y++, ConsoleColor.Green, ConsoleColor.DarkGreen);
+                password = Input.GetStringRegex("Введіть новий пароль : ", passwordRegex, x, y++,passwordMaxLenght, ConsoleColor.Green, ConsoleColor.DarkGreen);
                 user.LoginPass.ChangePassword(password, oldPass);
                 Output.Write("Пароль  змінено...", x, y++, ConsoleColor.Red);
                 SLSystem.SaveUsers();
             }
             else Output.Write("Не вірний пароль ... Пароль не змінено...", x, y++, ConsoleColor.Red);
             Console.ReadKey();
+            Console.Clear();
         }
 
         /// <summary>
@@ -288,6 +290,7 @@ namespace KnowledgeQuiz
             Output.Write("Дату  змінено...", x, Console.CursorTop + 1, ConsoleColor.Red);
             SLSystem.SaveUsers();
             Console.ReadKey();
+            Console.Clear();
         }
 
 

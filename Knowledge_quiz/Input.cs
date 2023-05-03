@@ -91,7 +91,7 @@ namespace KnowledgeQuiz
         /// <param name="titleColor"></param>
         /// <param name="passColor"></param>
         /// <returns></returns>
-        public static string GetStringRegex(string title,string regex, int X, int Y, ConsoleColor titleColor, ConsoleColor passColor,char hideChar =(char)0)
+        public static string GetStringRegex(string title,string regex, int X, int Y,int sCount, ConsoleColor titleColor, ConsoleColor passColor,char hideChar =(char)0)
         {
             ConsoleKeyInfo ch = default;
             bool cVisible = Console.CursorVisible,hide = hideChar != 0;
@@ -110,7 +110,7 @@ namespace KnowledgeQuiz
                         Console.SetCursorPosition(Console.CursorLeft - 1, Y);
                         sb.Remove(sb.Length - 1, 1);
                     }
-                    else if (!Char.IsControl(ch.KeyChar) && Regex.IsMatch($"{ch.KeyChar}", regex))
+                    else if (!Char.IsControl(ch.KeyChar) && Regex.IsMatch($"{ch.KeyChar}", regex) && sb.Length!=sCount)
                     {
                         sb.Append(ch.KeyChar);
                         Output.Write($"{(hide ? hideChar : ch.KeyChar)}", passColor);

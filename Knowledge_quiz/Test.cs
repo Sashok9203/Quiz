@@ -9,13 +9,22 @@ namespace KnowledgeQuiz
         private IEnumerable<Question> questions;
         private readonly string? quizName;
         private readonly string? userName;
+        const int maxQustionCountInQuiz = 20;
 
 
-        public Test(string? userName, string? quizName, IEnumerable<Question> questions)
+        public Test(string? userName, string? quizName, string? questionPath,SaveLoadSystem sls)
         {
-            this.questions = questions;
+          
             this.quizName = quizName;
             this.userName = userName;
+           
+            IEnumerable<Question> quest;
+            if (quizName != Quizzes.MixedQuizName) quest = Utility.Shufflet(sls.LoadQuestions(questionPath));
+            else quest = Utility.Shufflet(sls.AllQuestions);
+            if (!quest.Any()) throw new ApplicationException($"Вісторина \"{quizName}\" не містить питань");
+            int questionCount = quest.Count() < maxQustionCountInQuiz ? quest.Count() : maxQustionCountInQuiz;
+            questions = quest.Take(questionCount);
+
         }
 
         /// <summary>
@@ -27,7 +36,7 @@ namespace KnowledgeQuiz
             int testPoint = 0,
                 questionNumber = 1,
                 maxAnswers = 0,
-                sel = 0;
+                sel;
             string? title = null;
             var sw = new Stopwatch();
             List<string>  answers = new();

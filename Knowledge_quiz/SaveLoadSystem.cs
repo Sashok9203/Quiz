@@ -5,170 +5,132 @@ using System.Runtime.Serialization;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace KnowledgeQuiz
 {
     public class SaveLoadSystem
     {
-       
-        private readonly string logPath ;
-        private readonly string defDataDir ;
-        private readonly string defQuestionDir ;
-
-        public string DataDir
-        {
-            get => setting.curentDataDir ?? defDataDir;
-            set => setting.curentDataDir = value;  
-        }
-
-        public string QuestionDir
-        { 
-            get => setting.curentQuestionDir ?? defQuestionDir;
-            set => setting.curentQuestionDir = value;
-        }
-
-        public string SetingsPath { get; }
-
-        public string QuizzesFile => Path.Combine(DataDir, "quizzes.xml");
-
-        public string UsersFile   => Path.Combine(DataDir, "users.xml");
-
-        public string RatingFile  => Path.Combine(DataDir, "rating.xml");
-      
-
+        private const string LogPath        = "log.txt";
+        private const string SetingsPath    = "setings.xml";
+        private const string DefDataDir     = "ProgramData";
+        private const string DefQuestionDir = "Questions";
+        
         private readonly Setting setting;
 
-        private  Quizzes? quizzes = null;
-
-        private  Users?   users   = null;
-
-        private  Rating?  rating  = null;
-
-        public  Quizzes Quizzes  => quizzes ??= LoadQuizzes();
-
-        public  Users Users => users ??= LoadUsers();
-       
-        public  Rating Rating  => rating ??= LoadRating() ;
+        private Quizzes? quizzes = null;
+        private Users? users = null;
+        private Rating? rating = null;
 
 
+        private string QuizzesFile  => Path.Combine(DataDir, "quizzes.xml");
+        private string UsersFile    => Path.Combine(DataDir, "users.xml");
+        private string RatingFile   => Path.Combine(DataDir, "rating.xml");
+        
         private void saveLog(string message)
         {
-            using (StreamWriter sw = new(new FileStream(Path.Combine(Environment.CurrentDirectory, logPath), FileMode.Append, FileAccess.Write)))
+            using (StreamWriter sw = new(new FileStream(LogPath, FileMode.Append, FileAccess.Write)))
             {
-                sw.WriteLine(message);
+                sw.WriteLine($" {DateTime.Now} : {message}");
             }
         }
-
-        public  SaveLoadSystem()
-        {
-            logPath = Path.Combine(Environment.CurrentDirectory, "log.txt");
-            SetingsPath = Path.Combine(Environment.CurrentDirectory, "setings.xml");
-            defDataDir = Path.Combine(Environment.CurrentDirectory, @"ProgramData");
-            defQuestionDir = Path.Combine(Environment.CurrentDirectory, @"Questions");
-            try
-            {
-                if (File.Exists(SetingsPath))
-                {
-                    setting = Serializer.Deserialize<Setting> (SetingsPath) ?? new();
-                    
-                }
-            }
-            catch (SerializationException)
-            { saveLog($" {DateTime.Now} : Помилка файлу налаштувань \"{SetingsPath}\""); }
-            setting ??= new();
-            if(!Directory.Exists(DataDir)) Directory.CreateDirectory(DataDir);
-            if (!Directory.Exists(QuestionDir)) Directory.CreateDirectory(QuestionDir);
-        }
-
         private Quizzes LoadQuizzes()
         {
-            StringBuilder sb = new();
-            try { if (File.Exists(QuizzesFile)) quizzes = Serializer.Deserialize<Quizzes>(QuizzesFile) ?? new(); }
-            catch (SerializationException) { sb.AppendLine($" {DateTime.Now} : Помилка файлу з питаннями \"{QuizzesFile}\"");}
-            quizzes ??= new();
-            if (!Directory.Exists(QuestionDir))
+            quizzes = Deserialize<Quizzes>(QuizzesFile) ?? new();
+            foreach (var item in quizzes)
             {
-                Directory.CreateDirectory(QuestionDir);
-                if (quizzes.Count != 0)
+                bool check = true;
+                string path = Path.Combine(QuestionDir, item.Value);
+                if (!File.Exists(path))
                 {
-                    sb.Append($" {DateTime.Now} : Файли з питаннями не знайдені : ");
-                    foreach (var item in quizzes)
-                        sb.Append($" {item.Value} ");
-                    quizzes.Clear();
+                    saveLog($"Файл з питаннями вікторини \"{path}\" відсутній...");
+                    check = false;
                 }
+                else if (Deserialize<Question[]>(path) == null) check = false;
+                if (!check) quizzes?.DellQuiz(item.Key);
             }
-            else
-            {
-                foreach (var item in quizzes)
-                {
-                    bool check = true;
-                    string path = Path.Combine(Environment.CurrentDirectory, item.Value);
-                    if (!File.Exists(path))
-                    {
-                        sb.AppendLine($" {DateTime.Now} : Файл з питаннями вікторини \"{path}\" відсутній...");
-                        check = false;
-                    }
-                    else
-                    {
-                        try { Serializer.Deserialize<Question[]>(path); }
-                        catch (SerializationException)
-                        {
-                            sb.AppendLine($" {DateTime.Now} : Помилка завантаження файлу з питаннями вікторини\"{path}\" ");
-                            check = false;
-                        }
-                    }
-                    if (!check) quizzes?.DellQuiz(item.Key);
-                }
-            }
-            if(sb.Length != 0) saveLog(sb.ToString());
             return quizzes;
         }
-
-        private Users LoadUsers()
+        private Users LoadUsers() => Deserialize<Users>(UsersFile) ?? new();
+        private Rating LoadRating() => rating = Deserialize<Rating>(RatingFile) ?? new();
+        private void Serialize<T>(string paths, T obj)
         {
-            try { if (File.Exists(UsersFile)) users = Serializer.Deserialize<Users>(UsersFile) ?? new(); }
-            catch (SerializationException)
-            { saveLog($" {DateTime.Now} : Помилка файлу з данними про користувачів \"{UsersFile}\""); }
-            users ??= new();
-            return users ;
+
+            DataContractSerializer serializer = new(typeof(T));
+            using (var fs = XmlWriter.Create(paths, new XmlWriterSettings { Encoding = Encoding.UTF8 }))
+            {
+                try { serializer.WriteObject(fs, obj); }
+                catch (SerializationException) { saveLog($"Не вдалося зберегти файл {paths}"); }
+            }
+        }
+        private T? Deserialize<T>(string paths) where T : class
+        {
+            if (File.Exists(paths))
+            {
+                DataContractSerializer serializer = new(typeof(T));
+                using (XmlReader xr = XmlReader.Create(paths))
+                {
+                    T? tmp = null;
+                    try { tmp = serializer.ReadObject(xr) as T; }
+                    catch (SerializationException) { saveLog($"Помилка завантаження файлу {paths}"); }
+                    return tmp;
+                }
+            }
+            else return null;
         }
 
-        private Rating LoadRating()
+        public SaveLoadSystem()
         {
-            try { if (File.Exists(RatingFile)) rating = Serializer.Deserialize<Rating>(RatingFile) ?? new(); }
-            catch (SerializationException)
-            { saveLog($" {DateTime.Now} : Помилка файлу з рейтингами користувачів \"{RatingFile}\""); }
-            rating ??= new();
-            return rating ;
+            setting = Deserialize<Setting>(SetingsPath) ?? new();
+            if (!Directory.Exists(DataDir)) Directory.CreateDirectory(DataDir);
+            if (!Directory.Exists(QuestionDir)) Directory.CreateDirectory(QuestionDir);
         }
-
-        public IEnumerable<Question> LoadQuestions(string fileName) => Serializer.Deserialize<Question[]>(Path.Combine(QuizzesFile, fileName)) ?? Array.Empty<Question>();
-
-
-
+        public string DataDir
+        {
+            get => setting.curentDataDir ?? DefDataDir;
+            set => setting.curentDataDir = value;
+        }
+        public string QuestionDir
+        {
+            get => setting.curentQuestionDir ?? DefQuestionDir;
+            set => setting.curentQuestionDir = value;
+        }
+        public Quizzes Quizzes => quizzes ??= LoadQuizzes();
+        public Users Users => users ??= LoadUsers();
+        public Rating Rating => rating ??= LoadRating();
+        public IEnumerable<Question> LoadQuestions(string? fileName) => Deserialize<Question[]>(Path.Combine(QuestionDir, fileName)) ?? Array.Empty<Question>();
+        public IEnumerable<Question> AllQuestions
+        {
+            get
+            {
+                List<Question> list = new();
+                foreach (var item in quizzes)
+                {
+                    IEnumerable<Question>? des = LoadQuestions(item.Value);
+                    if (des != null) list.AddRange(des);
+                }
+                return list;
+            }
+        }
         public void SaveQuizzes()
         {
-            if(quizzes != null)  Serializer.Serialize(QuizzesFile, quizzes);
+            if (quizzes != null) Serialize(QuizzesFile, quizzes);
         }
-
         public void SaveUsers()
         {
-            if (users != null) Serializer.Serialize(UsersFile, users);
+            if (users != null) Serialize(UsersFile, users);
         }
-
         public void SaveRating()
         {
-            if (rating != null) Serializer.Serialize(RatingFile, rating);
+            if (rating != null) Serialize(RatingFile, rating);
         }
-
-        public void SaveSettings() => Serializer.Serialize(SetingsPath, setting);
-
+        public void SaveSettings() => Serialize(SetingsPath, setting);
         public void SaveAll()
         {
             SaveQuizzes();
             SaveUsers();
             SaveRating();
         }
-
+       
     }
 }

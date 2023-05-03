@@ -14,6 +14,10 @@ namespace EditUtility
 
         private const string loginRegex = @"[0-9a-zA-Z_]";
 
+        private const int passwordMaxLenght = 12;
+
+        private const int loginMaxLenght = 12;
+
         private Quizzes quizzes => SLSystem.Quizzes;
 
         private Users users => SLSystem.Users;
@@ -29,14 +33,15 @@ namespace EditUtility
             SLSystem = new();
             disposedValue = false;
         }
+
         public void Start()
         {
             int  X = 10, Y = 1,y = Y;
             string? login, password;
             Console.Clear();
             Output.Write("-= Вхід в систему =-", X, y++, ConsoleColor.Magenta);
-            login = Input.GetStringRegex("   Логін  : ", loginRegex, X, y++, ConsoleColor.Green, ConsoleColor.Green);
-            password = Input.GetStringRegex("   Пароль : ", passwordRegex, X, y++, ConsoleColor.Green, ConsoleColor.Green, '*');
+            login = Input.GetStringRegex("   Логін  : ", loginRegex, X, y++, loginMaxLenght, ConsoleColor.Green, ConsoleColor.Green);
+            password = Input.GetStringRegex("   Пароль : ", passwordRegex, X, y++, passwordMaxLenght, ConsoleColor.Green, ConsoleColor.Green, '*');
             if (users.AdminLogPass.Login != login || (!users.AdminLogPass.ChackPassword(password)))
             {
                 Output.Write("Невірний логін або пароль...", X, y++, ConsoleColor.Magenta);
@@ -48,8 +53,8 @@ namespace EditUtility
             Console.Clear();
             Menu adminMenu = new($"   -= Меню адміністратора  =-", ConsoleColor.Green, ConsoleColor.DarkGray, ConsoleColor.Gray,
               ("    Користувачі", Users),
-              ("    Рейтинги", () => { return false; } ),
-              ("    Вікторини", () => { return false; } ),
+              ("    Рейтинги", Ratings),
+              ("    Вікторини", QuizzesEdit),
               ("    Налаштування", Setting))
                 {
                     XPos = X,

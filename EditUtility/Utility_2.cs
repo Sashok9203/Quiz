@@ -36,11 +36,12 @@ namespace EditUtility
             Console.ReadKey();
             Console.Clear();
         }
-        private void setQuestionFile(string quizName)
+        private bool setQuestionFile(string quizName)
         {
             int X = 5, Y = 1;
-            int sel;
+            int sel = -1;
             string fileName;
+            bool set = false;
             IEnumerable<string> files = Directory.GetFiles(SLSystem.QuestionDir);
             if (files.Any())
             {
@@ -57,19 +58,26 @@ namespace EditUtility
                     fileName = files.ElementAt(sel);
                     if (Input.Confirm("Ви впевненні ?", "Так", "Ні", X, Console.CursorTop + 2, ConsoleColor.DarkGray, ConsoleColor.Green))
                     {
-                        if (quizzes.SetQuizesQuestions(quizName, fileName))
-                        {
-                            SLSystem.SaveQuizzes();
-                            Output.Write($"Вікторини {quizName} встановлені питання {fileName} ...", X, Console.CursorTop, ConsoleColor.Green);
-                        }
+                        quizzes.SetQuizesQuestions(quizName, fileName);
+                        set = true;
+                        SLSystem.SaveQuizzes();
+                        Output.Write($"Вікторини {quizName} встановлені питання {fileName} ...", X, Console.CursorTop, ConsoleColor.Green);
                     }
                 }
             }
             else Output.Write($"Директорія з питаннями пуста ...", X, Console.CursorTop, ConsoleColor.Red);
-            Console.ReadKey();
+            if (sel >= 0) Console.ReadKey();
             Console.Clear();
+            return set;
         }
+        private Question createQuestion(int index)
+        {
+            Console.Clear();
+            Console.WriteLine($"Створення питання {index}");
+            Console.ReadKey();
 
+            return new SAQuestion($"Питання {index}");
+        }
 
 
 
@@ -78,9 +86,9 @@ namespace EditUtility
             int X = 10, Y = 1;
             Menu settingMenu = new($"   -= Вікторини =-", ConsoleColor.Green, ConsoleColor.DarkGray, ConsoleColor.Gray,
               ("     Видалити вікторину", DelQuiz),
-              ("     Додати вікторину", () => { } ),
+              ("     Додати вікторину", AddQuiz),
               ("     Завантажити питання",  LoadQuestionsFile),
-              ("     Створити файл з питаннями", () => {  } ),
+              ("     Створити файл з питаннями", ()=> { CreateQuestionFile(); }),
               ("     Редагувати файл з питаннями", () => { }))
             {
                 XPos = X,
@@ -150,7 +158,6 @@ namespace EditUtility
                 quizChooseMenu.AddMenuItem(($"         {q.Key}", null));
             quizChooseMenu.XPos = X + 5;
             quizChooseMenu.YPos = Y + 1;
-
             do
             {
                 sel = quizChooseMenu.Start();
@@ -164,8 +171,62 @@ namespace EditUtility
             } while (sel >= 0);
             Console.Clear();
         }
+        private string CreateQuestionFile()
+        {
+            int index = 0;
+            List<Question> questions = new();
+            do {questions.Add(createQuestion(index++));}
+            while (Input.Confirm("Бажаєте додати ще одне питання?", "Так", "Ні", Console.CursorLeft, Console.CursorTop+1, ConsoleColor.DarkGray, ConsoleColor.Green));
+            Console.Clear();
+            string fileName = Input.GetWord("Введіть назву файлу під якою буде збережено файл : ", Console.CursorLeft, Console.CursorTop + 1, ConsoleColor.Green);
+            if (SLSystem.SaveQuestions(questions.ToArray(), fileName))
+                Output.Write($" {index} питань збережено у файл {fileName}.", Console.CursorLeft, Console.CursorTop + 1, ConsoleColor.Green);
+            else Output.Write($"Сталася помилка при збережені питань у файл {fileName}.", Console.CursorLeft, Console.CursorTop + 1, ConsoleColor.Red);
+            Console.ReadKey();
+            Console.Clear();
+            return fileName;
+        }
+        private void AddQuiz()
+        {
+            int X = 10, Y = 1,sel;
+            string fileName;
+            bool set = false;
+            string quizName = Input.GetWord("Введіть назву вікторини : ", X, Y, ConsoleColor.Green);
+            Console.Clear();
+            Menu menu = new($"   -= Оберіть варіант =-", ConsoleColor.Green, ConsoleColor.DarkGray, ConsoleColor.Gray,
+              ("     Завантажити файл з питаннями",null ),
+              ("     Створити файл з питаннями",null))
+            {  
+                XPos = X,
+                YPos = Y
+            };
+            do
+            {
+                sel = menu.Start();
+                if (sel >= 0)
+                {
+                    switch (sel)
+                    {
+                        case 0:
+                            menu.Hide();
+                            set = setQuestionFile(quizName);
+                            break;
+                        case 1:
+                            menu.Hide();
+                            fileName = CreateQuestionFile();
+                            set = quizzes.AddQuiz(quizName, fileName);
+                            if (set)
+                            {
+                                Output.Write($"Вікторини  {quizName} додана до списку вікторин", Console.CursorLeft, Console.CursorTop, ConsoleColor.Green);
+                                SLSystem.SaveQuizzes();
+                            }
+                            else Output.Write($"Сталася помилка при додаванні вікторини  {quizName} додана до списку вікторин", Console.CursorLeft, Console.CursorTop, ConsoleColor.Green);
+                            break;
+                    }
 
-
+                }
+            } while (sel >= 0 && !set);
+        }
 
         private void Setting()
         {

@@ -53,15 +53,20 @@ namespace KnowledgeQuiz
         }
         private Users LoadUsers() => Deserialize<Users>(UsersFile) ?? new();
         private Rating LoadRating() => rating = Deserialize<Rating>(RatingFile) ?? new();
-        private void Serialize<T>(string paths, T obj)
+        private bool Serialize<T>(string paths, T obj)
         {
 
             DataContractSerializer serializer = new(typeof(T));
             using (var fs = XmlWriter.Create(paths, new XmlWriterSettings { Encoding = Encoding.UTF8 }))
             {
                 try { serializer.WriteObject(fs, obj); }
-                catch (SerializationException) { saveLog($"Не вдалося зберегти файл {paths}"); }
+                catch (SerializationException) 
+                {
+                    saveLog($"Не вдалося зберегти файл {paths}");
+                    return false;
+                }
             }
+            return true;
         }
         private T? Deserialize<T>(string paths) where T : class
         {
@@ -112,6 +117,7 @@ namespace KnowledgeQuiz
                 return list;
             }
         }
+        public bool SaveQuestions(Question[] questions, string fileName) => Serialize<Question[]>(Path.Combine(QuestionDir, fileName), questions);
         public void SaveQuizzes()
         {
             if (quizzes != null) Serialize(QuizzesFile, quizzes);
@@ -124,7 +130,7 @@ namespace KnowledgeQuiz
         {
             if (rating != null) Serialize(RatingFile, rating);
         }
-        public void SaveSettings() => Serialize(SetingsPath, setting);
+        public bool SaveSettings() => Serialize(SetingsPath, setting);
         public void SaveAll()
         {
             SaveQuizzes();

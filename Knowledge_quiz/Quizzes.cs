@@ -44,19 +44,24 @@ namespace KnowledgeQuiz
 
         public void Clear() => quizzes?.Clear();
 
-        public bool SetQuizesQuestions(string quizeName,string path)
+        public void SetQuizesQuestions(string quizeName,string path)
         {
-            if(quizzes.ContainsKey(quizeName))
+            if (quizzes.ContainsKey(quizeName))
+                 quizzes[quizeName] = path;
+            else quizzes.Add(quizeName, path);
+        }
+
+        public bool DellQuiz(string quizeName) => quizzes.Remove(quizeName);
+
+        public bool AddQuiz(string quizeName, string fileName)
+        {
+            if (!quizzes.ContainsKey(quizeName))
             {
-                quizzes[quizeName] = path;
+                quizzes.Add(quizeName, fileName);
                 return true;
             }
             return false;
         }
-
-        public bool DellQuiz(string? quizeName) => quizzes.Remove(quizeName ?? "");
-
-        public void ADDQuiz(string? quizeName, string? path) => quizzes.Remove(quizeName ?? "");
 
         public void GetObjectData(SerializationInfo info, StreamingContext context) => info.AddValue("Quiz", quizzes);
 

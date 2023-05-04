@@ -151,11 +151,11 @@ namespace KnowledgeQuiz
             var infos = rating.GetQuizInfos(quizName);
             if (infos != null)
             {
-                Output.Write("-= TOP 20 =-", X + 10, Y++, ConsoleColor.Green);
-                Output.Write($"-= \"{quizName}\" =-", X + 7, Y++, ConsoleColor.Green);
+                Output.Write("-= TOP 20 =-", X + 15, Y++, ConsoleColor.Green);
+                Output.Write($"-= \"{quizName}\" =-", X + 12, Y++, ConsoleColor.Green);
                 Y++;
-                Output.Write("Місце     Імя      Кв.\\Пв.     Час", X, Y++, ConsoleColor.Green);
-                Output.Write("-----------------------------------", X, Y++, ConsoleColor.Red);
+                Output.Write("Місце       Імя             Кв.\\Пв.     Час", X, Y++, ConsoleColor.Green);
+                Output.Write("-----------------------------------------------", X, Y++, ConsoleColor.Red);
                 int index = 1;
 
                 foreach (var item in infos)
@@ -200,7 +200,11 @@ namespace KnowledgeQuiz
             quizChooseMenu.XPos = X + 5;
             quizChooseMenu.YPos = Y + 1;
             int sel = quizChooseMenu.Start();
-            if (sel < 0) return;
+            if (sel < 0)
+            {
+                quizChooseMenu.Hide();
+                return;
+            }
             if (sel != quizChooseMenu.ItemCount - 1)
                 quizName = quizzes.QuezzesNames.ElementAt(sel);
 

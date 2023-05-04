@@ -8,13 +8,12 @@ namespace KnowledgeQuiz
     public class LPass : ISerializable
     {
         private string passHash;
-        private string GetHash(string? str)
+        private static string GetHash(string str)
         {
-            SHA256 sha256Hash = SHA256.Create();
-            byte[] data = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(str ?? ""));
+            byte[] data = SHA256.HashData(Encoding.UTF8.GetBytes(str));
             var sBuilder = new StringBuilder();
-            for (int i = 0; i < data.Length; i++)
-                sBuilder.Append(data[i].ToString("x2"));
+            foreach (var item in data)
+                sBuilder.Append(item.ToString("x2"));
             return sBuilder.ToString();
         }
 
@@ -23,7 +22,7 @@ namespace KnowledgeQuiz
             passHash = GetHash(password);
             Login = login;
         }
-        public bool HashCompare(string? str, string? hash) => hash?.CompareTo(GetHash(str ?? "")) == 0;
+        public static bool HashCompare(string str, string hash) => hash.CompareTo(GetHash(str)) == 0;
         public string Login { get; private set; }
         public LPass(SerializationInfo info, StreamingContext context)
         {

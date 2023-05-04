@@ -53,16 +53,51 @@ namespace KnowledgeQuiz
         /// <returns></returns>
         public static string GetString(string? title, int X, int Y, ConsoleColor titleColor)
         {
-            string tmp;
+            string? tmp;
             bool cVisible = Console.CursorVisible;
             if (!cVisible) Console.CursorVisible = true;
             do
             {
-                Output.Write(title, X, Y, titleColor);
+                if(title != null) Output.Write(title, X, Y, titleColor);
+                else Console.SetCursorPosition(X, Y);
                 tmp = Console.ReadLine();
             } while (string.IsNullOrWhiteSpace(tmp));
             Console.CursorVisible = cVisible;
             return tmp;
+        }
+
+        /// <summary>
+        ///Метод дає змогу вводити багатостроковий текст
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="X"></param>
+        /// <param name="Y"></param>
+        /// <param name="titleColor"></param>
+        /// <returns></returns>
+        public static string GetText(string? title, int X, int Y, ConsoleColor titleColor ,ConsoleColor textColor)
+        {
+            StringBuilder sb = new ();
+            ConsoleColor defColor = Console.ForegroundColor;
+            bool cVisible = Console.CursorVisible,Empty = true;
+            if (!cVisible) Console.CursorVisible = true;
+            Output.Write(title, X + 10, Y++, titleColor);
+            int i = 0;
+            Console.ForegroundColor = textColor;
+            do
+            {
+                Console.SetCursorPosition(X, Y++);
+                string? tmp = Console.ReadLine();
+                if (string.IsNullOrEmpty(tmp)) i++;
+                else 
+                {
+                    i = 0;
+                    Empty = false;
+                    sb.AppendLine(tmp);
+                }
+            } while (i != 2 || Empty);
+            Console.CursorVisible = cVisible;
+            Console.ForegroundColor = defColor;
+            return sb.ToString().Trim();
         }
 
         /// <summary>

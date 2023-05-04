@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EditUtility
 {
-    internal partial class Utility : IDisposable
+    internal partial class Utility 
     {
 
         private const string passwordRegex = @"[^ \p{IsCyrillic}]";
@@ -26,12 +26,9 @@ namespace EditUtility
 
         private readonly SaveLoadSystem SLSystem;
 
-        private bool disposedValue;
-
         public Utility()
         {
             SLSystem = new();
-            disposedValue = false;
         }
 
         public void Start()
@@ -48,42 +45,18 @@ namespace EditUtility
                 Console.ReadKey(true);
                 return;
             }
-            Output.Write($"Вітаємо в системі ...", X, ++y, ConsoleColor.Green);
-            Console.ReadKey(true);
             Console.Clear();
             Menu adminMenu = new($"   -= Меню адміністратора  =-", ConsoleColor.Green, ConsoleColor.DarkGray, ConsoleColor.Gray,
-              ("    Користувачі", Users),
-              ("    Рейтинги", Ratings),
-              ("    Вікторини", QuizzesEdit),
-              ("    Налаштування", Setting))
+              ("        Користувачі", Users),
+              ("        Рейтинги", Ratings),
+              ("        Вікторини", QuizzesEdit),
+              ("        Налаштування", Setting))
                 {
                     XPos = X,
                     YPos = Y
                 };
             adminMenu.Start();
             adminMenu.Hide();
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    SLSystem.SaveAll();
-                }
-
-                // TODO: освободить неуправляемые ресурсы (неуправляемые объекты) и переопределить метод завершения
-                // TODO: установить значение NULL для больших полей
-                disposedValue = true;
-            }
-        }
-
-        public void Dispose()
-        {
-            // Не изменяйте этот код. Разместите код очистки в методе "Dispose(bool disposing)".
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
         }
     }
 }

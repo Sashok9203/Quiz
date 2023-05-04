@@ -9,7 +9,7 @@ using System.Xml;
 
 namespace KnowledgeQuiz
 {
-    public class SaveLoadSystem
+    public sealed class SaveLoadSystem
     {
         private const string LogPath        = "log.txt";
         private const string SetingsPath    = "setings.xml";
@@ -17,10 +17,10 @@ namespace KnowledgeQuiz
         private const string DefQuestionDir = "Questions";
         
         private readonly Setting setting;
-
-        private Quizzes? quizzes = null;
-        private Users? users = null;
-        private Rating? rating = null;
+       
+        private Quizzes? quizzes;
+        private Users? users;
+        private Rating? rating;
 
 
         private string QuizzesFile  => Path.Combine(DataDir, "quizzes.xml");
@@ -90,20 +90,29 @@ namespace KnowledgeQuiz
             if (!Directory.Exists(DataDir)) Directory.CreateDirectory(DataDir);
             if (!Directory.Exists(QuestionDir)) Directory.CreateDirectory(QuestionDir);
         }
+
         public string DataDir
         {
             get => setting.curentDataDir ?? DefDataDir;
-            set => setting.curentDataDir = value;
+            set
+            {
+                setting.curentDataDir = value;
+                SaveSettings();
+            }
         }
         public string QuestionDir
         {
             get => setting.curentQuestionDir ?? DefQuestionDir;
-            set => setting.curentQuestionDir = value;
+            set
+            {
+                setting.curentQuestionDir = value;
+                SaveSettings();
+            }
         }
         public Quizzes Quizzes => quizzes ??= LoadQuizzes();
         public Users Users => users ??= LoadUsers();
         public Rating Rating => rating ??= LoadRating();
-        public IEnumerable<Question> LoadQuestions(string? fileName) => Deserialize<Question[]>(Path.Combine(QuestionDir, fileName)) ?? Array.Empty<Question>();
+        public IEnumerable<Question> LoadQuestions(string fileName) => Deserialize<Question[]>(Path.Combine(QuestionDir, fileName)) ?? Array.Empty<Question>();
         public IEnumerable<Question> AllQuestions
         {
             get
@@ -131,12 +140,5 @@ namespace KnowledgeQuiz
             if (rating != null) Serialize(RatingFile, rating);
         }
         public bool SaveSettings() => Serialize(SetingsPath, setting);
-        public void SaveAll()
-        {
-            SaveQuizzes();
-            SaveUsers();
-            SaveRating();
-        }
-       
     }
 }

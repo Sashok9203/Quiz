@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace KnowledgeQuiz
 {
-    public class Test 
+    public sealed class Test 
     {
         private IEnumerable<Question> questions;
         private readonly string? quizName;
@@ -21,7 +21,7 @@ namespace KnowledgeQuiz
             IEnumerable<Question> quest;
             if (quizName != Quizzes.MixedQuizName) quest = Utility.Shufflet(sls.LoadQuestions(questionPath));
             else quest = Utility.Shufflet(sls.AllQuestions);
-            if (!quest.Any()) throw new ApplicationException($"Вісторина \"{quizName}\" не містить питань");
+            if (!quest.Any()) throw new ApplicationException($"Вікторина \"{quizName}\" не містить питань");
             int questionCount = quest.Count() < maxQustionCountInQuiz ? quest.Count() : maxQustionCountInQuiz;
             questions = quest.Take(questionCount);
 
@@ -37,10 +37,10 @@ namespace KnowledgeQuiz
                 questionNumber = 1,
                 maxAnswers = 0,
                 sel;
-            string? title = null;
+           
             var sw = new Stopwatch();
             List<string>  answers = new();
-            Menu menu = new($"   {title}", ConsoleColor.Green, ConsoleColor.Green, ConsoleColor.Gray);
+            Menu menu = new(null, ConsoleColor.Green, ConsoleColor.Green, ConsoleColor.Gray);
             sw.Start();
             foreach (var question in questions) 
             {
@@ -49,11 +49,11 @@ namespace KnowledgeQuiz
                 switch (question)
                 {
                     case MAQuestion:
-                        title = "Оберіть варіанти відповіді :";
+                        menu.Title = "Оберіть варіанти відповіді :";
                         maxAnswers = question.AnswerVariantsCount;
                         break;
                     case SAQuestion:
-                        title = "Оберіть варіант відповіді :";
+                        menu.Title = "Оберіть варіант відповіді :";
                         maxAnswers = 1;
                         break;
                 }
@@ -64,8 +64,7 @@ namespace KnowledgeQuiz
                 menu.Clear();
                 answers.Clear();
                 sel = 0;
-                foreach (var item in aVariants)
-                    menu.AddMenuItem(($"  {(char)(sel++ + 97)}) {item}", null));
+                menu.AddMenuItem(aVariants.Select((n,sel )=>  ($"  {(char)(sel++ + 97)}) {n}",(Action?)null)));
                 menu.XPos = X - 18;
                 menu.YPos = Console.CursorTop + 2;
                 do

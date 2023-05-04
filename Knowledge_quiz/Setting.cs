@@ -6,12 +6,16 @@ namespace KnowledgeQuiz
 {
     
     [Serializable]
-    public class Setting : ISerializable
+    public sealed class Setting : ISerializable
     {
-        public  string? curentDataDir = null;
-        public  string? curentQuestionDir = null;
+        public  string? curentDataDir ;
+        public  string? curentQuestionDir;
 
-        public Setting() { }
+        public Setting()
+        {
+            curentDataDir = null;
+            curentQuestionDir = null;
+        }
 
         public Setting(SerializationInfo info, StreamingContext context)
         {

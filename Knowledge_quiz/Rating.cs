@@ -9,15 +9,17 @@ namespace KnowledgeQuiz
     [KnownType(typeof(SortedList<UserQuizInfo, string>))]
     [KnownType(typeof(Dictionary<string, SortedList<UserQuizInfo, string>>))]
     [Serializable]
-    public class Rating :ISerializable
+    public sealed class Rating :ISerializable
     {
-        private readonly Dictionary<string,SortedList<UserQuizInfo,string>> ratingList;
+        private readonly Dictionary<string, SortedList<UserQuizInfo, string>> ratingList;
 
         public Rating() => ratingList = new();
 
+        public bool IsEmpty => ratingList.Count == 0;
+
         public void AddQuizInfo(UserQuizInfo info)
         {
-            if (!ratingList.ContainsKey(info.QuizName)) 
+            if (!ratingList.ContainsKey(info.QuizName))
                 ratingList.Add(info.QuizName, new());
             else if (ratingList[info.QuizName].ContainsValue(info.UserName))
                 ratingList[info.QuizName].RemoveAt(ratingList[info.QuizName].IndexOfValue(info.UserName));
@@ -44,15 +46,8 @@ namespace KnowledgeQuiz
 
         public bool DelQuizRating(string quizName) => ratingList.Remove(quizName);
 
-        public IEnumerable<string> GetRatingNames()
-        {
-            List<string> names = new();
-            foreach (var item in ratingList)
-              foreach (var list in item.Value)
-                  if (!names.Contains(list.Value)) names.Add(list.Value);
-            return names;
-        }
-
+        public IEnumerable<string> GetRatingUserNames() => ratingList.Values.SelectMany(n => n.Values).Distinct();
+        
         public void Clear() => ratingList.Clear();
 
         public int GetUserPlace(string quizName, string userName)
@@ -64,24 +59,17 @@ namespace KnowledgeQuiz
 
         public IEnumerable<UserQuizInfo>? GetQuizInfos(string quizName)
         {
-            IEnumerable<UserQuizInfo>? info = null;
-            if (ratingList.TryGetValue(quizName, out SortedList<UserQuizInfo, string>? value)) info = value.Keys;
-            return info;
+            ratingList.TryGetValue(quizName, out SortedList<UserQuizInfo, string>? value);
+            return value?.Keys;
         }
        
-        public IEnumerable<UserQuizInfo>? GetUserQuizInfos(string userName)
-        {
-            foreach (var item in ratingList)
-            {
-                UserQuizInfo? info = GetUserQuizInfo(item.Key, userName);
-                if (info != null)  yield return info;
-            }
-        }
+        public IEnumerable<UserQuizInfo> GetUserQuizInfos(string userName) => ratingList.Values.SelectMany(n => n.Keys).Where(n => n.UserName == userName);
+        
 
         public UserQuizInfo? GetUserQuizInfo(string quizName,string userName)
         {
             UserQuizInfo? info = null;
-            if (ratingList.ContainsKey(quizName) && ratingList[quizName].ContainsValue(userName))
+            if (ratingList.TryGetValue(quizName, out SortedList<UserQuizInfo, string>? value) && value.ContainsValue(userName))
                 info = ratingList[quizName].GetKeyAtIndex(ratingList[quizName].IndexOfValue(userName));
             return info;
         }

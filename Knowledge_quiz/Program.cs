@@ -11,10 +11,8 @@ namespace KnowledgeQuiz
             Console.OutputEncoding = Encoding.UTF8;
             Console.InputEncoding  = Encoding.Unicode;
             Console.CursorVisible = false;
-            using (Quiz quiz = new())
-            {
-                quiz.Start();
-            }
+            Quiz quiz = new();
+            quiz.Start();
         }
     }
 

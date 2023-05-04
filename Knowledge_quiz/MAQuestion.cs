@@ -8,7 +8,7 @@ namespace KnowledgeQuiz
     public class MAQuestion : Question 
     {
         
-        private List<string> answers;
+        private readonly List<string> answers;
 
         protected MAQuestion(SerializationInfo info, StreamingContext context) : base(info, context)
         {
@@ -16,7 +16,7 @@ namespace KnowledgeQuiz
         }
         public MAQuestion(string questionText,params string[] answerVariants) : base(questionText,answerVariants)
         {
-            answers = new List<string>();
+            answers = new ();
         }
 
         public override void AddAnswer(string Answer)
@@ -27,20 +27,7 @@ namespace KnowledgeQuiz
         public override bool AnswerQuestion(params string[] Answer)
         {
             if (Answer.Length != answers.Count) return false;
-            for (int i = 0; i < Answer.Length; i++)
-            {
-                bool found = false;
-                foreach (string ans in answers) 
-                {
-                    if (ans == Answer[i])
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-                if(!found) return false;
-            }
-            return true;
+            return !answers.Except(Answer).Any();
         }
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)

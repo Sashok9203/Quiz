@@ -8,7 +8,7 @@ namespace KnowledgeQuiz
     [KnownType(typeof(User))]
     [KnownType(typeof(Dictionary<string, User>))]
     [Serializable]
-    public class Users : ISerializable
+    public sealed class Users : ISerializable
     {
         private readonly Dictionary<string, User> users;
 
@@ -18,18 +18,13 @@ namespace KnowledgeQuiz
 
         public LPass AdminLogPass { get; private set; }
 
-        public void AddUser(User user)
-        {
-            if ( users.ContainsKey(user.LoginPass?.Login ?? "")) throw new ApplicationException(" Не можливо дотати користувача");
-            if (user != null) users.Add(user.LoginPass?.Login ?? "", user);
-        }
-
+        public void AddUser(User user) => users.Add(user.LoginPass.Login, user);
+       
         public bool DellUser(string userLogin) => users.Remove(userLogin);
        
-        public User? GetUser(string? login)
+        public User? GetUser(string login)
         {
-            User? user = null;
-            users?.TryGetValue(login ?? "",out user);
+            users.TryGetValue(login, out User? user);
             return user ;
         }
 

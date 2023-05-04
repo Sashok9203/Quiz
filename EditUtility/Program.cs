@@ -21,11 +21,8 @@ namespace EditUtility
             Console.OutputEncoding = Encoding.UTF8;
             Console.InputEncoding = Encoding.Unicode;
             Console.CursorVisible = false;
-            using (Utility utility = new())
-            {
-                utility.Start();
-            }
-
+            Utility utility = new();
+            utility.Start();
         }
 
       

@@ -4,7 +4,7 @@ using System;
 namespace KnowledgeQuiz
 {
 
-    public class Menu
+    public sealed class Menu
     {
         private int _selpos;
         
@@ -22,7 +22,7 @@ namespace KnowledgeQuiz
 
         private readonly List<(string iName, Action? iProc)> mItems;
 
-        public int ItemCount { get => mItems?.Count ?? 0; }
+        public int ItemCount { get => mItems.Count; }
 
         public Menu(string? title, ConsoleColor titleColor,ConsoleColor iColor, ConsoleColor sIColor, params ValueTuple<string, Action?>[] items)
         {
@@ -31,7 +31,7 @@ namespace KnowledgeQuiz
             Title = title ?? "";
             XPos = 0;
             YPos = 0;
-            this.tColor = titleColor;
+            tColor = titleColor;
             this.iColor = iColor;
             this.sIColor = sIColor;
             SelectPos = 0;
@@ -84,15 +84,20 @@ namespace KnowledgeQuiz
                 }
             }
             while (ck != ConsoleKey.Escape || mItems.Count == 0);
-            //Hide();
             return -1;
         }
 
         public int AddMenuItem((string, Action?) item,int index = -1)
         {
-            if (index < 0) mItems?.Add(item);
-            else if(index < mItems?.Count) mItems.Insert(index,item);
-            return mItems?.Count ?? 0;    
+            if (index < 0) mItems.Add(item);
+            else if(index < mItems.Count) mItems.Insert(index,item);
+            return mItems.Count;    
+        }
+
+        public int AddMenuItem(IEnumerable<(string,Action?)> items)
+        {
+            mItems.AddRange(items);
+            return mItems.Count;  
         }
 
         public string GetItemString(int ind) => mItems[ind].iName;
@@ -106,12 +111,12 @@ namespace KnowledgeQuiz
 
         public int  DelMenuItem(int index)
         {
-            if (index < 0 || index >= mItems?.Count) return -1;
+            if (index < 0 || index >= mItems.Count) return -1;
             Hide();
-            mItems?.RemoveAt(index);
+            mItems.RemoveAt(index);
             SelectPos = index;
             show();
-            return mItems?.Count ?? 0;
+            return mItems.Count;
         }
 
         public void Clear()
@@ -124,7 +129,7 @@ namespace KnowledgeQuiz
         {
             Output.Write(new string(' ', Title?.Length ?? 0), XPos, YPos);
             for (int i = 0; i < mItems?.Count; i++)
-                Output.Write(new string(' ', mItems?[i].iName?.Length ?? 0),XPos, YPos + i + 1);
+                Output.Write(new string(' ', mItems[i].iName?.Length ?? 0),XPos, YPos + i + 1);
         }
 
         public string? Title { get; set; }

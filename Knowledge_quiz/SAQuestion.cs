@@ -16,14 +16,11 @@ namespace KnowledgeQuiz
 
         public SAQuestion(string questionText,  params string[] answerVariants) : base(questionText, answerVariants)
         {
-            answer = "";
+            answer = null;
         }
 
-        public override void AddAnswer(string Answer)
-        {
-            if (!string.IsNullOrWhiteSpace(Answer)) answer = Answer;
-        }
-
+        public override void AddAnswer(string Answer) => answer = Answer;
+        
         public override bool AnswerQuestion(params string[] Answer) => (Answer?.Length) != 0 && answer == Answer?[0];
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)

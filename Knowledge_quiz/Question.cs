@@ -21,12 +21,11 @@ namespace KnowledgeQuiz
 
         protected Question(string? questionText, params string[]? AnswerVariants)
         {
-
             answerVariants = AnswerVariants != null ? new List<string>(AnswerVariants) :  new List<string>();
-            QuestionText = questionText ??= "InvalidName";
+            QuestionText = questionText ?? "InvalidText";
         }
 
-        public void ClearAnswerVariants() => answerVariants?.Clear();
+        public void ClearAnswerVariants() => answerVariants.Clear();
 
         public string QuestionText
         {
@@ -43,11 +42,6 @@ namespace KnowledgeQuiz
         public void AddAnswerVariant(string AnswerVariant)
         {
             if (!string.IsNullOrWhiteSpace(AnswerVariant)) answerVariants.Add(AnswerVariant);
-        }
-
-        public void RemoveAnswerVariant(int index)
-        {
-            if (index >= 0 && index < answerVariants.Count) answerVariants.RemoveAt(index);
         }
 
         public IEnumerable<string> AnswerVariants => answerVariants;

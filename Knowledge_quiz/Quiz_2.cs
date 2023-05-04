@@ -63,8 +63,8 @@ namespace KnowledgeQuiz
             User? curentUser;
             string? login , password;
             Output.Write("-= Вхід в систему =-", x, y++ , ConsoleColor.Magenta);
-            login = Input.GetStringRegex("Логін  : ", loginRegex, x, y++,loginMaxLenght, ConsoleColor.Green, ConsoleColor.Green);
-            password = Input.GetStringRegex("Пароль : ", passwordRegex, x, y++,passwordMaxLenght, ConsoleColor.Green, ConsoleColor.Green,'*');
+            login = Input.GetStringRegex("Логін  : ", loginRegex, x + 3, y++,loginMaxLenght, ConsoleColor.Green, ConsoleColor.Green);
+            password = Input.GetStringRegex("Пароль : ", passwordRegex, x + 3, y++,passwordMaxLenght, ConsoleColor.Green, ConsoleColor.Green,'*');
             curentUser = users.GetUser(login);
             if (curentUser == null || (!curentUser?.LoginPass?.ChackPassword(password) ?? false))
             {
@@ -73,14 +73,12 @@ namespace KnowledgeQuiz
                 Console.Clear();
                 return;
             }
-            Output.Write($"Вітаємо в системі {curentUser?.Name} ...", x, ++y, ConsoleColor.Green);
-            Console.ReadKey(true);
             Console.Clear();
             Menu userMenu = new ($"   -= Меню користувача \"{curentUser?.LoginPass?.Login}\" =-", ConsoleColor.Green, ConsoleColor.DarkGray, ConsoleColor.Gray,
-                ("    Топ 20",  () =>  Top20(curentUser)  ),
-                ("    Мої результати ",  () =>  MyResults(curentUser)  ),
-                ("    Стартувати вікторину",  () =>  QuizStart(curentUser) ),
-                ("    Налаштування",  () =>  Setting(curentUser) ));
+                ("       Топ 20",  () =>  Top20(curentUser)  ),
+                ("       Мої результати ",  () =>  MyResults(curentUser)  ),
+                ("       Стартувати вікторину",  () =>  QuizStart(curentUser) ),
+                ("       Налаштування",  () =>  Setting(curentUser) ));
             userMenu.XPos = 10;
             userMenu.YPos = 1;
             userMenu.Start();
@@ -98,9 +96,9 @@ namespace KnowledgeQuiz
 
             Output.Write("-= Реєстрація нового користувача =-", x - 4, y - 2,ConsoleColor.Magenta);
 
-            name = Input.GetWord("Введіть ваше ім'я       : ", x, y++, ConsoleColor.Green);
+            name = Input.GetWord("Введіть ваше ім'я      : ", x, y++, ConsoleColor.Green);
 
-            name = name + " " + Input.GetWord("Введіть вашу фамілію    : ", x, y++, ConsoleColor.Green);
+            name = name + " " + Input.GetWord("Введіть ваше прізвище  : ", x, y++, ConsoleColor.Green);
 
             do
             {
@@ -110,10 +108,10 @@ namespace KnowledgeQuiz
                     Console.ReadKey();
                     Output.Write(new string(' ', login.Length + 32), x + 26, y, ConsoleColor.Red);
                 }
-                login = Input.GetStringRegex("Введіть ваш логін       : ", loginRegex, x, y,loginMaxLenght, ConsoleColor.Green, ConsoleColor.Green);
+                login = Input.GetStringRegex("Введіть ваш логін      : ", loginRegex, x, y,loginMaxLenght, ConsoleColor.Green, ConsoleColor.Green);
             } while (users.Logins?.Contains(login) ?? false);
 
-            password = Input.GetStringRegex("Введіть пароль          : ",passwordRegex, x, ++y,passwordMaxLenght, ConsoleColor.Green, ConsoleColor.Green,'*');
+            password = Input.GetStringRegex("Введіть пароль         : ",passwordRegex, x, ++y,passwordMaxLenght, ConsoleColor.Green, ConsoleColor.Green,'*');
 
             DateTime date = Input.GetDateTime(null,x,y,x,++y,"Веедіть рік народження : ", 
                 "Веедіть місяць народження : ","Веедіть день народження : ",ConsoleColor.Green, ConsoleColor.Green);
@@ -122,7 +120,7 @@ namespace KnowledgeQuiz
 
             SLSystem.SaveUsers();
 
-            Output.Write(" Ви усппішно зареєстровані в системі....", x,Console.CursorTop + 1,  ConsoleColor.Blue);
+            Output.Write(" Ви успішно зареєстровані в системі....", x,Console.CursorTop + 1,  ConsoleColor.Blue);
 
             Console.ReadKey(true);
             Console.Clear();
@@ -140,9 +138,8 @@ namespace KnowledgeQuiz
             string quizName = Quizzes.MixedQuizName;
             Menu quizChooseMenu = new($"   -= Оберіть вікторину \"{user?.LoginPass?.Login}\" =-", ConsoleColor.Green,
                                       ConsoleColor.DarkGray, ConsoleColor.Gray);
-            foreach (var q in quizzes)
-                quizChooseMenu.AddMenuItem(($"\t\t {q.Key}", null));
-            quizChooseMenu.AddMenuItem(($"\t\t {quizName}", null));
+            quizChooseMenu.AddMenuItem(quizzes.Select(n=>($"         {n.Key}", (Action?)null)));
+            quizChooseMenu.AddMenuItem(($"         {quizName}", null));
             Console.Clear();
             quizChooseMenu.XPos = X + 5;
             quizChooseMenu.YPos = Y + 1;
@@ -150,8 +147,8 @@ namespace KnowledgeQuiz
             Console.Clear();
             if (sel < 0) return;
             if(sel!= quizChooseMenu.ItemCount-1)
-            quizName = quizzes.QuezzesNames.ElementAt(sel);
-            var infos = rating?.GetQuizInfos(quizName);
+                quizName = quizzes.QuezzesNames.ElementAt(sel);
+            var infos = rating.GetQuizInfos(quizName);
             if (infos != null)
             {
                 Output.Write("-= TOP 20 =-", X + 10, Y++, ConsoleColor.Green);
@@ -162,9 +159,8 @@ namespace KnowledgeQuiz
                 int index = 1;
 
                 foreach (var item in infos)
-                {
-                    Output.Write($"{index++}     {item}", X + 2, Y++, ConsoleColor.Blue);
-                }
+                     Output.Write($"{index++}     {item}", X + 2, Y++, ConsoleColor.Blue);
+                
             }
             else Output.Write("Інформація відсутня", X, Y++, ConsoleColor.Green);
             Console.ReadKey();
@@ -175,8 +171,8 @@ namespace KnowledgeQuiz
         {
             int X = 3, Y = 1;
             Console.Clear();
-            IEnumerable<UserQuizInfo>? infos = rating.GetUserQuizInfos(user?.Name ?? "");
-            if (infos != null)
+            var infos = rating.GetUserQuizInfos(user?.Name ?? "");
+            if (infos.Any())
             {
                 foreach (var item in infos)
                     printUserQuizInfo(item, X, Y + Console.CursorTop + 1 , ConsoleColor.Red, ConsoleColor.Green);
@@ -199,9 +195,8 @@ namespace KnowledgeQuiz
 
             Menu quizChooseMenu = new($"   -= Оберіть вікторину \"{user?.LoginPass?.Login}\" =-", ConsoleColor.Green,
                                       ConsoleColor.DarkGray, ConsoleColor.Gray);
-            foreach (var q in quizzes)
-                quizChooseMenu.AddMenuItem(($"\t\t {q.Key}", null));
-            quizChooseMenu.AddMenuItem(($"\t\t {quizName}", null));
+            quizChooseMenu.AddMenuItem(quizzes.Select(n => ($"         {n.Key}", (Action?)null)));
+            quizChooseMenu.AddMenuItem(($"         {quizName}", null));
             quizChooseMenu.XPos = X + 5;
             quizChooseMenu.YPos = Y + 1;
             int sel = quizChooseMenu.Start();
@@ -216,14 +211,12 @@ namespace KnowledgeQuiz
                 Console.ReadKey();
                 return;
             }
-     
 
-            UserQuizInfo? qi = test?.Start();
+            UserQuizInfo qi = test.Start();
 
-            rating?.AddQuizInfo(qi);
+            rating.AddQuizInfo(qi);
 
             SLSystem.SaveRating();
-
 
             Console.Clear();
 

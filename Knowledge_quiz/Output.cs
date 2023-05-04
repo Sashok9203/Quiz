@@ -36,24 +36,22 @@
             Console.ForegroundColor = fdef;
         }
 
-
         public static void WriteText(string text, int X, int Y, ConsoleColor Color)
         {
             int endIndex, startIndex = 0;
             do
             {
                 endIndex = text.IndexOf('\n', startIndex);
-                if (endIndex > 0) Output.Write(text[startIndex..endIndex], X, Y++, Color);
-                else Output.Write(text[startIndex..], X, Y++, Color);
+                if (endIndex > 0) Write(text[startIndex..endIndex], X, Y++, Color);
+                else Write(text[startIndex..], X, Y++, Color);
                 startIndex = endIndex + 1;
             }
             while (startIndex != 0);
         }
 
-
         public static void  ClearRegion(int Xpos, int YPos, int XCout, int yCount)
         {
-            string tmp = new string(' ', XCout);
+            string tmp = new (' ', XCout);
             for (int i = 0; i != yCount; i++)
             {
                 Console.SetCursorPosition(Xpos, YPos + i);

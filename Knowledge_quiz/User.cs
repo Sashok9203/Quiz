@@ -6,7 +6,7 @@ namespace KnowledgeQuiz
 {
     [KnownType(typeof(LPass))]
     [Serializable]
-    public class User :ISerializable
+    public sealed class User :ISerializable
     {
         private DateTime date;
 

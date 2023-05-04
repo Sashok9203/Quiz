@@ -8,7 +8,7 @@ namespace KnowledgeQuiz
     
     [KnownType(typeof(Dictionary<string, string>))]
     [Serializable]
-    public class Quizzes : ISerializable,IEnumerable<KeyValuePair<string,string>>
+    public sealed class Quizzes : ISerializable,IEnumerable<KeyValuePair<string,string>>
     {
         public const string MixedQuizName = "Змішана";
 
@@ -19,20 +19,9 @@ namespace KnowledgeQuiz
             quizzes = info.GetValue("Quiz", typeof(Dictionary<string, string>)) as Dictionary<string, string> ?? new ();
         }
 
-        public Quizzes()
-        {
-           
-            quizzes = new()
-            {
-                //{ "Математика", @"Questions\math.xml" },
-                //{ "Біологія", @"Questions\biology.xml" }
-            };
-        }
-       
-
+        public Quizzes() => quizzes = new();
+              
         public IEnumerable<string> QuezzesNames => quizzes.Keys ;
-
-
 
         public string? GetQuizeQuestionsPath(string quizeName)
         {
@@ -40,14 +29,13 @@ namespace KnowledgeQuiz
             return path;
         }
 
-        public int Count => quizzes?.Count ?? 0;
+        public int Count => quizzes.Count;
 
-        public void Clear() => quizzes?.Clear();
+        public void Clear() => quizzes.Clear();
 
         public void SetQuizesQuestions(string quizeName,string path)
         {
-            if (quizzes.ContainsKey(quizeName))
-                 quizzes[quizeName] = path;
+            if (quizzes.ContainsKey(quizeName))  quizzes[quizeName] = path;
             else quizzes.Add(quizeName, path);
         }
 

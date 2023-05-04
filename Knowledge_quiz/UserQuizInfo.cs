@@ -6,7 +6,7 @@ namespace KnowledgeQuiz
 {
     [KnownType(typeof(TimeOnly))]
     [Serializable]
-    public class UserQuizInfo : ISerializable , IComparable<UserQuizInfo>
+    public sealed class UserQuizInfo : ISerializable , IComparable<UserQuizInfo>
     {
         private int questionCount;
 
@@ -75,7 +75,7 @@ namespace KnowledgeQuiz
 
         public override string ToString()
         {
-            return $"{UserName}     {QuestionCount}/{RightAnswerCount}     {Time.ToLongTimeString()} ";
+            return $"{UserName,-15}     {QuestionCount,-2}/{RightAnswerCount,-2}     {Time.ToLongTimeString()} ";
         }
 
         public int CompareTo(UserQuizInfo? other)

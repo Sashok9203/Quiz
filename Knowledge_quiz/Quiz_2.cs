@@ -106,7 +106,7 @@ namespace KnowledgeQuiz
                 {
                     Output.Write("       Такий логін вже існує....", x + 26 + login.Length, y, ConsoleColor.Red);
                     Console.ReadKey();
-                    Output.Write(new string(' ', login.Length + 32), x + 26, y, ConsoleColor.Red);
+                    Output.Write(new string(' ', login.Length + 33), x + 25, y, ConsoleColor.Red);
                 }
                 login = Input.GetStringRegex("Введіть ваш логін      : ", loginRegex, x, y,loginMaxLenght, ConsoleColor.Green, ConsoleColor.Green);
             } while (users.Logins?.Contains(login) ?? false);

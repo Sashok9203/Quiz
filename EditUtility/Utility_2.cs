@@ -79,7 +79,7 @@ namespace EditUtility
             string questionText = Input.GetText("-= Введіть текст питання =-", X, Y, ConsoleColor.Green, ConsoleColor.Blue);
             Y = Console.CursorTop - 1;
             Output.Write("-= Введіть віріант(и) відповіді =-", X, Y++, ConsoleColor.Green);
-            do { aVariants.Add(Input.GetString(null,X, Y++ ,default));}
+            do { aVariants.Add(Input.GetString(null,X + 4, Y++ ,default));}
             while (Input.Confirm("Бажаєте дотати ще один варіант відповіді?","Так", "Ні", X, Console.CursorTop + 1, ConsoleColor.DarkGray, ConsoleColor.Green));
             Y = Console.CursorTop + 1;
             Menu menu = new("-= Оберіть відповідь(і) =-", ConsoleColor.Green, ConsoleColor.Green, ConsoleColor.Gray,
@@ -133,7 +133,7 @@ namespace EditUtility
             int index = 0;
             List<Question> questions = new();
             do { questions.Add(createQuestion(index++)); }
-            while (Input.Confirm("Бажаєте додати ще одне питання?", "Так", "Ні", Console.CursorLeft, Console.CursorTop + 1, ConsoleColor.DarkGray, ConsoleColor.Green));
+            while (Input.Confirm("Бажаєте додати ще одне питання?", "Так", "Ні", Console.CursorLeft, Console.CursorTop, ConsoleColor.DarkGray, ConsoleColor.Green));
             Console.Clear();
             return questions.ToArray();
         }
@@ -162,12 +162,12 @@ namespace EditUtility
         {
             int X = 10, Y = 1;
             Menu settingMenu = new($"   -= Вікторини =-", ConsoleColor.Green, ConsoleColor.DarkGray, ConsoleColor.Gray,
-              ("     Видалити вікторину", DelQuiz),
-              ("     Додати вікторину", AddQuiz),
-              ("     Завантажити питання",  LoadQuestionsFile),
-              ("     Створити файл з питаннями", () => { CreateQuestionFile(); }),
-              ("     Додати питання", AddQuestion),
-              ("     Видалити питання", DelQuestion))
+              ("  Видалити вікторину", DelQuiz),
+              ("  Додати вікторину", AddQuiz),
+              ("  Завантажити питання",  LoadQuestionsFile),
+              ("  Створити файл з питаннями", () => { CreateQuestionFile(); }),
+              ("  Додати питання", AddQuestion),
+              ("  Видалити питання", DelQuestion))
             {
                 XPos = X,
                 YPos = Y
@@ -262,11 +262,11 @@ namespace EditUtility
             int X = 10, Y = 1,sel;
             string fileName;
             bool set = false;
-            string quizName = Input.GetWord("Введіть назву вікторини : ", X, Y, ConsoleColor.Green);
+            string quizName = Input.GetString("Введіть назву вікторини : ", X, Y, ConsoleColor.Green);
             Output.Write(new string(' ', 60), X, Y);
             Menu menu = new($"   -= Оберіть варіант =-", ConsoleColor.Green, ConsoleColor.DarkGray, ConsoleColor.Gray,
-              ("     Завантажити файл з питаннями",null ),
-              ("     Створити файл з питаннями",null))
+              (" Завантажити файл з питаннями",null ),
+              (" Створити файл з питаннями",null))
             {  
                 XPos = X,
                 YPos = Y
@@ -473,63 +473,83 @@ namespace EditUtility
         {
             int X = 10, Y = 1;
             int sel;
-            Menu menu = new("---- Логін ---------- Ім'я ----", ConsoleColor.Green, ConsoleColor.Green, ConsoleColor.Gray)
-            {
-                XPos = X,
-                YPos = Y + 1
-            };
             IEnumerable<User> allUsers = users.AllUsers;
-            menu.AddMenuItem(allUsers.Select(n => ($"    {n}", (Action?)null))); 
-           
-            do
+            if (allUsers.Any())
             {
-                Output.Write("    -= Оберіть користувача =-", X, Y, ConsoleColor.Red);
-                sel = menu.Start();
-                if (sel >= 0)
+                Menu menu = new("---- Логін ---------- Ім'я ----", ConsoleColor.Green, ConsoleColor.Green, ConsoleColor.Gray)
                 {
-                    menu.Hide();
-                    showUser(allUsers.ElementAt(sel));
-                }
-            } while (sel >= 0) ;
-                Console.Clear();
+                    XPos = X,
+                    YPos = Y + 1
+                };
+
+                menu.AddMenuItem(allUsers.Select(n => ($"    {n}", (Action?)null)));
+
+                do
+                {
+                    Output.Write("    -= Оберіть користувача =-", X, Y, ConsoleColor.Red);
+                    sel = menu.Start();
+                    if (sel >= 0)
+                    {
+                        menu.Hide();
+                        Output.Write(new string(' ', 29), X, Y);
+                        showUser(allUsers.ElementAt(sel));
+                    }
+                } while (sel >= 0);
+            }
+            else 
+            {
+                Output.Write($"Зареєстровані користувачі відсутні ...", X, Y, ConsoleColor.Red);
+                Console.ReadKey();
+            }
+            Console.Clear();
         }
         private void DelUser()
         {
             int X = 10, Y = 1;
             int sel = 0;
-            Output.Write("    -= Оберіть користувача =-", X, Y, ConsoleColor.Red);
-            Menu menu = new("---- Логін ---------- Ім'я ----", ConsoleColor.Green, ConsoleColor.Green, ConsoleColor.Gray)
-            {
-                XPos = X,
-                YPos = Y+1
-            };
             var allUsers = users.AllUsers;
-            do
+            if (allUsers.Any())
             {
-                menu.Clear();
-                int x = X, y = Y;
-                if (users.Count != 0)
+
+                Output.Write("    -= Оберіть користувача =-", X, Y, ConsoleColor.Red);
+                Menu menu = new("---- Логін ---------- Ім'я ----", ConsoleColor.Green, ConsoleColor.Green, ConsoleColor.Gray)
                 {
-                    menu.AddMenuItem(allUsers.Select(n => ($"    {n}", (Action?)null)));
-                    sel = menu.Start();
-                    if (sel >= 0)
+                    XPos = X,
+                    YPos = Y + 1
+                };
+
+                do
+                {
+                    menu.Clear();
+                    int x = X, y = Y;
+                    if (users.Count != 0)
                     {
-                        if (Input.Confirm("Ви дійсно хочете видалити цього користувача?", "Так", "Ні", x, Console.CursorTop + 1,
-                             ConsoleColor.DarkGray, ConsoleColor.Green))
+                        menu.AddMenuItem(allUsers.Select(n => ($"    {n}", (Action?)null)));
+                        sel = menu.Start();
+                        if (sel >= 0)
                         {
-                            users.DellUser(allUsers.ElementAt(sel).LoginPass.Login);
-                            SLSystem.SaveUsers();
-                            menu.Hide();
+                            if (Input.Confirm("Ви дійсно хочете видалити цього користувача?", "Так", "Ні", x, Console.CursorTop + 1,
+                                 ConsoleColor.DarkGray, ConsoleColor.Green))
+                            {
+                                users.DellUser(allUsers.ElementAt(sel).LoginPass.Login);
+                                SLSystem.SaveUsers();
+                                menu.Hide();
+                            }
                         }
+                        else sel = -1;
                     }
-                    else sel = -1;
-                }
-                if (users.Count == 0)
-                {
-                    Output.Write("Немає зареєстрованих користувачів....", x, y, ConsoleColor.Red);
-                    Console.ReadKey();
-                }
-            } while (users.Count != 0 && sel >= 0);
+                    if (users.Count == 0)
+                    {
+                        Output.Write("Немає зареєстрованих користувачів....", x, y, ConsoleColor.Red);
+                        Console.ReadKey();
+                    }
+                } while (users.Count != 0 && sel >= 0);
+            }
+            else
+            {
+                Output.Write($"Зареєстровані користувачі відсутні ...", X, Y, ConsoleColor.Red);
+                Console.ReadKey();
+            }
             Console.Clear();
         }
 
@@ -588,33 +608,41 @@ namespace EditUtility
         {
             int X = 10, Y = 1;
             int sel ;
-            Menu menu = new("---- Логін ---------- Ім'я ----", ConsoleColor.Green, ConsoleColor.Green, ConsoleColor.Gray)
+            var allUsers = users.AllUsers;
+            if (allUsers.Any())
             {
-                XPos = X,
-                YPos = Y + 1
-            };
-            var  allUsers = users.AllUsers;
-            menu.AddMenuItem(allUsers.Select(n=>($"    {n}",(Action?)null)));
-            Output.Write("    -= Оберіть користувача =-", X, Y++, ConsoleColor.Red);
-            do
-            {
-                sel = menu.Start();
-                if (sel >= 0)
+                Menu menu = new("---- Логін ---------- Ім'я ----", ConsoleColor.Green, ConsoleColor.Green, ConsoleColor.Gray)
                 {
-                    if (Input.Confirm("Ви впевненні ?", "Так", "Ні", X, Console.CursorTop + 2, ConsoleColor.DarkGray, ConsoleColor.Green))
+                    XPos = X,
+                    YPos = Y + 1
+                };
+                menu.AddMenuItem(allUsers.Select(n => ($"    {n}", (Action?)null)));
+                Output.Write("    -= Оберіть користувача =-", X, Y++, ConsoleColor.Red);
+                do
+                {
+                    sel = menu.Start();
+                    if (sel >= 0)
                     {
-                        if (rating.DelUserRating(allUsers.ElementAt(sel).Name) != 0)
+                        if (Input.Confirm("Ви впевненні ?", "Так", "Ні", X, Console.CursorTop + 2, ConsoleColor.DarkGray, ConsoleColor.Green))
                         {
-                            SLSystem.SaveRating();
-                            Output.Write($"Рейтингі користувача {allUsers.ElementAt(sel).Name} видалені ...", X, Console.CursorTop, ConsoleColor.Green);
+                            if (rating.DelUserRating(allUsers.ElementAt(sel).Name) != 0)
+                            {
+                                SLSystem.SaveRating();
+                                Output.Write($"Рейтингі користувача {allUsers.ElementAt(sel).Name} видалені ...", X, Console.CursorTop, ConsoleColor.Green);
+                            }
+                            else Output.Write($"В користувача {allUsers.ElementAt(sel).Name} відсутні рейтинги ...", X, Console.CursorTop, ConsoleColor.Red);
+                            Console.ReadKey();
+                            Output.Write(new string(' ', 60), X, Console.CursorTop);
                         }
-                        else Output.Write($"В користувача {allUsers.ElementAt(sel).Name} відсутні рейтинги ...", X, Console.CursorTop, ConsoleColor.Red);
-                        Console.ReadKey();
-                        Output.Write(new string(' ',60), X, Console.CursorTop);
-                    }
 
-                }
-            } while (sel >= 0);
+                    }
+                } while (sel >= 0);
+            }
+            else
+            {
+                Output.Write($"Зареєстровані користувачі відсутні ...", X, Y, ConsoleColor.Red);
+                Console.ReadKey();
+            }
             Console.Clear();
         }
         private void DelNotRegUserRatings()

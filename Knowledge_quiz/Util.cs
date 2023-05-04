@@ -5,7 +5,7 @@ using System.Text;
 
 namespace KnowledgeQuiz
 {
-    public  static class Utility
+    public  static class Util
     {
         public static void Swap<T>(ref T val1, ref T val2) 
         {
@@ -18,7 +18,7 @@ namespace KnowledgeQuiz
             var arr = array.ToArray();
             Random rnd = new Random();
             for (int i = 0; i < arr.Length; i++)
-                Utility.Swap(ref arr[i], ref arr[rnd.Next(0, arr.Length)]);
+                Util.Swap(ref arr[i], ref arr[rnd.Next(0, arr.Length)]);
             return arr;
         }
 

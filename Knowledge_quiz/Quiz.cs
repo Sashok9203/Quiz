@@ -36,14 +36,15 @@ namespace KnowledgeQuiz
         public void Start()
         {
 
-            Menu startMenu = new Menu("   -= Вікторина знань =-", ConsoleColor.Green, ConsoleColor.DarkGray, ConsoleColor.Gray,
+            Menu startMenu = new("   -= Вікторина знань =-", ConsoleColor.Green, ConsoleColor.DarkGray, ConsoleColor.Gray,
                 ("          Увійти",  () =>  Enter()),
                 ("        Реєстрація",  () => Registration()),
-                ("     Адмініструввання",  () => { StartUtility("EditUtility.exe") ; }));
+                ("     Адмініструввання",  () => { StartUtility("EditUtility.exe") ; Console.Clear(); }
+            ));
             startMenu.XPos = 10;
             startMenu.YPos = 1;
             startMenu.Start();
-            startMenu.Hide();
+            Console.Clear();
         }
     }
 }

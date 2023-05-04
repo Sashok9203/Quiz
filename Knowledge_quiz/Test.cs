@@ -19,8 +19,8 @@ namespace KnowledgeQuiz
             this.userName = userName;
            
             IEnumerable<Question> quest;
-            if (quizName != Quizzes.MixedQuizName) quest = Utility.Shufflet(sls.LoadQuestions(questionPath));
-            else quest = Utility.Shufflet(sls.AllQuestions);
+            if (quizName != Quizzes.MixedQuizName) quest = Util.Shufflet(sls.LoadQuestions(questionPath));
+            else quest = Util.Shufflet(sls.AllQuestions);
             if (!quest.Any()) throw new ApplicationException($"Вікторина \"{quizName}\" не містить питань");
             int questionCount = quest.Count() < maxQustionCountInQuiz ? quest.Count() : maxQustionCountInQuiz;
             questions = quest.Take(questionCount);
@@ -45,7 +45,7 @@ namespace KnowledgeQuiz
             foreach (var question in questions) 
             {
                 int X = 25, Y = 1;
-                var aVariants = Utility.Shufflet(question.AnswerVariants);
+                var aVariants = Util.Shufflet(question.AnswerVariants);
                 switch (question)
                 {
                     case MAQuestion:
@@ -65,7 +65,7 @@ namespace KnowledgeQuiz
                 answers.Clear();
                 sel = 0;
                 menu.AddMenuItem(aVariants.Select((n,sel )=>  ($"  {(char)(sel++ + 97)}) {n}",(Action?)null)));
-                menu.XPos = X - 18;
+                menu.XPos = X - 15;
                 menu.YPos = Console.CursorTop + 2;
                 do
                 {

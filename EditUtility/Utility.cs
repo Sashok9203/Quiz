@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace EditUtility
 {
     internal partial class Utility 
@@ -56,7 +57,7 @@ namespace EditUtility
                     YPos = Y
                 };
             adminMenu.Start();
-            adminMenu.Hide();
+            Console.Clear();
         }
     }
 }

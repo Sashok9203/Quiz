@@ -39,7 +39,7 @@ namespace KnowledgeQuiz
                 }
             }
             while (ck != ConsoleKey.Enter);
-            Output.ClearRegion(X, Y,Utility.Max(title.Length, Ok.Length, Cancel.Length),2);
+            Output.ClearRegion(X, Y,Util.Max(title.Length, Ok.Length, Cancel.Length),2);
             return comfirmed;
         }
 
@@ -235,7 +235,7 @@ namespace KnowledgeQuiz
                 {
                     Output.Write(ax.Message, X, y, ConsoleColor.Red);
                     Console.ReadKey();
-                    Output.ClearRegion(X, Y, X + Utility.Max(yearTitle?.Length ?? 0, monthTitle?.Length ?? 0, dayTitle?.Length ?? 0, hourTitle?.Length ?? 0, minuteTitle?.Length ?? 0, secTitle?.Length ?? 0) + 4, 2);
+                    Output.ClearRegion(X, Y, X + Util.Max(yearTitle?.Length ?? 0, monthTitle?.Length ?? 0, dayTitle?.Length ?? 0, hourTitle?.Length ?? 0, minuteTitle?.Length ?? 0, secTitle?.Length ?? 0) + 4, 2);
                     y = Y;
                 }
             } while (date == default || date > DateTime.Now);

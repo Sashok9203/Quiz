@@ -119,6 +119,7 @@ namespace KnowledgeQuiz
             users   = null;
             rating  = null;
         }
+
         public IEnumerable<Question> LoadQuestions(string fileName) => Deserialize<Question[]>(Path.Combine(QuestionDir, fileName)) ?? Array.Empty<Question>();
         public IEnumerable<Question> AllQuestions
         {

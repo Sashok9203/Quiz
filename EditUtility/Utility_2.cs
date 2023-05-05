@@ -42,12 +42,12 @@ namespace EditUtility
             int sel = -1;
             string fileName;
             bool set = false;
-            var files = Directory.GetFiles(SLSystem.QuestionDir);
+            var files = Directory.GetFiles(SLSystem.QuestionDir).Select(n => Path.GetFileName(n));
             if (files.Any())
             {
                 Menu fileChooseMenu = new($"   -= Оберіть файл з питаннями =-", ConsoleColor.Green,
                                           ConsoleColor.DarkGray, ConsoleColor.Gray);
-                fileChooseMenu.AddMenuItem(files.Select(n => ($"         {Path.GetFileName(n)}",(Action?)null)));
+                fileChooseMenu.AddMenuItem(files.Select(n => ($"         {n}",(Action?)null)));
                 fileChooseMenu.XPos = X + 5;
                 fileChooseMenu.YPos = Y + 1;
 

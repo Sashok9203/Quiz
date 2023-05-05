@@ -8,7 +8,7 @@ namespace KnowledgeQuiz
     [Serializable]
     public sealed class Setting : ISerializable
     {
-        public  string? curentDataDir ;
+        public  string? curentDataDir;
         public  string? curentQuestionDir;
 
         public Setting()

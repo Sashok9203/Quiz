@@ -75,7 +75,7 @@ namespace KnowledgeQuiz
 
         public override string ToString()
         {
-            return $"{UserName,-15}     {QuestionCount,-2}/{RightAnswerCount,-2}     {Time.ToLongTimeString()} ";
+            return $"{UserName,-20}     {QuestionCount,-2}/{RightAnswerCount,-2}     {Time.ToLongTimeString()} ";
         }
 
         public int CompareTo(UserQuizInfo? other)

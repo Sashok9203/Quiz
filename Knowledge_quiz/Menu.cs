@@ -8,7 +8,7 @@ namespace KnowledgeQuiz
     {
         private int _selpos;
         
-        private void show()
+        private void _show()
         {
             Output.Write(Title,XPos, YPos, tColor);
             for (int i = 0; i < mItems?.Count; i++)
@@ -59,7 +59,7 @@ namespace KnowledgeQuiz
         public int Start()
         {
             ConsoleKey ck = default;
-            show();
+            _show();
             do
             {
                 if (Console.KeyAvailable)
@@ -68,7 +68,7 @@ namespace KnowledgeQuiz
                     if (ck == ConsoleKey.UpArrow || ck == ConsoleKey.DownArrow)
                     {
                         SelectPos -= 39 - (int)ck;
-                        show();
+                        _show();
 
                     }
                     else if (ck == ConsoleKey.Enter)
@@ -78,7 +78,7 @@ namespace KnowledgeQuiz
                         {
                             Hide();
                             mItems[SelectPos].iProc?.Invoke();
-                            show();
+                            _show();
                         }
                     }
                 }
@@ -115,7 +115,7 @@ namespace KnowledgeQuiz
             Hide();
             mItems.RemoveAt(index);
             SelectPos = index;
-            show();
+            _show();
             return mItems.Count;
         }
 

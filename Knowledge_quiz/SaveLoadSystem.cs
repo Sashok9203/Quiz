@@ -21,8 +21,7 @@ namespace KnowledgeQuiz
         private Quizzes? quizzes;
         private Users? users;
         private Rating? rating;
-
-
+                
         private string QuizzesFile  => Path.Combine(DataDir, "quizzes.xml");
         private string UsersFile    => Path.Combine(DataDir, "users.xml");
         private string RatingFile   => Path.Combine(DataDir, "rating.xml");
@@ -109,9 +108,17 @@ namespace KnowledgeQuiz
                 SaveSettings();
             }
         }
+
         public Quizzes Quizzes => quizzes ??= LoadQuizzes();
-        public Users Users => users ??= LoadUsers();
-        public Rating Rating => rating ??= LoadRating();
+        public Users   Users => users ??= LoadUsers();
+        public Rating  Rating => rating ??= LoadRating();
+
+        public void ResetReferens()
+        {
+            quizzes = null;
+            users   = null;
+            rating  = null;
+        }
         public IEnumerable<Question> LoadQuestions(string fileName) => Deserialize<Question[]>(Path.Combine(QuestionDir, fileName)) ?? Array.Empty<Question>();
         public IEnumerable<Question> AllQuestions
         {

@@ -154,12 +154,12 @@ namespace KnowledgeQuiz
                 Output.Write("-= TOP 20 =-", X + 15, Y++, ConsoleColor.Green);
                 Output.Write($"-= \"{quizName}\" =-", X + 12, Y++, ConsoleColor.Green);
                 Y++;
-                Output.Write("Місце       Імя             Кв.\\Пв.     Час", X, Y++, ConsoleColor.Green);
-                Output.Write("-----------------------------------------------", X, Y++, ConsoleColor.Red);
+                Output.Write("Місце       Імя                  Кп.\\Пв.     Час", X, Y++, ConsoleColor.Green);
+                Output.Write("----------------------------------------------------", X, Y++, ConsoleColor.Red);
                 int index = 1;
 
                 foreach (var item in infos)
-                     Output.Write($"{index++}     {item}", X + 2, Y++, ConsoleColor.Blue);
+                     Output.Write($"{index++,-2}     {item}", X + 2, Y++, ConsoleColor.Blue);
                 
             }
             else Output.Write("Інформація відсутня", X, Y++, ConsoleColor.Green);
